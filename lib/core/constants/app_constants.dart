@@ -10,4 +10,5 @@ class AppConstants {
 
   static const String themePrefsKey = 'theme_mode';
   static const String localePrefsKey = 'locale';
+  static const String onboardingDoneKey = 'onboarding_done';
 }

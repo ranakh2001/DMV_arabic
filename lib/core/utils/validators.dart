@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import '../localization/app_localizations.dart';
+
 /// Client-side validators. Server is always authoritative; these guard UX only.
 class Validators {
   Validators._();
@@ -9,53 +12,81 @@ class Validators {
 
   static final _codeRe = RegExp(r'^\d{6}$');
 
-  /// Returns Arabic error string, or null when valid.
-  static String? email(String? v) {
-    if (v == null || v.trim().isEmpty) return 'البريد الإلكتروني مطلوب.';
-    if (!_emailRe.hasMatch(v.trim())) return 'صيغة البريد الإلكتروني غير صحيحة.';
-    return null;
-  }
+  static FormFieldValidator<String> email(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.email.required');
+        }
+        if (!_emailRe.hasMatch(v.trim())) {
+          return context.t('validator.email.invalid');
+        }
+        return null;
+      };
 
   /// Validates US phone (E.164 +1 or 10-digit).
-  static String? phone(String? v) {
-    if (v == null || v.trim().isEmpty) return 'رقم الهاتف مطلوب.';
-    final stripped = v.trim().replaceAll(RegExp(r'[\s\-()]'), '');
-    if (!_phoneRe.hasMatch(stripped)) return 'أدخل رقم هاتف أمريكي صحيح.';
-    return null;
-  }
+  static FormFieldValidator<String> phone(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.phone.required');
+        }
+        final stripped = v.trim().replaceAll(RegExp(r'[\s\-()]'), '');
+        if (!_phoneRe.hasMatch(stripped)) {
+          return context.t('validator.phone.invalid');
+        }
+        return null;
+      };
 
   /// Accepts email OR US phone.
-  static String? emailOrPhone(String? v) {
-    if (v == null || v.trim().isEmpty) return 'البريد الإلكتروني أو رقم الهاتف مطلوب.';
-    final trimmed = v.trim();
-    if (trimmed.contains('@')) return email(trimmed);
-    return phone(trimmed);
-  }
+  static FormFieldValidator<String> emailOrPhone(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.email_or_phone.required');
+        }
+        final trimmed = v.trim();
+        if (trimmed.contains('@')) return Validators.email(context)(trimmed);
+        return Validators.phone(context)(trimmed);
+      };
 
   /// Minimum 8 characters (server does bcrypt hashing — never hash client-side).
-  static String? password(String? v) {
-    if (v == null || v.isEmpty) return 'كلمة المرور مطلوبة.';
-    if (v.length < 8) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
-    return null;
-  }
+  static FormFieldValidator<String> password(BuildContext context) => (v) {
+        if (v == null || v.isEmpty) {
+          return context.t('validator.password.required');
+        }
+        if (v.length < 8) {
+          return context.t('validator.password.min_length');
+        }
+        return null;
+      };
 
   /// Confirms passwords match.
-  static String? confirmPassword(String? v, String password) {
-    if (v == null || v.isEmpty) return 'تأكيد كلمة المرور مطلوب.';
-    if (v != password) return 'كلمتا المرور غير متطابقتين.';
-    return null;
-  }
+  static FormFieldValidator<String> confirmPassword(
+    BuildContext context,
+    String passwordValue,
+  ) =>
+      (v) {
+        if (v == null || v.isEmpty) {
+          return context.t('validator.confirm_password.required');
+        }
+        if (v != passwordValue) {
+          return context.t('validator.confirm_password.mismatch');
+        }
+        return null;
+      };
 
   /// Six-digit verification code.
-  static String? verificationCode(String? v) {
-    if (v == null || v.trim().isEmpty) return 'رمز التحقق مطلوب.';
-    if (!_codeRe.hasMatch(v.trim())) return 'رمز التحقق يتكون من 6 أرقام.';
-    return null;
-  }
+  static FormFieldValidator<String> verificationCode(BuildContext context) =>
+      (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.code.required');
+        }
+        if (!_codeRe.hasMatch(v.trim())) {
+          return context.t('validator.code.invalid');
+        }
+        return null;
+      };
 
   /// Non-empty name.
-  static String? name(String? v) {
-    if (v == null || v.trim().isEmpty) return 'الاسم مطلوب.';
-    return null;
-  }
+  static FormFieldValidator<String> name(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.name.required');
+        }
+        return null;
+      };
 }

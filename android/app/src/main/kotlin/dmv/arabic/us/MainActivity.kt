@@ -1,4 +1,4 @@
-package com.example.dmv
+package dmv.arabic.us
 
 import io.flutter.embedding.android.FlutterActivity
 

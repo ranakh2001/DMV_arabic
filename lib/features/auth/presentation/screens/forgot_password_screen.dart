@@ -1,99 +1,181 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/validators.dart';
-import '../providers/auth_controller_provider.dart';
-import '../widgets/auth_scaffold.dart';
-import 'reset_password_screen.dart';
+import '../widgets/forgot_password_widgets.dart';
+import 'forgot_verify_screen.dart';
 
-class ForgotPasswordScreen extends ConsumerStatefulWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() =>
-      _ForgotPasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _contactCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
 
   @override
   void dispose() {
-    _contactCtrl.dispose();
+    _phoneCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    await ref
-        .read(forgotPasswordControllerProvider.notifier)
-        .send(contact: _contactCtrl.text.trim());
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ForgotVerifyScreen(contact: _phoneCtrl.text.trim()),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(forgotPasswordControllerProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    ref.listen(forgotPasswordControllerProvider, (_, next) {
-      if (next.isSuccess) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute<void>(
-            builder: (_) =>
-                ResetPasswordScreen(contact: _contactCtrl.text.trim()),
-          ),
-        );
-      }
-    });
+    return Scaffold(
+      body: Stack(
+        children: [
+          AuthFlowBackground(isDark: isDark),
+          SafeArea(
+            child: AuthEntrance(
+              child: Column(
+                children: [
+                  AuthTopBar(
+                    title: context.t('auth.forgot.title'),
+                    onBack: () => Navigator.of(context).maybePop(),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 28),
 
-    return AuthScaffold(
-      title: context.t('auth.forgot.title'),
-      subtitle: context.t('auth.forgot.subtitle'),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _contactCtrl,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _submit(),
-              decoration: InputDecoration(
-                  labelText: context.t('field.email_or_phone')),
-              validator: Validators.emailOrPhone,
-            ),
-            const SizedBox(height: 20),
-            if (state.isFailure && state.error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  state.error!,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: context.appError),
-                  textAlign: TextAlign.center,
-                ),
+                          Center(
+                            child: AnimatedHeroIcon(
+                              icon: Icons.mail_rounded,
+                              badges: const [
+                                HeroBadge(
+                                  bottom: 34,
+                                  right: 34,
+                                  icon: Icons.lock_rounded,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          GlassCard(
+                            isDark: isDark,
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Center(
+                                    child: BadgeChip(
+                                      label: context.t('auth.forgot.badge'),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    context.t('auth.forgot.question'),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Almarai',
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    context.t('auth.forgot.phone_subtitle'),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Almarai',
+                                      fontSize: 13,
+                                      color: Colors.white.withAlpha(155),
+                                      height: 1.6,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  TextFormField(
+                                    controller: _phoneCtrl,
+                                    keyboardType: TextInputType.phone,
+                                    textInputAction: TextInputAction.done,
+                                    textDirection: TextDirection.ltr,
+                                    onFieldSubmitted: (_) => _submit(),
+                                    style: const TextStyle(
+                                      fontFamily: 'Almarai',
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ),
+                                    decoration: authFieldDecoration(
+                                      context: context,
+                                      hint: '0000000000000',
+                                      suffixIcon: const Icon(
+                                        Icons.phone_rounded,
+                                        color: Color(0xFF4A9CD9),
+                                        size: 20,
+                                      ),
+                                    ),
+                                    validator: Validators.emailOrPhone(context),
+                                  ),
+                                  const SizedBox(height: 24),
+
+                                  GlowElevatedButton(
+                                    onPressed: _submit,
+                                    icon: Icons.send_rounded,
+                                    label: context.t('auth.forgot.send_code'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                context.t('auth.forgot.remember'),
+                                style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: 14,
+                                  color: Colors.white.withAlpha(140),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: () => Navigator.of(context).maybePop(),
+                                child: Text(
+                                  context.t('auth.forgot.sign_in_link'),
+                                  style: const TextStyle(
+                                    fontFamily: 'Almarai',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF4A9CD9),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ElevatedButton(
-              onPressed: state.isSubmitting ? null : _submit,
-              child: state.isSubmitting
-                  ? const SizedBox.square(
-                      dimension: 22,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
-                    )
-                  : Text(context.t('auth.forgot.submit')),
             ),
-          ],
-        ),
-      ),
-      bottom: TextButton.icon(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(Icons.arrow_back),
-        label: Text(context.t('auth.forgot.back_login')),
+          ),
+        ],
       ),
     );
   }

@@ -1,15 +1,18 @@
-import 'package:flutter/widgets.dart';
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../storage/storage_providers.dart';
 import '../constants/app_constants.dart';
 
 /// Manages the active [Locale] and persists it to shared_preferences.
-/// Default locale: Arabic (per SRS).
+/// First launch: follows the device locale if supported (ar/en), else Arabic.
 class LocaleNotifier extends Notifier<Locale> {
+  static const _supported = ['ar', 'en'];
+
   @override
   Locale build() {
-    final raw = ref.read(prefsServiceProvider).getString(AppConstants.localePrefsKey);
-    return Locale(raw ?? AppConstants.defaultLocale);
+    final saved = ref.read(prefsServiceProvider).getString(AppConstants.localePrefsKey);
+    if (saved != null && _supported.contains(saved)) return Locale(saved);
+    return const Locale('ar');
   }
 
   Future<void> setLocale(Locale locale) async {
@@ -26,7 +29,6 @@ class LocaleNotifier extends Notifier<Locale> {
   bool get isArabic => state.languageCode == 'ar';
 }
 
-/// Global provider for the active [Locale].
 final localeProvider = NotifierProvider<LocaleNotifier, Locale>(
   LocaleNotifier.new,
 );

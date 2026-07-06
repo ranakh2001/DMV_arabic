@@ -43,6 +43,7 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.topLeft,
       children: [
         widget.child,
         if (_obscured) const _Shield(),

@@ -19,18 +19,32 @@ const Map<String, String> stringsEn = {
   'common.required': 'Required',
   'common.optional': 'Optional',
 
+  // --- Welcome screen
+  'auth.welcome.greeting': 'Welcome',
+  'auth.welcome.subtitle': 'Sign in or create an account to begin your journey towards a driver\'s license',
+  'auth.welcome.login_btn': 'Sign In',
+  'auth.welcome.register_btn': 'Create New Account',
+  'auth.welcome.terms': 'By registering you agree to the Terms of Service',
+
   'auth.login.title': 'Sign In',
-  'auth.login.subtitle': 'Welcome back',
+  'auth.login.subtitle': 'Welcome back on your journey to a driver\'s license',
   'auth.login.submit': 'Sign In',
   'auth.login.no_account': "Don't have an account?",
-  'auth.login.sign_up': 'Sign Up',
+  'auth.login.sign_up': 'Sign Up Now',
   'auth.login.forgot': 'Forgot password?',
 
   'auth.register.title': 'Create Account',
   'auth.register.subtitle': 'Join now and start practicing',
-  'auth.register.submit': 'Create Account',
+  'auth.register.welcome_title': 'Welcome Aboard',
+  'auth.register.welcome_subtitle': 'Start your journey to get your American driver\'s license with ease and professionalism.',
+  'auth.register.submit': 'Create Account +',
   'auth.register.have_account': 'Already have an account?',
   'auth.register.sign_in': 'Sign In',
+  'auth.register.agree_terms': 'I agree to the ',
+  'auth.register.terms_use': 'Terms of Use',
+  'auth.register.and_privacy': ' and',
+  'auth.register.privacy_policy': 'Privacy Policy',
+  'auth.register.terms_suffix': ' of DMV in Arabic.',
 
   'auth.verify.title': 'Verify Your Identity',
   'auth.verify.subtitle': 'Enter the code sent to',
@@ -58,13 +72,26 @@ const Map<String, String> stringsEn = {
   'auth.logout.confirm': 'Are you sure you want to sign out?',
 
   'field.name': 'Full Name',
+  'field.name_hint': 'Enter your full name',
   'field.email': 'Email',
   'field.phone': 'Phone Number',
+  'field.phone_hint': '+1 (555) 000-0000',
   'field.email_or_phone': 'Email or Phone Number',
   'field.password': 'Password',
+  'field.password_hint': '••••••••',
   'field.confirm_password': 'Confirm Password',
+  'field.confirm_password_hint': '••••••••',
   'field.code': 'Verification Code',
   'field.new_password': 'New Password',
+  'field.state': 'State',
+  'field.state_hint': 'Choose your state',
+
+  // --- Password strength
+  'password.strength.label': 'Password strength:',
+  'password.strength.weak': 'Weak',
+  'password.strength.fair': 'Fair',
+  'password.strength.good': 'Good',
+  'password.strength.strong': 'Strong',
 
   'error.network': 'No internet connection. Please check your network.',
   'error.server': 'Server error. Please try again later.',
@@ -84,9 +111,81 @@ const Map<String, String> stringsEn = {
   'settings.language.ar': 'Arabic',
   'settings.language.en': 'English',
 
+  'splash.tagline': 'Prepare for your driving test in Arabic',
+  'splash.version': 'V1.0.0',
+  'splash.copyright': '©MARVA-SYSTEMS',
+
+  'onboarding.slide1.title': 'Your journey to a driver\'s license starts here',
+  'onboarding.slide1.subtitle':
+      'Prepare for the American driving test with confidence – real questions, clear explanations, in Arabic',
+  'onboarding.slide1.cta': 'Start Now',
+  'onboarding.slide2.title': 'Real tests from every state',
+  'onboarding.slide2.subtitle':
+      'Over 250 questions organized by your state – with an explanation for each answer in clear Arabic',
+  'onboarding.slide2.feat1': 'Smart Questions',
+  'onboarding.slide2.feat2': 'Simulation Mode',
+  'onboarding.slide2.feat3': 'Track Progress',
+  'onboarding.slide3.title': 'Choose your state to start',
+  'onboarding.slide3.subtitle':
+      'Every state has its own laws – we\'ll guide you to the right questions',
+  'onboarding.slide3.placeholder': 'Choose a state...',
+  'onboarding.slide3.hint': 'You can change your state later in Settings',
+  'onboarding.slide1.badge_questions': '+250',
+  'onboarding.slide1.badge_states': '50 States',
+  'onboarding.slide1.badge_quiz': 'State-Based Test',
+  'onboarding.slide3.search': 'Search...',
+  'onboarding.start': 'Let\'s Start',
+  'onboarding.have_account': 'Have an account? Sign in',
+
   'notif.push': 'Push Notifications',
   'notif.reminders': 'Subscription Reminders',
   'notif.content': 'Content Updates',
   'notif.announcements': 'Announcements',
   'notif.sound': 'Notification Sound',
+
+  // --- Forgot password flow
+  'auth.forgot.badge': 'Password Recovery',
+  'auth.forgot.question': 'Forgot Password?',
+  'auth.forgot.phone_subtitle':
+      'Enter your phone number and we\'ll send you a verification code to reset your password',
+  'auth.forgot.send_code': 'Send Verification Code',
+  'auth.forgot.remember': 'Remember your password?',
+  'auth.forgot.sign_in_link': 'Sign In',
+
+  // --- Forgot verify step
+  'auth.forgot_verify.badge': 'Identity Verification',
+  'auth.forgot_verify.title': 'Enter Verification Code',
+  'auth.forgot_verify.subtitle': 'We sent a 6-digit code to',
+  'auth.forgot_verify.no_code': "Didn't receive the code?",
+  'auth.forgot_verify.submit': 'Verify Code',
+  'auth.forgot_verify.resend': 'Resend Code',
+  'auth.forgot_verify.spam_hint':
+      'Please check your inbox or Spam folder if you didn\'t receive the code',
+
+  // --- Reset password
+  'auth.reset.badge': 'Last Step',
+  'auth.reset.new_title': 'New Password',
+  'auth.reset.new_subtitle': 'Choose a strong password to protect your account',
+  'auth.reset.save': 'Save Password',
+  'auth.reset.header': 'Create Password',
+
+  // --- Password rules checklist
+  'password.rule.length': 'At least 8 characters',
+  'password.rule.uppercase': 'Contains uppercase letter (A-Z)',
+  'password.rule.digit': 'Contains at least one digit',
+  'password.rule.special': r'Contains special character (@#$%^&*)',
+
+  // --- Validators
+  'validator.email.required': 'Email is required.',
+  'validator.email.invalid': 'Invalid email format.',
+  'validator.phone.required': 'Phone number is required.',
+  'validator.phone.invalid': 'Enter a valid US phone number.',
+  'validator.email_or_phone.required': 'Email or phone number is required.',
+  'validator.password.required': 'Password is required.',
+  'validator.password.min_length': 'Password must be at least 8 characters.',
+  'validator.confirm_password.required': 'Please confirm your password.',
+  'validator.confirm_password.mismatch': 'Passwords do not match.',
+  'validator.code.required': 'Verification code is required.',
+  'validator.code.invalid': 'Verification code must be 6 digits.',
+  'validator.name.required': 'Name is required.',
 };

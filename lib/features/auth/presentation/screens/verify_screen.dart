@@ -90,7 +90,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                 labelText: context.t('field.code'),
                 counterText: '',
               ),
-              validator: Validators.verificationCode,
+              validator: Validators.verificationCode(context),
             ),
             const SizedBox(height: 20),
 

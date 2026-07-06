@@ -18,26 +18,25 @@ class App extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
 
-    return AppShield(
-      child: MaterialApp(
-        title: 'DMV بالعربي',
-        debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      title: 'DMV بالعربي',
+      debugShowCheckedModeBanner: false,
 
-        themeMode: themeMode,
-        theme: AppTheme.light(context),
-        darkTheme: AppTheme.dark(context),
+      themeMode: themeMode,
+      theme: AppTheme.light(context),
+      darkTheme: AppTheme.dark(context),
 
-        locale: locale,
-        supportedLocales: const [Locale('ar'), Locale('en')],
-        localizationsDelegates: const [
-          AppLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+      locale: locale,
+      supportedLocales: const [Locale('ar'), Locale('en')],
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
 
-        home: const AuthGate(),
-      ),
+      builder: (context, child) => AppShield(child: child!),
+      home: const AuthGate(),
     );
   }
 }
