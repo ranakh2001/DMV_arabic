@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/storage/storage_providers.dart';
 import '../../domain/entities/auth_user.dart';
 import '../state/auth_state.dart';
 import 'auth_providers.dart';
@@ -39,6 +40,14 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> logout() async {
     await ref.read(logoutUsecaseProvider).call();
+    state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Signs out without contacting the backend — wipes the local session
+  /// only. Used while the logout endpoint isn't available yet.
+  Future<void> signOutLocally() async {
+    await ref.read(secureStorageProvider).clearAll();
+    await ref.read(prefsServiceProvider).clearUserData();
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 }

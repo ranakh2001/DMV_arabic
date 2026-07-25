@@ -45,15 +45,15 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
     return Stack(
       alignment: Alignment.topLeft,
       children: [
-        widget.child,
-        if (_obscured) const _Shield(),
+        KeyedSubtree(key: const ValueKey('app_shield_child'), child: widget.child),
+        if (_obscured) const _Shield(key: ValueKey('app_shield_overlay')),
       ],
     );
   }
 }
 
 class _Shield extends StatelessWidget {
-  const _Shield();
+  const _Shield({super.key});
 
   @override
   Widget build(BuildContext context) {

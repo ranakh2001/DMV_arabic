@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/widgets/app_logo.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
 
@@ -100,33 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // Ambient glow behind logo
-                              Container(
-                                width: 160,
-                                height: 160,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF4A9CD9)
-                                          .withAlpha(70),
-                                      blurRadius: 80,
-                                      spreadRadius: 12,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Full logo — no clipping
-                              Image.asset(
-                                'assets/logo/logo.png',
-                                width: 140,
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          ),
+                          const AppLogo(),
                           const SizedBox(height: 22),
                           Text(
                             context.t('app.name'),

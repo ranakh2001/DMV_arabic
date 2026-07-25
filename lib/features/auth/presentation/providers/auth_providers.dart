@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/network/dio_providers.dart';
 import '../../../../core/storage/storage_providers.dart';
-import '../../data/datasources/auth_remote_data_source.dart';
-import '../../data/repositories/auth_repository_impl.dart';
+import '../../data/repositories/mock_auth_repository.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/services/social_auth_service.dart';
 import '../../domain/usecases/bootstrap_session_usecase.dart';
@@ -15,13 +13,11 @@ import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/social_login_usecase.dart';
 import '../../domain/usecases/verify_usecase.dart';
 
-final _authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>(
-  (ref) => AuthRemoteDataSource(ref.watch(dioProvider)),
-);
-
+// NOTE: wired to [MockAuthRepository] until the real backend is live — see
+// auth_repository_impl.dart (kept in place, unused) for the Dio-backed version
+// to swap back in once the API is ready.
 final authRepositoryProvider = Provider<AuthRepository>(
-  (ref) => AuthRepositoryImpl(
-    remote: ref.watch(_authRemoteDataSourceProvider),
+  (ref) => MockAuthRepository(
     secureStorage: ref.watch(secureStorageProvider),
     prefs: ref.watch(prefsServiceProvider),
   ),

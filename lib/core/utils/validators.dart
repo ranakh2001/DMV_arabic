@@ -89,4 +89,76 @@ class Validators {
         }
         return null;
       };
+
+  /// Non-empty subject line (Contact Us form).
+  static FormFieldValidator<String> subject(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.subject.required');
+        }
+        return null;
+      };
+
+  /// Non-empty message body (Contact Us form).
+  static FormFieldValidator<String> message(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.message.required');
+        }
+        return null;
+      };
+
+  static final _cardNumberRe = RegExp(r'^\d{16}$');
+  static final _cardExpiryRe = RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$');
+  static final _cardCvvRe = RegExp(r'^\d{3,4}$');
+
+  /// Non-empty cardholder name.
+  static FormFieldValidator<String> cardHolderName(BuildContext context) => (v) {
+        if (v == null || v.trim().isEmpty) {
+          return context.t('validator.card.holder_required');
+        }
+        return null;
+      };
+
+  /// 16-digit card number (spaces stripped before matching).
+  static FormFieldValidator<String> cardNumber(BuildContext context) => (v) {
+        final stripped = (v ?? '').replaceAll(' ', '');
+        if (stripped.isEmpty) {
+          return context.t('validator.card.number_required');
+        }
+        if (!_cardNumberRe.hasMatch(stripped)) {
+          return context.t('validator.card.number_invalid');
+        }
+        return null;
+      };
+
+  /// MM/YY expiry, must not already be in the past.
+  static FormFieldValidator<String> cardExpiry(BuildContext context) => (v) {
+        final trimmed = (v ?? '').trim();
+        if (trimmed.isEmpty) {
+          return context.t('validator.card.expiry_required');
+        }
+        if (!_cardExpiryRe.hasMatch(trimmed)) {
+          return context.t('validator.card.expiry_invalid');
+        }
+        final parts = trimmed.split('/');
+        final month = int.parse(parts[0]);
+        final year = 2000 + int.parse(parts[1]);
+        final now = DateTime.now();
+        final expiry = DateTime(year, month + 1);
+        if (expiry.isBefore(now)) {
+          return context.t('validator.card.expiry_invalid');
+        }
+        return null;
+      };
+
+  /// 3-4 digit CVV.
+  static FormFieldValidator<String> cardCvv(BuildContext context) => (v) {
+        final trimmed = (v ?? '').trim();
+        if (trimmed.isEmpty) {
+          return context.t('validator.card.cvv_required');
+        }
+        if (!_cardCvvRe.hasMatch(trimmed)) {
+          return context.t('validator.card.cvv_invalid');
+        }
+        return null;
+      };
 }

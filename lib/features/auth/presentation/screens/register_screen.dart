@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/validators.dart';
+import '../../../legal/presentation/screens/privacy_policy_screen.dart';
+import '../../../legal/presentation/screens/terms_of_use_screen.dart';
 import '../providers/auth_controller_provider.dart';
 import 'login_screen.dart';
 import 'verify_screen.dart';
@@ -943,14 +945,19 @@ class _TermsRow extends StatelessWidget {
                   height: 1.6,
                 ),
               ),
-              Text(
-                context.t('auth.register.terms_use'),
-                style: const TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 13,
-                  color: Color(0xFF4A9CD9),
-                  fontWeight: FontWeight.w700,
-                  height: 1.6,
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => const TermsOfUseScreen()),
+                ),
+                child: Text(
+                  context.t('auth.register.terms_use'),
+                  style: const TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 13,
+                    color: Color(0xFF4A9CD9),
+                    fontWeight: FontWeight.w700,
+                    height: 1.6,
+                  ),
                 ),
               ),
               Text(
@@ -962,14 +969,21 @@ class _TermsRow extends StatelessWidget {
                   height: 1.6,
                 ),
               ),
-              Text(
-                context.t('auth.register.privacy_policy'),
-                style: const TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: 13,
-                  color: Color(0xFF4A9CD9),
-                  fontWeight: FontWeight.w700,
-                  height: 1.6,
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PrivacyPolicyScreen(showDeleteAccount: false),
+                  ),
+                ),
+                child: Text(
+                  context.t('auth.register.privacy_policy'),
+                  style: const TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 13,
+                    color: Color(0xFF4A9CD9),
+                    fontWeight: FontWeight.w700,
+                    height: 1.6,
+                  ),
                 ),
               ),
               Text(
