@@ -1,7 +1,7 @@
 class ForgotPasswordRequest {
-  const ForgotPasswordRequest({required this.contact});
+  const ForgotPasswordRequest({required this.phoneNumber});
 
-  final String contact;
+  final String phoneNumber;
 
-  Map<String, dynamic> toJson() => {'contact': contact};
+  Map<String, dynamic> toJson() => {'phone_number': phoneNumber};
 }

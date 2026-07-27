@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'glass_effect_theme.dart';
 
 abstract final class _Palette {
   static const Color primary = Color(0xFF4A9CD9);
@@ -70,10 +71,8 @@ extension AppColors on BuildContext {
   Color get appTextSecondary => cs.onSurfaceVariant;
   Color get appTextDisabled => cs.outline;
   Color get appSuccess => cs.tertiary;
-  Color get appGlassTint => Theme.of(this).brightness == Brightness.dark
-      ? AppColorsDark.glassTint
-      : AppColorsLight.glassTint;
-  Color get appGlassBorder => Theme.of(this).brightness == Brightness.dark
-      ? AppColorsDark.glassBorder
-      : AppColorsLight.glassBorder;
+
+  GlassEffectTheme get _glass => Theme.of(this).extension<GlassEffectTheme>()!;
+  Color get appGlassTint => _glass.tint;
+  Color get appGlassBorder => _glass.border;
 }

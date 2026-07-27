@@ -52,4 +52,7 @@ class PrefsService {
 
   String? get selectedState => getString('user_state');
   Future<bool> setSelectedState(String v) => setString('user_state', v);
+
+  int? get selectedStateId => getInt('user_state_id');
+  Future<bool> setSelectedStateId(int v) => setInt('user_state_id', v);
 }

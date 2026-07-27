@@ -1,11 +1,11 @@
 class VerifyRequest {
-  const VerifyRequest({required this.contact, required this.code});
+  const VerifyRequest({required this.phoneNumber, required this.code});
 
-  final String contact;
+  final String phoneNumber;
   final String code;
 
   Map<String, dynamic> toJson() => {
-        'contact': contact,
+        'phone_number': phoneNumber,
         'code': code,
       };
 }

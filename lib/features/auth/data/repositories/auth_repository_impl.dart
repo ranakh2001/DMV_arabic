@@ -10,8 +10,8 @@ import '../datasources/auth_remote_data_source.dart';
 import '../models/forgot_password_request.dart';
 import '../models/login_request.dart';
 import '../models/register_request.dart';
+import '../models/resend_verification_code_request.dart';
 import '../models/reset_password_request.dart';
-import '../models/social_login_request.dart';
 import '../models/verify_request.dart';
 
 /// Concrete implementation of [AuthRepository].
@@ -33,13 +33,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> register({
     required String name,
     required String contact,
+    required int stateId,
     required String password,
   }) async {
     try {
       await _remote.register(RegisterRequest(
-        name: name,
-        contact: contact,
+        fullName: name,
+        phoneNumber: contact,
+        stateId: stateId,
         password: password,
+        passwordConfirmation: password,
       ));
       return const Result.success(null);
     } on ServerException catch (e) {
@@ -55,7 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
   }) async {
     try {
-      final result = await _remote.verify(VerifyRequest(contact: contact, code: code));
+      final result = await _remote.verify(VerifyRequest(phoneNumber: contact, code: code));
       final session = await _persistSession(result.user.toEntity(), result.tokens.accessToken,
           result.tokens.refreshToken, result.tokens.expiresAt);
       await _prefs.setUserName(result.user.name);
@@ -70,9 +73,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<void>> resendCode({required String contact}) async {
+  Future<Result<void>> resendVerificationCode({required String contact}) async {
     try {
-      await _remote.resendCode(contact);
+      await _remote.resendVerificationCode(
+        ResendVerificationCodeRequest(phoneNumber: contact),
+      );
       return const Result.success(null);
     } on ServerException catch (e) {
       return Result.failure(_fromServer(e));
@@ -87,7 +92,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final result = await _remote.login(LoginRequest(contact: contact, password: password));
+      final result = await _remote.login(LoginRequest(phoneNumber: contact, password: password));
 
       if (result.unverifiedContact != null) {
         return Result.success((session: null, unverifiedContact: result.unverifiedContact));
@@ -112,30 +117,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthSession>> socialLogin({
-    required String provider,
-    required String token,
-  }) async {
-    try {
-      final result =
-          await _remote.socialLogin(SocialLoginRequest(provider: provider, token: token));
-      final session = await _persistSession(
-        result.user.toEntity(),
-        result.tokens.accessToken,
-        result.tokens.refreshToken,
-        result.tokens.expiresAt,
-      );
-      return Result.success(session);
-    } on ServerException catch (e) {
-      return Result.failure(_fromServer(e));
-    } catch (_) {
-      return Result.failure(const NetworkFailure());
-    }
-  }
-
-  @override
   Future<Result<void>> logout() async {
-    // Best-effort server invalidation; always wipe locally
+    // Best-effort server invalidation; local session is wiped regardless.
     await _remote.logout();
     try {
       await _secureStorage.clearAll();
@@ -147,9 +130,30 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Result<DateTime>> refreshToken() async {
+    try {
+      final refresh = await _secureStorage.readRefreshToken();
+      if (refresh == null) {
+        return Result.failure(const ApiFailure(messageAr: 'لا توجد جلسة صالحة.'));
+      }
+      final tokens = await _remote.refreshToken(refresh);
+      await _secureStorage.saveTokens(
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        expiry: tokens.expiresAt,
+      );
+      return Result.success(tokens.expiresAt);
+    } on ServerException catch (e) {
+      return Result.failure(_fromServer(e));
+    } catch (_) {
+      return Result.failure(const NetworkFailure());
+    }
+  }
+
+  @override
   Future<Result<void>> forgotPassword({required String contact}) async {
     try {
-      await _remote.forgotPassword(ForgotPasswordRequest(contact: contact));
+      await _remote.forgotPassword(ForgotPasswordRequest(phoneNumber: contact));
       return const Result.success(null);
     } on ServerException catch (e) {
       return Result.failure(_fromServer(e));
@@ -166,8 +170,28 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       await _remote.resetPassword(
-        ResetPasswordRequest(contact: contact, code: code, newPassword: newPassword),
+        ResetPasswordRequest(
+          phoneNumber: contact,
+          code: code,
+          password: newPassword,
+          passwordConfirmation: newPassword,
+        ),
       );
+      return const Result.success(null);
+    } on ServerException catch (e) {
+      return Result.failure(_fromServer(e));
+    } catch (_) {
+      return Result.failure(const NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Result<void>> verifyResetCode({
+    required String contact,
+    required String code,
+  }) async {
+    try {
+      await _remote.verify(VerifyRequest(phoneNumber: contact, code: code));
       return const Result.success(null);
     } on ServerException catch (e) {
       return Result.failure(_fromServer(e));
@@ -179,8 +203,24 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Result<AuthUser?>> bootstrapSession() async {
     try {
-      final hasToken = await _secureStorage.hasValidToken();
-      if (!hasToken) return const Result.success(null);
+      final accessToken = await _secureStorage.readAccessToken();
+      if (accessToken == null) return const Result.success(null);
+
+      // Access token may have expired while the app was closed (it's
+      // short-lived) — that alone doesn't mean the session is dead, so try
+      // the still-valid refresh token before giving up on it.
+      final hasValidToken = await _secureStorage.hasValidToken();
+      if (!hasValidToken) {
+        final refreshResult = await refreshToken();
+        if (refreshResult.isFailure) {
+          // Only a confirmed-dead refresh token (auth/storage failure) logs
+          // the user out; a network hiccup at launch should not.
+          if (refreshResult.failureOrNull is! NetworkFailure) {
+            await _secureStorage.clearAll();
+            return const Result.success(null);
+          }
+        }
+      }
 
       // Restore user from prefs cache (non-sensitive)
       final name = _prefs.userName;

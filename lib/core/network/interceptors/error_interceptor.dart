@@ -61,26 +61,15 @@ class ErrorInterceptor extends Interceptor {
     final status = response.statusCode ?? 0;
     final body = response.data;
 
-    // Extract Arabic-first message from SRS envelope
-    String? arMsg;
-    String? enMsg;
-    String? code;
-
+    // The real API envelope only sends a top-level `message` string.
+    String? message;
     if (body is Map<String, dynamic>) {
-      final error = body['error'];
-      if (error is Map<String, dynamic>) {
-        arMsg = error['message_ar'] as String?;
-        enMsg = error['message_en'] as String?;
-        code = error['code'] as String?;
-      }
-      arMsg ??= body['message'] as String?;
+      message = body['message'] as String?;
     }
 
     return ApiFailure(
-      messageAr: arMsg ?? _defaultArMessage(status),
-      messageEn: enMsg,
+      messageAr: message ?? _defaultArMessage(status),
       statusCode: status,
-      errorCode: code,
     );
   }
 

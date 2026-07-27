@@ -4,31 +4,27 @@ import '../../../../core/storage/storage_providers.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../../domain/services/social_auth_service.dart';
 import '../../domain/usecases/bootstrap_session_usecase.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/refresh_token_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
-import '../../domain/usecases/resend_code_usecase.dart';
+import '../../domain/usecases/resend_verification_code_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
-import '../../domain/usecases/social_login_usecase.dart';
+import '../../domain/usecases/verify_reset_code_usecase.dart';
 import '../../domain/usecases/verify_usecase.dart';
 
-final _authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>(
+final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>(
   (ref) => AuthRemoteDataSource(ref.watch(dioProvider)),
 );
 
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepositoryImpl(
-    remote: ref.watch(_authRemoteDataSourceProvider),
+    remote: ref.watch(authRemoteDataSourceProvider),
     secureStorage: ref.watch(secureStorageProvider),
     prefs: ref.watch(prefsServiceProvider),
   ),
-);
-
-final socialAuthServiceProvider = Provider<SocialAuthService>(
-  (ref) => const UnavailableSocialAuthService(),
 );
 
 // Use-case providers
@@ -40,19 +36,12 @@ final verifyUsecaseProvider = Provider(
   (ref) => VerifyUsecase(ref.watch(authRepositoryProvider)),
 );
 
-final resendCodeUsecaseProvider = Provider(
-  (ref) => ResendCodeUsecase(ref.watch(authRepositoryProvider)),
+final resendVerificationCodeUsecaseProvider = Provider(
+  (ref) => ResendVerificationCodeUsecase(ref.watch(authRepositoryProvider)),
 );
 
 final loginUsecaseProvider = Provider(
   (ref) => LoginUsecase(ref.watch(authRepositoryProvider)),
-);
-
-final socialLoginUsecaseProvider = Provider(
-  (ref) => SocialLoginUsecase(
-    ref.watch(authRepositoryProvider),
-    ref.watch(socialAuthServiceProvider),
-  ),
 );
 
 final logoutUsecaseProvider = Provider(
@@ -67,6 +56,14 @@ final resetPasswordUsecaseProvider = Provider(
   (ref) => ResetPasswordUsecase(ref.watch(authRepositoryProvider)),
 );
 
+final verifyResetCodeUsecaseProvider = Provider(
+  (ref) => VerifyResetCodeUsecase(ref.watch(authRepositoryProvider)),
+);
+
 final bootstrapSessionUsecaseProvider = Provider(
   (ref) => BootstrapSessionUsecase(ref.watch(authRepositoryProvider)),
+);
+
+final refreshTokenUsecaseProvider = Provider(
+  (ref) => RefreshTokenUsecase(ref.watch(authRepositoryProvider)),
 );

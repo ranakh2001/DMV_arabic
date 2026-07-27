@@ -43,22 +43,22 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.topLeft,
       children: [
-        widget.child,
-        if (_obscured) const _Shield(),
+        KeyedSubtree(key: const ValueKey('app_shield_child'), child: widget.child),
+        if (_obscured) const _Shield(key: ValueKey('app_shield_overlay')),
       ],
     );
   }
 }
 
 class _Shield extends StatelessWidget {
-  const _Shield();
+  const _Shield({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return ColoredBox(
-      color: isDark ? AppColorsDark.background : AppColorsLight.background,
+      color: context.appBackground,
       child: Center(
         child: Text(
           AppConstants.appName,
@@ -66,7 +66,7 @@ class _Shield extends StatelessWidget {
             fontFamily: 'Almarai',
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: isDark ? AppColorsDark.primary : AppColorsLight.primary,
+            color: context.appPrimary,
           ),
         ),
       ),

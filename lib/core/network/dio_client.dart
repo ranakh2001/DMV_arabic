@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import '../constants/api_constants.dart';
+import 'connectivity_service.dart';
+import 'interceptors/connectivity_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 
@@ -7,7 +9,7 @@ import 'interceptors/logging_interceptor.dart';
 ///
 /// Security: non-HTTPS base URLs are rejected at startup.
 /// TLS certificate validation is NOT disabled (default behavior, no `badCertificateCallback`).
-Dio createDio() {
+Dio createDio(ConnectivityService connectivity) {
   assert(
     ApiConstants.baseUrl.startsWith('https://'),
     'API base URL must use HTTPS. Got: ${ApiConstants.baseUrl}',
@@ -27,6 +29,7 @@ Dio createDio() {
   );
 
   dio.interceptors.addAll([
+    ConnectivityInterceptor(connectivity),
     ErrorInterceptor(),
     LoggingInterceptor(),
   ]);

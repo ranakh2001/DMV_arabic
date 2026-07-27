@@ -38,4 +38,7 @@ extension AppLocalizationsX on BuildContext {
 
   /// Shorthand with args: [context.ts('key', {'var': 'value'})].
   String ts(String key, Map<String, String> args) => l10n.ts(key, args);
+
+  /// True when the current locale reads right-to-left.
+  bool get isRtl => Directionality.of(this) == TextDirection.rtl;
 }

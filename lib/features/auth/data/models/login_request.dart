@@ -1,11 +1,11 @@
 class LoginRequest {
-  const LoginRequest({required this.contact, required this.password});
+  const LoginRequest({required this.phoneNumber, required this.password});
 
-  final String contact;
+  final String phoneNumber;
   final String password;
 
   Map<String, dynamic> toJson() => {
-        'contact': contact,
+        'phone_number': phoneNumber,
         'password': password,
       };
 }
