@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/utils/validators.dart';
-import '../widgets/forgot_password_widgets.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../providers/auth_controller_provider.dart';
+import '../widgets/animated_hero_icon.dart';
+import '../widgets/auth_badge_chip.dart';
+import '../widgets/auth_entrance.dart';
+import '../widgets/auth_glass_card.dart';
+import '../widgets/auth_gradient_background.dart';
+import '../widgets/auth_top_bar.dart';
+import '../widgets/glow_elevated_button.dart';
+import '../widgets/phone_field.dart';
 import 'forgot_verify_screen.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _phoneCtrl = TextEditingController();
 
@@ -21,23 +30,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => ForgotVerifyScreen(contact: _phoneCtrl.text.trim()),
-      ),
-    );
+    await ref
+        .read(forgotPasswordControllerProvider.notifier)
+        .send(contact: _phoneCtrl.text.trim());
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final state = ref.watch(forgotPasswordControllerProvider);
+
+    ref.listen(forgotPasswordControllerProvider, (_, next) {
+      if (next.isSuccess) {
+        ref.read(forgotPasswordControllerProvider.notifier).reset();
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => ForgotVerifyScreen(contact: _phoneCtrl.text.trim()),
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       body: Stack(
         children: [
-          AuthFlowBackground(isDark: isDark),
+          const AuthGradientBackground(),
           SafeArea(
             child: AuthEntrance(
               child: Column(
@@ -69,15 +87,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                           const SizedBox(height: 28),
 
-                          GlassCard(
-                            isDark: isDark,
+                          AuthGlassCard(
                             child: Form(
                               key: _formKey,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Center(
-                                    child: BadgeChip(
+                                    child: AuthBadgeChip(
                                       label: context.t('auth.forgot.badge'),
                                     ),
                                   ),
@@ -85,11 +102,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   Text(
                                     context.t('auth.forgot.question'),
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'Almarai',
                                       fontSize: 26,
                                       fontWeight: FontWeight.w800,
-                                      color: Colors.white,
+                                      color: context.appTextPrimary,
                                       height: 1.2,
                                     ),
                                   ),
@@ -100,39 +117,40 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     style: TextStyle(
                                       fontFamily: 'Almarai',
                                       fontSize: 13,
-                                      color: Colors.white.withAlpha(155),
+                                      color: context.appTextSecondary,
                                       height: 1.6,
                                     ),
                                   ),
                                   const SizedBox(height: 24),
-                                  TextFormField(
+                                  PhoneField(
                                     controller: _phoneCtrl,
-                                    keyboardType: TextInputType.phone,
+                                    hint: '0000000000000',
+                                    iconStyle: PhoneFieldIconStyle.suffix,
                                     textInputAction: TextInputAction.done,
                                     textDirection: TextDirection.ltr,
                                     onFieldSubmitted: (_) => _submit(),
-                                    style: const TextStyle(
-                                      fontFamily: 'Almarai',
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
-                                    decoration: authFieldDecoration(
-                                      context: context,
-                                      hint: '0000000000000',
-                                      suffixIcon: const Icon(
-                                        Icons.phone_rounded,
-                                        color: Color(0xFF4A9CD9),
-                                        size: 20,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  if (state.isFailure && state.error != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 12),
+                                      child: Text(
+                                        state.error!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Almarai',
+                                          fontSize: 13,
+                                          color: context.appError,
+                                        ),
                                       ),
                                     ),
-                                    validator: Validators.emailOrPhone(context),
-                                  ),
-                                  const SizedBox(height: 24),
 
                                   GlowElevatedButton(
                                     onPressed: _submit,
                                     icon: Icons.send_rounded,
                                     label: context.t('auth.forgot.send_code'),
+                                    loading: state.isSubmitting,
                                   ),
                                 ],
                               ),
@@ -149,7 +167,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 style: TextStyle(
                                   fontFamily: 'Almarai',
                                   fontSize: 14,
-                                  color: Colors.white.withAlpha(140),
+                                  color: context.appTextSecondary,
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -157,11 +175,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 onTap: () => Navigator.of(context).maybePop(),
                                 child: Text(
                                   context.t('auth.forgot.sign_in_link'),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontFamily: 'Almarai',
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF4A9CD9),
+                                    color: context.appPrimary,
                                   ),
                                 ),
                               ),

@@ -3,59 +3,64 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'auth_controller_provider.dart';
 import 'auth_providers.dart';
 
+const _resendCooldownSeconds = 60;
+
 class VerifyState {
   const VerifyState({
     this.formStatus = FormStatus.idle,
     this.error,
     this.secondsRemaining = 300,
-    this.resendCooldownSeconds = 0,
-    this.resendsUsed = 0,
+    this.resendStatus = FormStatus.idle,
+    this.resendError,
+    this.resendCooldown = _resendCooldownSeconds,
   });
 
   final FormStatus formStatus;
   final String? error;
   final int secondsRemaining;
-  final int resendCooldownSeconds;
-  final int resendsUsed;
-
-  static const int maxResends = 3;
-  static const int resendCooldown = 60;
+  final FormStatus resendStatus;
+  final String? resendError;
+  final int resendCooldown;
 
   bool get isExpired => secondsRemaining <= 0;
-  bool get canResend => resendCooldownSeconds <= 0 && resendsUsed < maxResends;
-  bool get maxResendsReached => resendsUsed >= maxResends;
   bool get isSubmitting => formStatus == FormStatus.submitting;
   bool get isSuccess => formStatus == FormStatus.success;
   bool get isFailure => formStatus == FormStatus.failure;
+  bool get isResending => resendStatus == FormStatus.submitting;
+  bool get canResend => resendCooldown <= 0 && !isResending;
 
   VerifyState copyWith({
     FormStatus? formStatus,
     String? error,
     bool clearError = false,
     int? secondsRemaining,
-    int? resendCooldownSeconds,
-    int? resendsUsed,
+    FormStatus? resendStatus,
+    String? resendError,
+    bool clearResendError = false,
+    int? resendCooldown,
   }) =>
       VerifyState(
         formStatus: formStatus ?? this.formStatus,
         error: clearError ? null : (error ?? this.error),
         secondsRemaining: secondsRemaining ?? this.secondsRemaining,
-        resendCooldownSeconds: resendCooldownSeconds ?? this.resendCooldownSeconds,
-        resendsUsed: resendsUsed ?? this.resendsUsed,
+        resendStatus: resendStatus ?? this.resendStatus,
+        resendError: clearResendError ? null : (resendError ?? this.resendError),
+        resendCooldown: resendCooldown ?? this.resendCooldown,
       );
 }
 
 class VerifyController extends Notifier<VerifyState> {
   Timer? _expiryTimer;
-  Timer? _cooldownTimer;
+  Timer? _resendTimer;
 
   @override
   VerifyState build() {
     ref.onDispose(() {
       _expiryTimer?.cancel();
-      _cooldownTimer?.cancel();
+      _resendTimer?.cancel();
     });
     _startExpiryCountdown();
+    _startResendTimer();
     return const VerifyState();
   }
 
@@ -72,6 +77,42 @@ class VerifyController extends Notifier<VerifyState> {
     });
   }
 
+  void _startResendTimer() {
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final remaining = state.resendCooldown - 1;
+      if (remaining <= 0) {
+        _resendTimer?.cancel();
+        state = state.copyWith(resendCooldown: 0);
+      } else {
+        state = state.copyWith(resendCooldown: remaining);
+      }
+    });
+  }
+
+  Future<void> resend({required String contact}) async {
+    if (!state.canResend) return;
+    state = state.copyWith(resendStatus: FormStatus.submitting, clearResendError: true);
+    final result =
+        await ref.read(resendVerificationCodeUsecaseProvider).call(contact: contact);
+    result.fold(
+      onSuccess: (_) {
+        state = state.copyWith(
+          resendStatus: FormStatus.success,
+          clearResendError: true,
+          secondsRemaining: 300,
+          resendCooldown: _resendCooldownSeconds,
+        );
+        _startExpiryCountdown();
+        _startResendTimer();
+      },
+      onFailure: (failure) => state = state.copyWith(
+        resendStatus: FormStatus.failure,
+        resendError: failure.messageAr,
+      ),
+    );
+  }
+
   Future<void> verify({required String contact, required String code}) async {
     if (state.isExpired) {
       state = state.copyWith(
@@ -85,80 +126,17 @@ class VerifyController extends Notifier<VerifyState> {
     result.fold(
       onSuccess: (session) {
         _expiryTimer?.cancel();
-        ref.read(authControllerProvider.notifier).setAuthenticated(session.user);
+        ref.read(authControllerProvider.notifier).setAuthenticated(
+              session.user,
+              expiresAt: session.expiresAt,
+            );
         state = state.copyWith(formStatus: FormStatus.success, clearError: true);
       },
       onFailure: (failure) =>
           state = state.copyWith(formStatus: FormStatus.failure, error: failure.messageAr),
     );
   }
-
-  Future<void> resend({required String contact}) async {
-    if (!state.canResend) return;
-    final result = await ref.read(resendCodeUsecaseProvider).call(contact: contact);
-    result.fold(
-      onSuccess: (_) {
-        final newResendsUsed = state.resendsUsed + 1;
-        state = state.copyWith(
-          resendsUsed: newResendsUsed,
-          resendCooldownSeconds: VerifyState.resendCooldown,
-          secondsRemaining: 300,
-          clearError: true,
-        );
-        _startExpiryCountdown();
-        _startCooldown();
-      },
-      onFailure: (failure) => state = state.copyWith(error: failure.messageAr),
-    );
-  }
-
-  void _startCooldown() {
-    _cooldownTimer?.cancel();
-    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      final cd = state.resendCooldownSeconds - 1;
-      if (cd <= 0) {
-        _cooldownTimer?.cancel();
-        state = state.copyWith(resendCooldownSeconds: 0);
-      } else {
-        state = state.copyWith(resendCooldownSeconds: cd);
-      }
-    });
-  }
 }
 
 final verifyControllerProvider =
     NotifierProvider<VerifyController, VerifyState>(VerifyController.new);
-
-class SocialLoginController extends Notifier<AuthFormState> {
-  @override
-  AuthFormState build() => const AuthFormState();
-
-  Future<void> loginWithGoogle() async {
-    state = state.copyWith(status: FormStatus.submitting, clearError: true);
-    final result = await ref.read(socialLoginUsecaseProvider).callGoogle();
-    result.fold(
-      onSuccess: (session) {
-        ref.read(authControllerProvider.notifier).setAuthenticated(session.user);
-        state = state.copyWith(status: FormStatus.success, clearError: true);
-      },
-      onFailure: (f) =>
-          state = state.copyWith(status: FormStatus.failure, error: f.messageAr),
-    );
-  }
-
-  Future<void> loginWithApple() async {
-    state = state.copyWith(status: FormStatus.submitting, clearError: true);
-    final result = await ref.read(socialLoginUsecaseProvider).callApple();
-    result.fold(
-      onSuccess: (session) {
-        ref.read(authControllerProvider.notifier).setAuthenticated(session.user);
-        state = state.copyWith(status: FormStatus.success, clearError: true);
-      },
-      onFailure: (f) =>
-          state = state.copyWith(status: FormStatus.failure, error: f.messageAr),
-    );
-  }
-}
-
-final socialLoginControllerProvider =
-    NotifierProvider<SocialLoginController, AuthFormState>(SocialLoginController.new);

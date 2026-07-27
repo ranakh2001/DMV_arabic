@@ -7,6 +7,7 @@ import '../core/routing/app_router.dart';
 import '../core/security/app_shield.dart';
 import '../core/theme/app_theme.dart';
 import '../core/theme/theme_provider.dart';
+import '../core/widgets/connectivity_banner.dart';
 
 /// Root widget. Wires theme, locale, RTL, and app-switcher shield.
 /// Navigation is handled by [AuthGate] — no routing package required.
@@ -35,7 +36,7 @@ class App extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      builder: (context, child) => AppShield(child: child!),
+      builder: (context, child) => AppShield(child: ConnectivityBanner(child: child!)),
       home: const AuthGate(),
     );
   }

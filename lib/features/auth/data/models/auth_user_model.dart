@@ -7,7 +7,6 @@ class AuthUserModel {
     required this.name,
     this.email,
     this.phone,
-    this.isVerified = false,
     this.avatarUrl,
   });
 
@@ -15,16 +14,14 @@ class AuthUserModel {
   final String name;
   final String? email;
   final String? phone;
-  final bool isVerified;
   final String? avatarUrl;
 
   factory AuthUserModel.fromJson(Map<String, dynamic> json) => AuthUserModel(
-        id: json['id'] as String,
-        name: json['name'] as String,
+        id: json['id'].toString(),
+        name: json['full_name'] as String? ?? '',
         email: json['email'] as String?,
-        phone: json['phone'] as String?,
-        isVerified: json['is_verified'] as bool? ?? false,
-        avatarUrl: json['avatar_url'] as String?,
+        phone: json['phone_number'] as String?,
+        avatarUrl: json['profile_photo_url'] as String?,
       );
 
   AuthUser toEntity() => AuthUser(
@@ -32,7 +29,7 @@ class AuthUserModel {
         name: name,
         email: email,
         phone: phone,
-        isVerified: isVerified,
+        isVerified: true,
         avatarUrl: avatarUrl,
       );
 }

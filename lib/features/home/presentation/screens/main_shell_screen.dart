@@ -4,7 +4,7 @@ import '../providers/home_tab_provider.dart';
 import '../widgets/app_bottom_nav_bar.dart';
 import '../widgets/home_background.dart';
 import 'home_screen.dart';
-import 'profile_screen.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 import 'simulation_screen.dart';
 import 'stats_screen.dart';
 

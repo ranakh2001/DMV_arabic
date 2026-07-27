@@ -57,6 +57,7 @@ const Map<String, String> stringsAr = {
   'auth.verify.expires_in': 'ينتهي الرمز بعد',
   'auth.verify.expired': 'انتهت صلاحية الرمز',
   'auth.verify.max_resends': 'لقد وصلت إلى الحد الأقصى لإعادة الإرسال (3 مرات/ساعة).',
+  'auth.verify.resend_unavailable': 'لم يصلك الرمز؟ يرجى المحاولة لاحقاً أو التواصل مع الدعم.',
 
   'auth.forgot.title': 'نسيت كلمة المرور',
   'auth.forgot.subtitle': 'أدخل بريدك أو رقم هاتفك لإعادة تعيين كلمة المرور',
@@ -90,6 +91,7 @@ const Map<String, String> stringsAr = {
   'field.new_password': 'كلمة المرور الجديدة',
   'field.state': 'الولاية',
   'field.state_hint': 'اختر ولايتك',
+  'validator.state.required': 'يرجى اختيار الولاية.',
 
   // --- Password strength
   'password.strength.label': 'قوة كلمة المرور:',
@@ -99,7 +101,7 @@ const Map<String, String> stringsAr = {
   'password.strength.strong': 'قوية',
 
   // --- Errors (Arabic first)
-  'error.network': 'لا يوجد اتصال بالإنترنت. تحقق من اتصالك وأعد المحاولة.',
+  'error.network': 'لا يوجد اتصال بالإنترنت، الرجاء التحقق من الشبكة',
   'error.server': 'خطأ في الخادم. يرجى المحاولة لاحقاً.',
   'error.timeout': 'انتهت مهلة الطلب. تحقق من اتصالك.',
   'error.unauthorized': 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
@@ -116,9 +118,11 @@ const Map<String, String> stringsAr = {
   'home.stats_card': 'إحصائياتي',
   'home.quick_test_card': 'اختبار سريع',
   'home.continue_section_title': 'أكمل من حيث توقفت',
+  'home.start_first_simulation_title': 'ابدأ أول محاكاة لك الآن',
   'home.view_all': 'عرض الكل',
   'home.simulation_test_title': 'اختبار محاكاة – ولاية كاليفورنيا',
   'home.continue_now': 'استمر الآن',
+  'home.start_now': 'ابدأ الآن',
   'home.quick_quiz_subtitle': 'أجب على 10 أسئلة عشوائية',
   'home.start': 'ابدأ',
   'home.no_notifications': 'لا توجد إشعارات جديدة',
@@ -167,6 +171,8 @@ const Map<String, String> stringsAr = {
   'onboarding.have_account': 'عندك حساب؟ سجل دخولك',
 
   // --- Notifications
+  'notifications.title': 'الإشعارات',
+  'notifications.subtitle': 'اختر التنبيهات التي تريد استقبالها. إيقاف إشعارات الدفع يوقف جميع الفئات أدناه.',
   'notif.push': 'إشعارات الدفع',
   'notif.reminders': 'تذكيرات الاشتراك',
   'notif.content': 'تحديثات المحتوى',
@@ -189,8 +195,6 @@ const Map<String, String> stringsAr = {
   'auth.forgot_verify.no_code': 'لم تستلم الرمز؟',
   'auth.forgot_verify.submit': 'تحقق من الرمز',
   'auth.forgot_verify.resend': 'إعادة إرسال الرمز',
-  'auth.forgot_verify.spam_hint':
-      'يرجى التأكد من مراجعة صندوق البريد الوارد أو المزعج (Spam) إذا لم تجد الرمز',
 
   // --- Reset password
   'auth.reset.badge': 'الخطوة الأخيرة',
@@ -215,6 +219,7 @@ const Map<String, String> stringsAr = {
   'profile.privacy_policy': 'سياسة الخصوصية',
   'profile.contact_us': 'تواصل معنا',
   'profile.ui_language': 'لغة الواجهة',
+  'profile.ui_theme': 'مظهر التطبيق',
   'profile.edit_field_title': 'تعديل {field}',
   'profile.field_updated': 'تم تحديث {field}',
   'profile.select_state_sheet_title': 'اختر ولايتك',
@@ -222,6 +227,7 @@ const Map<String, String> stringsAr = {
 
   // --- Stats tab
   'stats.title': 'الاحصائيات',
+  'stats.empty_message': 'لا توجد بيانات بعد — أكمل أول محاكاة لك لعرض إحصائياتك',
   'stats.success_rate': 'نسبة النجاح',
   'stats.improvement': 'تحسّن {percent}% عن المعدل السابق',
   'stats.performance_message': 'أداء ممتاز! أنت تقترب من الجاهزية التامة للاختبار الحقيقي.',

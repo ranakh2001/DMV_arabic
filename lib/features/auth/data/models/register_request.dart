@@ -1,20 +1,23 @@
 class RegisterRequest {
   const RegisterRequest({
-    required this.name,
-    required this.contact,
+    required this.fullName,
+    required this.phoneNumber,
+    required this.stateId,
     required this.password,
+    required this.passwordConfirmation,
   });
 
-  final String name;
-  final String contact;
+  final String fullName;
+  final String phoneNumber;
+  final int stateId;
   final String password;
+  final String passwordConfirmation;
 
-  Map<String, dynamic> toJson() {
-    final isPhone = !contact.contains('@');
-    return {
-      'name': name,
-      if (isPhone) 'phone': contact else 'email': contact,
-      'password': password,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'full_name': fullName,
+        'phone_number': phoneNumber,
+        'state_id': stateId,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      };
 }

@@ -83,20 +83,26 @@ class _TestDetailRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(icon, size: context.sp(16), color: context.appTextSecondary),
-            SizedBox(width: context.sp(6)),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'Almarai',
-                fontSize: context.sp(14),
-                color: context.appTextSecondary,
+        Flexible(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: context.sp(16), color: context.appTextSecondary),
+              SizedBox(width: context.sp(6)),
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: context.sp(14),
+                    color: context.appTextSecondary,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        SizedBox(width: context.sp(8)),
         Container(
           padding: EdgeInsets.symmetric(horizontal: context.sp(12), vertical: context.sp(6)),
           decoration: BoxDecoration(

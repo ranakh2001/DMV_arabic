@@ -40,7 +40,7 @@ class AppBottomNavBar extends StatelessWidget {
         height: context.sp(66),
         padding: const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F1B3D),
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(color: context.appGlassBorder),
           boxShadow: [

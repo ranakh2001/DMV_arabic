@@ -8,9 +8,6 @@ class HomeBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = context.appPrimary;
-
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -18,9 +15,7 @@ class HomeBackground extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: isDark
-              ? [AppColorsDark.background, const Color(0xFF060912)]
-              : [const Color(0xFFE9F0FB), AppColorsLight.background],
+          colors: [context.appSurface, context.appBackground],
         ),
       ),
       child: Stack(
@@ -28,12 +23,12 @@ class HomeBackground extends StatelessWidget {
           Positioned(
             top: -90,
             left: -70,
-            child: _Blob(color: primary.withAlpha(isDark ? 55 : 35), size: 300),
+            child: _Blob(color: context.appPrimary.withAlpha(45), size: 300),
           ),
           Positioned(
             top: 160,
             right: -80,
-            child: _Blob(color: context.appSecondary.withAlpha(isDark ? 35 : 25), size: 220),
+            child: _Blob(color: context.appSecondary.withAlpha(30), size: 220),
           ),
         ],
       ),

@@ -32,7 +32,7 @@ class ApiFailure extends Failure {
 /// A failure caused by no internet / socket error.
 class NetworkFailure extends Failure {
   const NetworkFailure({
-    super.messageAr = 'لا يوجد اتصال بالإنترنت. تحقق من اتصالك وأعد المحاولة.',
+    super.messageAr = 'لا يوجد اتصال بالإنترنت، الرجاء التحقق من الشبكة',
     super.messageEn = 'No internet connection. Please check your network.',
   });
 }

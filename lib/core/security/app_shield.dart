@@ -57,9 +57,8 @@ class _Shield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return ColoredBox(
-      color: isDark ? AppColorsDark.background : AppColorsLight.background,
+      color: context.appBackground,
       child: Center(
         child: Text(
           AppConstants.appName,
@@ -67,7 +66,7 @@ class _Shield extends StatelessWidget {
             fontFamily: 'Almarai',
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: isDark ? AppColorsDark.primary : AppColorsLight.primary,
+            color: context.appPrimary,
           ),
         ),
       ),

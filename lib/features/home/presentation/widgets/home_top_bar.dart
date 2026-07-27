@@ -42,6 +42,7 @@ class HomeTopBar extends StatelessWidget {
               icon: Icons.notifications_outlined,
               tooltip: context.t('home.no_notifications'),
               onTap: onNotificationsTap,
+              iconColor: context.appPrimary,
             ),
             SizedBox(width: context.sp(10)),
             _AvatarButton(onTap: onAvatarTap),
@@ -53,11 +54,17 @@ class HomeTopBar extends StatelessWidget {
 }
 
 class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({required this.icon, required this.tooltip, required this.onTap});
+  const _CircleIconButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+    this.iconColor,
+  });
 
   final IconData icon;
   final String tooltip;
   final VoidCallback onTap;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +80,7 @@ class _CircleIconButton extends StatelessWidget {
           onTap: onTap,
           child: Tooltip(
             message: tooltip,
-            child: Icon(icon, color: context.appTextPrimary, size: context.sp(20)),
+            child: Icon(icon, color: iconColor ?? context.appTextPrimary, size: context.sp(20)),
           ),
         ),
       ),

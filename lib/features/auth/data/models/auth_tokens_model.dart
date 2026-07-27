@@ -12,6 +12,8 @@ class AuthTokensModel {
   /// Seconds until access token expires (server-provided).
   final int expiresIn;
 
+  /// Parses tokens from the flat `data` object returned by login/verify
+  /// (e.g. `{ user: {...}, access_token, refresh_token, token_type, expires_in }`).
   factory AuthTokensModel.fromJson(Map<String, dynamic> json) => AuthTokensModel(
         accessToken: json['access_token'] as String,
         refreshToken: json['refresh_token'] as String,

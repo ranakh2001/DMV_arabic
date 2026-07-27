@@ -7,13 +7,16 @@ class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
     required this.title,
-    required this.actionLabel,
-    required this.onActionTap,
+    this.actionLabel,
+    this.onActionTap,
   });
 
   final String title;
-  final String actionLabel;
-  final VoidCallback onActionTap;
+
+  /// Trailing link (e.g. "View All"). Omit both this and [onActionTap] to
+  /// render just the title, e.g. when there is nothing to view yet.
+  final String? actionLabel;
+  final VoidCallback? onActionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +32,19 @@ class SectionHeader extends StatelessWidget {
             color: context.appTextPrimary,
           ),
         ),
-        InkWell(
-          onTap: onActionTap,
-          child: Text(
-            actionLabel,
-            style: TextStyle(
-              fontFamily: 'Almarai',
-              fontSize: context.sp(13),
-              fontWeight: FontWeight.w600,
-              color: context.appPrimary,
+        if (actionLabel != null)
+          InkWell(
+            onTap: onActionTap,
+            child: Text(
+              actionLabel!,
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: context.sp(13),
+                fontWeight: FontWeight.w600,
+                color: context.appPrimary,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

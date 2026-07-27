@@ -21,6 +21,10 @@ class ContinueTestCard extends StatelessWidget {
   final int total;
   final VoidCallback onTap;
 
+  /// `false` once the user hasn't answered anything yet — swaps the ring for
+  /// a plain start icon and the "continue" label for a "start" one.
+  bool get hasProgress => answered > 0;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -31,18 +35,12 @@ class ContinueTestCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircularProgressRing(
-              value: total == 0 ? 0 : answered / total,
-              centerText: '$answered/$total',
-            ),
-            SizedBox(width: context.sp(14)),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       const Text('🇺🇸', style: TextStyle(fontSize: 16)),
                       SizedBox(width: context.sp(6)),
@@ -65,7 +63,9 @@ class ContinueTestCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        context.t('home.continue_now'),
+                        context.t(
+                          hasProgress ? 'home.continue_now' : 'home.start_now',
+                        ),
                         style: TextStyle(
                           fontFamily: 'Almarai',
                           fontSize: context.sp(13),
@@ -74,12 +74,36 @@ class ContinueTestCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: context.sp(4)),
-                      Icon(Icons.arrow_back_rounded, size: context.sp(15), color: context.appPrimary),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: context.sp(15),
+                        color: context.appPrimary,
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
+            hasProgress
+                ? CircularProgressRing(
+                    value: total == 0 ? 0 : answered / total,
+                    centerText: '$answered/$total',
+                  )
+                : Container(
+                    width: context.sp(56),
+                    height: context.sp(56),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.appPrimary.withAlpha(30),
+                    ),
+                    child: Icon(
+                      Icons.play_arrow_rounded,
+                      color: context.appPrimary,
+                      size: context.sp(26),
+                    ),
+                  ),
+
+            // SizedBox(width: context.sp(14)),
           ],
         ),
       ),

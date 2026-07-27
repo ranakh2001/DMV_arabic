@@ -4,7 +4,13 @@ import '../../storage/secure_storage_service.dart';
 
 /// Attaches Bearer token to every request.
 /// On 401: attempts a single token refresh, retries the original request.
-/// On refresh failure: wipes tokens and triggers logout via [onLogout].
+/// On refresh failure (or if the failing call was the refresh/logout call
+/// itself): wipes tokens and triggers logout via [onLogout].
+///
+/// This is the reactive fallback only — the primary refresh path is
+/// proactive, scheduled ahead of expiry by `AuthController` via
+/// `RefreshTokenUsecase`. This duplicates the raw HTTP call rather than
+/// depending on that usecase because `core/` cannot import `features/auth/`.
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({
     required this.secureStorage,
@@ -20,7 +26,6 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    if (options.path == ApiConstants.refreshToken) return handler.next(options);
     try {
       final token = await secureStorage.readAccessToken();
       if (token != null) options.headers['Authorization'] = 'Bearer $token';
@@ -32,13 +37,16 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode != 401 || _isRefreshing) return handler.next(err);
+    if (err.response?.statusCode != 401) return handler.next(err);
 
-    if (err.requestOptions.path == ApiConstants.refreshToken) {
+    final path = err.requestOptions.path;
+    if (path == ApiConstants.logout || path == ApiConstants.refreshToken) {
+      // A failing logout/refresh call itself must not trigger another refresh.
       await onLogout();
       return handler.next(err);
     }
 
+    if (_isRefreshing) return handler.next(err);
     _isRefreshing = true;
     try {
       final refreshed = await _refreshToken();
@@ -63,18 +71,19 @@ class AuthInterceptor extends Interceptor {
       final refreshToken = await secureStorage.readRefreshToken();
       if (refreshToken == null) return false;
 
-      final response = await dio.get(
+      final response = await dio.get<Map<String, dynamic>>(
         ApiConstants.refreshToken,
         options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
       );
 
-      if (response.statusCode == 200 && response.data != null) {
-        final data = response.data['data'] as Map<String, dynamic>?;
+      final body = response.data;
+      if (response.statusCode == 200 && body != null && body['success'] == true) {
+        final data = body['data'] as Map<String, dynamic>?;
         if (data == null) return false;
         await secureStorage.saveTokens(
           accessToken: data['access_token'] as String,
           refreshToken: data['refresh_token'] as String,
-          expiry: DateTime.now().add(const Duration(minutes: 15)),
+          expiry: DateTime.now().add(Duration(seconds: data['expires_in'] as int? ?? 900)),
         );
         return true;
       }

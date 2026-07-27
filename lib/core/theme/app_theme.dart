@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
+import 'glass_effect_theme.dart';
 
 /// Builds [ThemeData] for light and dark modes. Widgets never call raw Color
 /// constructors — they always read from [Theme.of(context)] or [AppColors].
@@ -169,6 +170,9 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
+      extensions: [
+        brightness == Brightness.dark ? GlassEffectTheme.dark : GlassEffectTheme.light,
+      ],
     );
   }
 }

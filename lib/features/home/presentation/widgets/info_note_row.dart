@@ -21,7 +21,7 @@ class InfoNoteRow extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              textAlign: TextAlign.right,
+
               style: TextStyle(
                 fontFamily: 'Almarai',
                 fontSize: context.sp(13),

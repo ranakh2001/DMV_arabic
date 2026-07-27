@@ -1,17 +1,20 @@
 class ResetPasswordRequest {
   const ResetPasswordRequest({
-    required this.contact,
+    required this.phoneNumber,
     required this.code,
-    required this.newPassword,
+    required this.password,
+    required this.passwordConfirmation,
   });
 
-  final String contact;
+  final String phoneNumber;
   final String code;
-  final String newPassword;
+  final String password;
+  final String passwordConfirmation;
 
   Map<String, dynamic> toJson() => {
-        'contact': contact,
+        'phone_number': phoneNumber,
         'code': code,
-        'new_password': newPassword,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
       };
 }

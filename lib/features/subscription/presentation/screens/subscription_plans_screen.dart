@@ -29,13 +29,22 @@ class SubscriptionPlansScreen extends ConsumerWidget {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: context.isDesktop || context.isTablet ? 560 : double.infinity),
+            constraints: BoxConstraints(
+              maxWidth: context.isDesktop || context.isTablet
+                  ? 560
+                  : double.infinity,
+            ),
             child: Column(
               children: [
                 _Header(onClose: () => _close(context, ref)),
                 Expanded(
                   child: ListView(
-                    padding: EdgeInsets.fromLTRB(context.sp(20), context.sp(4), context.sp(20), context.sp(28)),
+                    padding: EdgeInsets.fromLTRB(
+                      context.sp(20),
+                      context.sp(4),
+                      context.sp(20),
+                      context.sp(28),
+                    ),
                     children: [
                       TrialUsageCard(
                         remaining: subscription.trialQuestionsRemaining,
@@ -70,17 +79,23 @@ class SubscriptionPlansScreen extends ConsumerWidget {
                           title: context.t(plan.titleKey),
                           price: '\$${plan.price.toStringAsFixed(2)}',
                           periodSuffix: context.t(plan.periodSuffixKey),
-                          featureLabels: plan.featureKeys.map(context.t).toList(),
+                          featureLabels: plan.featureKeys
+                              .map(context.t)
+                              .toList(),
                           buttonLabel: context.t('subscription.choose_plan'),
                           highlighted: plan.isBestValue,
-                          badgeLabel: plan.isBestValue ? context.t('subscription.best_value') : null,
+                          badgeLabel: plan.isBestValue
+                              ? context.t('subscription.best_value')
+                              : null,
                           onSelect: () => _selectPlan(context, ref, plan),
                         ),
                         SizedBox(height: context.sp(20)),
                       ],
                       AutoRenewSwitchRow(
                         value: subscription.autoRenew,
-                        onChanged: (v) => ref.read(subscriptionProvider.notifier).setAutoRenew(v),
+                        onChanged: (v) => ref
+                            .read(subscriptionProvider.notifier)
+                            .setAutoRenew(v),
                       ),
                       SizedBox(height: context.sp(28)),
                       const SecurePaymentBadgesRow(),
@@ -93,7 +108,8 @@ class SubscriptionPlansScreen extends ConsumerWidget {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: '${context.t('subscription.contact_question')} ',
+                                  text:
+                                      '${context.t('subscription.contact_question')} ',
                                   style: TextStyle(
                                     fontFamily: 'Almarai',
                                     fontSize: context.sp(13),
@@ -127,9 +143,9 @@ class SubscriptionPlansScreen extends ConsumerWidget {
   }
 
   void _selectPlan(BuildContext context, WidgetRef ref, SubscriptionPlan plan) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => PaymentScreen(plan: plan)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => PaymentScreen(plan: plan)));
   }
 
   void _close(BuildContext context, WidgetRef ref) {
@@ -141,9 +157,9 @@ class SubscriptionPlansScreen extends ConsumerWidget {
   }
 
   void _showContact(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const ContactUsScreen()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const ContactUsScreen()));
   }
 }
 
@@ -155,26 +171,40 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(context.sp(12), context.sp(10), context.sp(12), context.sp(6)),
+      padding: EdgeInsets.fromLTRB(
+        context.sp(12),
+        context.sp(10),
+        context.sp(12),
+        context.sp(6),
+      ),
       child: SizedBox(
         height: context.sp(40),
-        child: Stack(
-          alignment: Alignment.center,
+        child: Row(
           children: [
-            Text(
-              context.t('subscription.title'),
-              style: TextStyle(
-                fontFamily: 'Almarai',
-                fontSize: context.sp(18),
-                fontWeight: FontWeight.w800,
-                color: context.appTextPrimary,
+            IconButton(
+              onPressed: onClose,
+              icon: Icon(Icons.close_rounded, color: context.appTextPrimary),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  context.t('subscription.title'),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: context.sp(18),
+                    fontWeight: FontWeight.w800,
+                    color: context.appTextPrimary,
+                  ),
+                ),
               ),
             ),
-            PositionedDirectional(
-              end: 0,
-              child: IconButton(
-                onPressed: onClose,
-                icon: Icon(Icons.close_rounded, color: context.appTextPrimary),
+            const IgnorePointer(
+              child: Opacity(
+                opacity: 0,
+                child: IconButton(
+                  onPressed: null,
+                  icon: Icon(Icons.close_rounded),
+                ),
               ),
             ),
           ],

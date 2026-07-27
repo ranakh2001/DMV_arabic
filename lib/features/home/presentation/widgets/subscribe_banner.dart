@@ -22,7 +22,10 @@ class SubscribeBanner extends StatelessWidget {
         radius: 20,
         tint: _kSubscribeOrange.withAlpha(30),
         border: _kSubscribeOrange.withAlpha(90),
-        padding: EdgeInsets.symmetric(horizontal: context.sp(16), vertical: context.sp(14)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.sp(16),
+          vertical: context.sp(14),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -36,42 +39,47 @@ class SubscribeBanner extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: _kSubscribeOrange, width: 1.4),
                     ),
-                    child: Icon(Icons.star_rounded, color: _kSubscribeOrange, size: context.sp(20)),
+                    child: Icon(
+                      Icons.star_rounded,
+                      color: _kSubscribeOrange,
+                      size: context.sp(20),
+                    ),
                   ),
                   SizedBox(width: context.sp(12)),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          context.t('home.subscribe_title'),
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: context.sp(15),
-                            fontWeight: FontWeight.w700,
-                            color: context.appTextPrimary,
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        context.t('home.subscribe_title'),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: context.sp(15),
+                          fontWeight: FontWeight.w700,
+                          color: context.appTextPrimary,
                         ),
-                        Text(
-                          context.t('home.subscribe_subtitle'),
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontFamily: 'Almarai',
-                            fontSize: context.sp(13),
-                            color: context.appTextSecondary,
-                          ),
+                      ),
+                      Text(
+                        context.t('home.subscribe_subtitle'),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: context.sp(13),
+                          color: context.appTextSecondary,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             SizedBox(width: context.sp(10)),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: context.sp(18), vertical: context.sp(10)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.sp(18),
+                vertical: context.sp(10),
+              ),
               decoration: BoxDecoration(
                 color: _kSubscribeOrange,
                 borderRadius: BorderRadius.circular(100),

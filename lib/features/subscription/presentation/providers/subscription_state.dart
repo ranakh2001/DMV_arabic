@@ -6,7 +6,7 @@ class SubscriptionState {
     this.isSubscribed = false,
     this.activePlan,
     this.autoRenew = true,
-    this.trialQuestionsUsed = 7,
+    this.trialQuestionsUsed = 0,
     this.trialQuestionsTotal = 10,
   });
 

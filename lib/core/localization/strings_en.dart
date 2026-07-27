@@ -54,6 +54,7 @@ const Map<String, String> stringsEn = {
   'auth.verify.expires_in': 'Code expires in',
   'auth.verify.expired': 'Code expired',
   'auth.verify.max_resends': 'You have reached the maximum resend limit (3/hour).',
+  'auth.verify.resend_unavailable': "Didn't get the code? Please try again later or contact support.",
 
   'auth.forgot.title': 'Forgot Password',
   'auth.forgot.subtitle': 'Enter your email or phone to reset your password',
@@ -85,6 +86,7 @@ const Map<String, String> stringsEn = {
   'field.current_password': 'Current Password',
   'field.new_password': 'New Password',
   'field.state': 'State',
+  'validator.state.required': 'Please select your state.',
   'field.state_hint': 'Choose your state',
 
   // --- Password strength
@@ -111,9 +113,11 @@ const Map<String, String> stringsEn = {
   'home.stats_card': 'My Stats',
   'home.quick_test_card': 'Quick Test',
   'home.continue_section_title': 'Continue where you left off',
+  'home.start_first_simulation_title': 'Start your first simulation now',
   'home.view_all': 'View All',
   'home.simulation_test_title': 'Simulation Test — California State',
   'home.continue_now': 'Continue Now',
+  'home.start_now': 'Start Now',
   'home.quick_quiz_subtitle': 'Answer 10 random questions',
   'home.start': 'Start',
   'home.no_notifications': 'No new notifications',
@@ -159,6 +163,8 @@ const Map<String, String> stringsEn = {
   'onboarding.start': 'Let\'s Start',
   'onboarding.have_account': 'Have an account? Sign in',
 
+  'notifications.title': 'Notifications',
+  'notifications.subtitle': 'Choose which alerts you want to receive. Turning off Push Notifications disables all categories below.',
   'notif.push': 'Push Notifications',
   'notif.reminders': 'Subscription Reminders',
   'notif.content': 'Content Updates',
@@ -181,8 +187,6 @@ const Map<String, String> stringsEn = {
   'auth.forgot_verify.no_code': "Didn't receive the code?",
   'auth.forgot_verify.submit': 'Verify Code',
   'auth.forgot_verify.resend': 'Resend Code',
-  'auth.forgot_verify.spam_hint':
-      'Please check your inbox or Spam folder if you didn\'t receive the code',
 
   // --- Reset password
   'auth.reset.badge': 'Last Step',
@@ -207,6 +211,7 @@ const Map<String, String> stringsEn = {
   'profile.privacy_policy': 'Privacy Policy',
   'profile.contact_us': 'Contact Us',
   'profile.ui_language': 'Interface Language',
+  'profile.ui_theme': 'App Theme',
   'profile.edit_field_title': 'Edit {field}',
   'profile.field_updated': '{field} updated',
   'profile.select_state_sheet_title': 'Choose Your State',
@@ -214,6 +219,7 @@ const Map<String, String> stringsEn = {
 
   // --- Stats tab
   'stats.title': 'Statistics',
+  'stats.empty_message': 'No data yet — complete your first simulation to see your stats',
   'stats.success_rate': 'Success Rate',
   'stats.improvement': 'Improved {percent}% from previous average',
   'stats.performance_message': "Excellent performance! You're getting close to full readiness for the real test.",
