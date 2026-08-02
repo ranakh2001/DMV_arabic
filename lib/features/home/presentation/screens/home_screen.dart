@@ -5,11 +5,11 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/storage/storage_providers.dart';
+import '../../../analytics/presentation/providers/analytics_providers.dart';
 import '../../../auth/presentation/providers/auth_controller_provider.dart';
 import '../../../exam/presentation/providers/exam_controller.dart';
 import '../../../notifications/presentation/screens/notifications_list_screen.dart';
 import '../../../practice/presentation/practice_navigation.dart';
-import '../../../profile/presentation/providers/profile_providers.dart';
 import '../../../subscription/presentation/screens/subscription_plans_screen.dart';
 import '../providers/home_tab_provider.dart';
 import '../widgets/continue_test_card.dart';
@@ -29,8 +29,9 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
     final userName = authState.user?.name ?? '';
-    final profileState = ref.watch(profileControllerProvider);
-    final progress = profileState.profile?.progress?.averageScore ?? 0.0;
+    final summaryAsync = ref.watch(analyticsSummaryProvider);
+    final progress = ((summaryAsync.valueOrNull?.correctRatio ?? 0.0) / 100)
+        .clamp(0.0, 1.0);
     final examState = ref.watch(examControllerProvider);
     final hasProgress = examState.answeredCount > 0;
     final selectedState = ref.watch(prefsServiceProvider).selectedState;
@@ -51,7 +52,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           child: RefreshIndicator(
             onRefresh: () =>
-                ref.read(profileControllerProvider.notifier).load(),
+                Future.wait([ref.refresh(analyticsSummaryProvider.future)]),
             child: ListView(
               padding: EdgeInsets.fromLTRB(
                 context.sp(20),
