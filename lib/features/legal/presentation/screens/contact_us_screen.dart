@@ -10,10 +10,10 @@ import '../../../../core/widgets/app_screen_header.dart';
 import '../../../../core/widgets/selectable_chip_group.dart';
 import '../../../auth/presentation/providers/auth_controller_provider.dart';
 import '../../../home/presentation/widgets/home_background.dart';
+import '../providers/legal_providers.dart';
 
-/// "تواصل معنا" — reached from the Profile tab. Local-only for now (UI
-/// ahead of the backend): submitting shows a success message but nothing is
-/// sent anywhere yet.
+/// "تواصل معنا" — reached from the Profile tab. Submits to
+/// `POST /support/contact` (bearer token attached automatically).
 class ContactUsScreen extends ConsumerStatefulWidget {
   const ContactUsScreen({super.key});
 
@@ -34,14 +34,21 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.t('contact.success'))));
-    _subjectCtrl.clear();
-    _messageCtrl.clear();
-    setState(() => _requestType = 'technical');
+
+    final typeLabel = context.t('contact.type.$_requestType');
+    final subject = _subjectCtrl.text.trim();
+    final message = _messageCtrl.text.trim();
+    final composedMessage =
+        '${context.t('contact.request_type_label')}: $typeLabel\n'
+        '${context.t('contact.subject_label')}: $subject\n\n'
+        '$message';
+
+    await ref
+        .read(contactUsControllerProvider.notifier)
+        .submit(composedMessage);
   }
 
   @override
@@ -49,6 +56,27 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
     final user = ref.watch(authControllerProvider).user;
     final prefs = ref.read(prefsServiceProvider);
     final email = user?.email ?? prefs.userEmail ?? 'rana@example.com';
+    final contactState = ref.watch(contactUsControllerProvider);
+
+    ref.listen(contactUsControllerProvider, (previous, next) {
+      if (next.isSuccess && previous?.status != next.status) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.t('contact.success'))));
+        _subjectCtrl.clear();
+        _messageCtrl.clear();
+        setState(() => _requestType = 'technical');
+        ref.read(contactUsControllerProvider.notifier).reset();
+      } else if (next.isFailure &&
+          next.error != null &&
+          previous?.status != next.status) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.error!)));
+      }
+    });
 
     final typeOptions = [
       ('technical', context.t('contact.type.technical')),
@@ -68,10 +96,17 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                   child: Center(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: context.isDesktop || context.isTablet ? 520 : double.infinity,
+                        maxWidth: context.isDesktop || context.isTablet
+                            ? 520
+                            : double.infinity,
                       ),
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.fromLTRB(context.sp(20), context.sp(8), context.sp(20), context.sp(24)),
+                        padding: EdgeInsets.fromLTRB(
+                          context.sp(20),
+                          context.sp(8),
+                          context.sp(20),
+                          context.sp(24),
+                        ),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -103,7 +138,8 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                                 radius: 20,
                                 padding: EdgeInsets.all(context.sp(18)),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
                                       context.t('contact.request_type_label'),
@@ -118,7 +154,8 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                                     SelectableChipGroup<String>(
                                       options: typeOptions,
                                       value: _requestType,
-                                      onChanged: (v) => setState(() => _requestType = v),
+                                      onChanged: (v) =>
+                                          setState(() => _requestType = v),
                                     ),
                                     SizedBox(height: context.sp(18)),
                                     TextFormField(
@@ -130,8 +167,12 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                                         fontSize: context.sp(15),
                                       ),
                                       decoration: InputDecoration(
-                                        labelText: context.t('contact.subject_label'),
-                                        hintText: context.t('contact.subject_hint'),
+                                        labelText: context.t(
+                                          'contact.subject_label',
+                                        ),
+                                        hintText: context.t(
+                                          'contact.subject_hint',
+                                        ),
                                       ),
                                       validator: Validators.subject(context),
                                     ),
@@ -147,45 +188,64 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                                         fontSize: context.sp(15),
                                       ),
                                       decoration: InputDecoration(
-                                        labelText: context.t('contact.message_label'),
-                                        hintText: context.t('contact.message_hint'),
+                                        labelText: context.t(
+                                          'contact.message_label',
+                                        ),
+                                        hintText: context.t(
+                                          'contact.message_hint',
+                                        ),
                                         alignLabelWithHint: true,
                                       ),
                                       validator: Validators.message(context),
                                     ),
                                     SizedBox(height: context.sp(16)),
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(12)),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: context.sp(14),
+                                        vertical: context.sp(12),
+                                      ),
                                       decoration: BoxDecoration(
                                         color: context.appGlassTint,
                                         borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: context.appGlassBorder),
+                                        border: Border.all(
+                                          color: context.appGlassBorder,
+                                        ),
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.alternate_email_rounded, size: context.sp(18), color: context.appPrimary),
+                                          Icon(
+                                            Icons.alternate_email_rounded,
+                                            size: context.sp(18),
+                                            color: context.appPrimary,
+                                          ),
                                           SizedBox(width: context.sp(10)),
                                           Expanded(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  context.t('contact.registered_email'),
+                                                  context.t(
+                                                    'contact.registered_email',
+                                                  ),
                                                   style: TextStyle(
                                                     fontFamily: 'Almarai',
                                                     fontSize: context.sp(12),
-                                                    color: context.appTextSecondary,
+                                                    color: context
+                                                        .appTextSecondary,
                                                   ),
                                                 ),
                                                 SizedBox(height: context.sp(2)),
                                                 Text(
                                                   email,
-                                                  textDirection: TextDirection.ltr,
+                                                  textDirection:
+                                                      TextDirection.ltr,
                                                   style: TextStyle(
                                                     fontFamily: 'Almarai',
                                                     fontSize: context.sp(14),
                                                     fontWeight: FontWeight.w700,
-                                                    color: context.appTextPrimary,
+                                                    color:
+                                                        context.appTextPrimary,
                                                   ),
                                                 ),
                                               ],
@@ -199,8 +259,18 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen> {
                               ),
                               SizedBox(height: context.sp(22)),
                               ElevatedButton.icon(
-                                onPressed: _submit,
-                                icon: const Icon(Icons.send_rounded),
+                                onPressed: contactState.isSubmitting
+                                    ? null
+                                    : _submit,
+                                icon: contactState.isSubmitting
+                                    ? SizedBox.square(
+                                        dimension: context.sp(18),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Icon(Icons.send_rounded),
                                 label: Text(context.t('contact.send')),
                               ),
                             ],

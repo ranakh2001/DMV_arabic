@@ -9,6 +9,5 @@ class LoginUsecase {
   Future<Result<({AuthSession? session, String? unverifiedContact})>> call({
     required String contact,
     required String password,
-  }) =>
-      _repo.login(contact: contact, password: password);
+  }) => _repo.login(contact: contact, password: password);
 }

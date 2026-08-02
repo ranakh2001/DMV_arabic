@@ -52,7 +52,13 @@ class PlanCard extends StatelessWidget {
               width: highlighted ? 1.6 : 1,
             ),
             boxShadow: highlighted
-                ? [BoxShadow(color: accent.withAlpha(55), blurRadius: 24, offset: const Offset(0, 8))]
+                ? [
+                    BoxShadow(
+                      color: accent.withAlpha(55),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
                 : null,
           ),
           child: Column(
@@ -95,7 +101,9 @@ class PlanCard extends StatelessWidget {
                 ],
               ),
               SizedBox(height: context.sp(18)),
-              ...featureLabels.map((label) => PlanFeatureRow(label: label, accentColor: accent)),
+              ...featureLabels.map(
+                (label) => PlanFeatureRow(label: label, accentColor: accent),
+              ),
               SizedBox(height: context.sp(18)),
               highlighted
                   ? _GradientButton(label: buttonLabel, onTap: onSelect)
@@ -106,8 +114,12 @@ class PlanCard extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: accent,
                           side: BorderSide(color: accent),
-                          padding: EdgeInsets.symmetric(vertical: context.sp(15)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          padding: EdgeInsets.symmetric(
+                            vertical: context.sp(15),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: Text(
                           buttonLabel,
@@ -129,9 +141,14 @@ class PlanCard extends StatelessWidget {
             right: 0,
             child: Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: context.sp(16), vertical: context.sp(6)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.sp(16),
+                  vertical: context.sp(6),
+                ),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [context.appPrimary, context.appSecondary]),
+                  gradient: LinearGradient(
+                    colors: [context.appPrimary, context.appSecondary],
+                  ),
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Text(
@@ -161,10 +178,16 @@ class _GradientButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [context.appPrimary, context.appSecondary]),
+        gradient: LinearGradient(
+          colors: [context.appPrimary, context.appSecondary],
+        ),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(color: context.appPrimary.withAlpha(90), blurRadius: 16, offset: const Offset(0, 6)),
+          BoxShadow(
+            color: context.appPrimary.withAlpha(90),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
       child: Material(

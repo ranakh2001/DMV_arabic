@@ -18,13 +18,20 @@ Future<void> showStatePickerSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => StatePickerSheet(currentStateId: currentStateId, onSelected: onSelected),
+    builder: (_) => StatePickerSheet(
+      currentStateId: currentStateId,
+      onSelected: onSelected,
+    ),
   );
 }
 
 /// Searchable list of US states backed by `GET /states` (via [statesProvider]).
 class StatePickerSheet extends ConsumerStatefulWidget {
-  const StatePickerSheet({super.key, required this.currentStateId, required this.onSelected});
+  const StatePickerSheet({
+    super.key,
+    required this.currentStateId,
+    required this.onSelected,
+  });
 
   final int? currentStateId;
   final ValueChanged<UsState> onSelected;
@@ -47,7 +54,12 @@ class _StatePickerSheetState extends ConsumerState<StatePickerSheet> {
     if (_query.isEmpty) return states;
     final lower = _query.toLowerCase();
     return states
-        .where((s) => s.nameEn.toLowerCase().contains(lower) || s.nameAr.contains(_query) || s.abbreviation.toLowerCase().contains(lower))
+        .where(
+          (s) =>
+              s.nameEn.toLowerCase().contains(lower) ||
+              s.nameAr.contains(_query) ||
+              s.abbreviation.toLowerCase().contains(lower),
+        )
         .toList();
   }
 
@@ -68,11 +80,16 @@ class _StatePickerSheetState extends ConsumerState<StatePickerSheet> {
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: glassTheme.blur, sigmaY: glassTheme.blur),
+            filter: ImageFilter.blur(
+              sigmaX: glassTheme.blur,
+              sigmaY: glassTheme.blur,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 color: context.appSurface.withAlpha(235),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
                 border: Border.all(color: accent.withAlpha(60)),
               ),
               child: Column(
@@ -81,7 +98,10 @@ class _StatePickerSheetState extends ConsumerState<StatePickerSheet> {
                   Container(
                     width: 40,
                     height: 4,
-                    decoration: BoxDecoration(color: accent.withAlpha(120), borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(
+                      color: accent.withAlpha(120),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Padding(
@@ -89,12 +109,20 @@ class _StatePickerSheetState extends ConsumerState<StatePickerSheet> {
                     child: TextField(
                       controller: _searchCtrl,
                       onChanged: (v) => setState(() => _query = v),
-                      textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
-                      style: TextStyle(fontFamily: 'Almarai', color: textColor, fontSize: 15),
+                      textDirection: isAr
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+                      style: TextStyle(
+                        fontFamily: 'Almarai',
+                        color: textColor,
+                        fontSize: 15,
+                      ),
                       decoration: InputDecoration(
                         hintText: isAr ? 'ابحث...' : 'Search...',
                         prefixIcon: Icon(Icons.search_rounded, color: accent),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -109,8 +137,13 @@ class _StatePickerSheetState extends ConsumerState<StatePickerSheet> {
                         scrollController: scrollCtrl,
                         onSelected: widget.onSelected,
                       ),
-                      loading: () => Center(child: CircularProgressIndicator(color: accent)),
-                      error: (error, _) => _StateListError(isAr: isAr, onRetry: () => ref.invalidate(statesProvider)),
+                      loading: () => Center(
+                        child: CircularProgressIndicator(color: accent),
+                      ),
+                      error: (error, _) => _StateListError(
+                        isAr: isAr,
+                        onRetry: () => ref.invalidate(statesProvider),
+                      ),
                     ),
                   ),
                 ],
@@ -144,7 +177,10 @@ class _StateList extends StatelessWidget {
       return Center(
         child: Text(
           isAr ? 'لا توجد نتائج' : 'No results',
-          style: TextStyle(fontFamily: 'Almarai', color: context.appTextSecondary),
+          style: TextStyle(
+            fontFamily: 'Almarai',
+            color: context.appTextSecondary,
+          ),
         ),
       );
     }
@@ -162,7 +198,9 @@ class _StateList extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
             decoration: BoxDecoration(
-              color: isSelected ? context.appPrimary.withAlpha(30) : Colors.transparent,
+              color: isSelected
+                  ? context.appPrimary.withAlpha(30)
+                  : Colors.transparent,
               border: Border(bottom: BorderSide(color: context.appGlassBorder)),
             ),
             child: Row(
@@ -173,12 +211,21 @@ class _StateList extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'Almarai',
                       fontSize: 16,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                      color: isSelected ? context.appPrimary : context.appTextPrimary,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w400,
+                      color: isSelected
+                          ? context.appPrimary
+                          : context.appTextPrimary,
                     ),
                   ),
                 ),
-                if (isSelected) Icon(Icons.check_rounded, color: context.appPrimary, size: 20),
+                if (isSelected)
+                  Icon(
+                    Icons.check_rounded,
+                    color: context.appPrimary,
+                    size: 20,
+                  ),
               ],
             ),
           ),
@@ -205,10 +252,16 @@ class _StateListError extends StatelessWidget {
             Text(
               isAr ? 'تعذر جلب قائمة الولايات.' : 'Failed to load states.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Almarai', color: context.appTextSecondary),
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                color: context.appTextSecondary,
+              ),
             ),
             const SizedBox(height: 12),
-            TextButton(onPressed: onRetry, child: Text(isAr ? 'إعادة المحاولة' : 'Retry')),
+            TextButton(
+              onPressed: onRetry,
+              child: Text(isAr ? 'إعادة المحاولة' : 'Retry'),
+            ),
           ],
         ),
       ),

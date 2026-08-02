@@ -10,7 +10,8 @@ class PrefsService {
 
   // --- String
   String? getString(String key) => _prefs.getString(key);
-  Future<bool> setString(String key, String value) => _prefs.setString(key, value);
+  Future<bool> setString(String key, String value) =>
+      _prefs.setString(key, value);
 
   // --- Bool
   bool? getBool(String key) => _prefs.getBool(key);
@@ -22,7 +23,8 @@ class PrefsService {
 
   // --- Double
   double? getDouble(String key) => _prefs.getDouble(key);
-  Future<bool> setDouble(String key, double value) => _prefs.setDouble(key, value);
+  Future<bool> setDouble(String key, double value) =>
+      _prefs.setDouble(key, value);
 
   // --- JSON helpers
   Future<bool> remove(String key) => _prefs.remove(key);
@@ -34,6 +36,7 @@ class PrefsService {
       'user_phone',
       'user_state',
       'user_avatar',
+      'fcm_token_synced',
     ];
     for (final key in userKeys) {
       await _prefs.remove(key);
@@ -55,4 +58,21 @@ class PrefsService {
 
   int? get selectedStateId => getInt('user_state_id');
   Future<bool> setSelectedStateId(int v) => setInt('user_state_id', v);
+
+  // --- Free-trial (practice) question quota — non-sensitive progress, so
+  // shared_preferences is the right store (not secure storage). Both values
+  // are kept in sync with the `/check-answer` response (server is the
+  // source of truth) so the app can still gate a fresh launch — decide
+  // whether the quota is already spent — without calling the API.
+  int get freeQuestionsUsed => getInt('free_questions_used') ?? 0;
+  Future<bool> setFreeQuestionsUsed(int v) => setInt('free_questions_used', v);
+
+  int? get freeQuestionsLimit => getInt('free_questions_limit');
+  Future<bool> setFreeQuestionsLimit(int v) =>
+      setInt('free_questions_limit', v);
+
+  // --- FCM push-notification device token last successfully registered with
+  // the backend, so it's only re-sent when it actually changes.
+  String? get syncedFcmToken => getString('fcm_token_synced');
+  Future<bool> setSyncedFcmToken(String v) => setString('fcm_token_synced', v);
 }

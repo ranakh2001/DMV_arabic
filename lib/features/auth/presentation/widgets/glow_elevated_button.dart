@@ -37,7 +37,10 @@ class GlowElevatedButton extends StatelessWidget {
         child: loading
             ? const SizedBox.square(
                 dimension: 22,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +50,13 @@ class GlowElevatedButton extends StatelessWidget {
                     Icon(icon, size: 18, color: Colors.white),
                     const SizedBox(width: 10),
                   ],
-                  Text(label, style: const TextStyle(fontFamily: 'Almarai', fontWeight: FontWeight.w700)),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: 'Almarai',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
       ),

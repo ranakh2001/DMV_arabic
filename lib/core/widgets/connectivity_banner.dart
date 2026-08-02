@@ -16,10 +16,9 @@ class ConnectivityBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Defaults to "online" while the first connectivity event hasn't
     // arrived yet, so the banner never flashes on app startup.
-    final isOffline = ref.watch(connectivityStreamProvider).maybeWhen(
-          data: (online) => !online,
-          orElse: () => false,
-        );
+    final isOffline = ref
+        .watch(connectivityStreamProvider)
+        .maybeWhen(data: (online) => !online, orElse: () => false);
 
     return Stack(
       children: [
@@ -31,7 +30,10 @@ class ConnectivityBanner extends ConsumerWidget {
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: context.sp(12), vertical: context.sp(8)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.sp(12),
+                vertical: context.sp(8),
+              ),
               child: AnimatedSlide(
                 duration: const Duration(milliseconds: 280),
                 curve: Curves.easeOut,
@@ -63,12 +65,19 @@ class _OfflineBanner extends StatelessWidget {
       tint: context.appError,
       opacity: 0.18,
       border: context.appError.withAlpha(140),
-      padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(10)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.sp(14),
+        vertical: context.sp(10),
+      ),
       child: Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.wifi_off_rounded, size: context.sp(18), color: context.appError),
+            Icon(
+              Icons.wifi_off_rounded,
+              size: context.sp(18),
+              color: context.appError,
+            ),
             SizedBox(width: context.sp(10)),
             Flexible(
               child: Text(

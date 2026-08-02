@@ -37,21 +37,41 @@ class ForgotVerifyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(child: AuthBadgeChip(label: context.t('auth.forgot_verify.badge'))),
+          Center(
+            child: AuthBadgeChip(label: context.t('auth.forgot_verify.badge')),
+          ),
           const SizedBox(height: 16),
           Text(
             context.t('auth.forgot_verify.title'),
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'Almarai', fontSize: 26, fontWeight: FontWeight.w800, color: context.appTextPrimary, height: 1.2),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              color: context.appTextPrimary,
+              height: 1.2,
+            ),
           ),
           const SizedBox(height: 10),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appTextSecondary, height: 1.6),
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 13,
+                color: context.appTextSecondary,
+                height: 1.6,
+              ),
               children: [
                 TextSpan(text: '${context.t('auth.forgot_verify.subtitle')} '),
-                TextSpan(text: contact, style: TextStyle(color: context.appPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
+                TextSpan(
+                  text: contact,
+                  style: TextStyle(
+                    color: context.appPrimary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
               ],
             ),
           ),
@@ -64,7 +84,11 @@ class ForgotVerifyCard extends StatelessWidget {
               child: Text(
                 error,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Almarai', fontSize: 12, color: context.appError),
+                style: TextStyle(
+                  fontFamily: 'Almarai',
+                  fontSize: 12,
+                  color: context.appError,
+                ),
               ),
             ),
           Column(
@@ -72,17 +96,30 @@ class ForgotVerifyCard extends StatelessWidget {
               Text(
                 context.t('auth.forgot_verify.no_code'),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appTextSecondary),
+                style: TextStyle(
+                  fontFamily: 'Almarai',
+                  fontSize: 13,
+                  color: context.appTextSecondary,
+                ),
               ),
               const SizedBox(height: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.timer_outlined, color: context.appPrimary, size: 16),
+                  Icon(
+                    Icons.timer_outlined,
+                    color: context.appPrimary,
+                    size: 16,
+                  ),
                   const SizedBox(width: 5),
                   Text(
                     formatMmSs(secondsLeft),
-                    style: TextStyle(fontFamily: 'Almarai', fontSize: 18, fontWeight: FontWeight.w700, color: context.appPrimary),
+                    style: TextStyle(
+                      fontFamily: 'Almarai',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: context.appPrimary,
+                    ),
                   ),
                 ],
               ),
@@ -96,7 +133,9 @@ class ForgotVerifyCard extends StatelessWidget {
                     fontFamily: 'Almarai',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: canResend ? context.appPrimary : context.appTextDisabled,
+                    color: canResend
+                        ? context.appPrimary
+                        : context.appTextDisabled,
                     decoration: canResend ? TextDecoration.underline : null,
                     decorationColor: context.appPrimary,
                   ),

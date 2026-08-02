@@ -10,7 +10,9 @@ class LocaleNotifier extends Notifier<Locale> {
 
   @override
   Locale build() {
-    final saved = ref.read(prefsServiceProvider).getString(AppConstants.localePrefsKey);
+    final saved = ref
+        .read(prefsServiceProvider)
+        .getString(AppConstants.localePrefsKey);
     if (saved != null && _supported.contains(saved)) return Locale(saved);
     return const Locale('ar');
   }
@@ -23,7 +25,9 @@ class LocaleNotifier extends Notifier<Locale> {
   }
 
   Future<void> toggle() async {
-    await setLocale(state.languageCode == 'ar' ? const Locale('en') : const Locale('ar'));
+    await setLocale(
+      state.languageCode == 'ar' ? const Locale('en') : const Locale('ar'),
+    );
   }
 
   bool get isArabic => state.languageCode == 'ar';

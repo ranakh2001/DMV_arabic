@@ -50,11 +50,16 @@ class GlassContainer extends StatelessWidget {
       margin: margin,
       width: width,
       height: height,
-      decoration: boxShadow == null ? null : BoxDecoration(boxShadow: boxShadow),
+      decoration: boxShadow == null
+          ? null
+          : BoxDecoration(boxShadow: boxShadow),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(effectiveRadius),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: effectiveBlur, sigmaY: effectiveBlur),
+          filter: ImageFilter.blur(
+            sigmaX: effectiveBlur,
+            sigmaY: effectiveBlur,
+          ),
           child: Container(
             padding: padding ?? const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -87,7 +92,11 @@ class GlassDecoration extends Decoration {
 }
 
 class _GlassPainter extends BoxPainter {
-  _GlassPainter({required this.tint, required this.border, required this.radius});
+  _GlassPainter({
+    required this.tint,
+    required this.border,
+    required this.radius,
+  });
 
   final Color tint;
   final Color border;

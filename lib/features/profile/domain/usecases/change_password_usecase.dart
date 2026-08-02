@@ -8,6 +8,8 @@ class ChangePasswordUsecase {
   Future<Result<void>> call({
     required String currentPassword,
     required String newPassword,
-  }) =>
-      _repo.changePassword(currentPassword: currentPassword, newPassword: newPassword);
+  }) => _repo.changePassword(
+    currentPassword: currentPassword,
+    newPassword: newPassword,
+  );
 }

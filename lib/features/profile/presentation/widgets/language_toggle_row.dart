@@ -7,7 +7,11 @@ import 'settings_segment_button.dart';
 /// Settings row with a two-segment English/Arabic pill switch, wired
 /// directly to [localeProvider] — this one is real, not a stub.
 class LanguageToggleRow extends StatelessWidget {
-  const LanguageToggleRow({super.key, required this.isArabic, required this.onChanged});
+  const LanguageToggleRow({
+    super.key,
+    required this.isArabic,
+    required this.onChanged,
+  });
 
   final bool isArabic;
   final ValueChanged<bool> onChanged;
@@ -18,7 +22,11 @@ class LanguageToggleRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: context.sp(10)),
       child: Row(
         children: [
-          Icon(Icons.language_rounded, size: context.sp(20), color: context.appPrimary),
+          Icon(
+            Icons.language_rounded,
+            size: context.sp(20),
+            color: context.appPrimary,
+          ),
           SizedBox(width: context.sp(12)),
           Flexible(
             child: Text(

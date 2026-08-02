@@ -38,15 +38,14 @@ class VerifyState {
     String? resendError,
     bool clearResendError = false,
     int? resendCooldown,
-  }) =>
-      VerifyState(
-        formStatus: formStatus ?? this.formStatus,
-        error: clearError ? null : (error ?? this.error),
-        secondsRemaining: secondsRemaining ?? this.secondsRemaining,
-        resendStatus: resendStatus ?? this.resendStatus,
-        resendError: clearResendError ? null : (resendError ?? this.resendError),
-        resendCooldown: resendCooldown ?? this.resendCooldown,
-      );
+  }) => VerifyState(
+    formStatus: formStatus ?? this.formStatus,
+    error: clearError ? null : (error ?? this.error),
+    secondsRemaining: secondsRemaining ?? this.secondsRemaining,
+    resendStatus: resendStatus ?? this.resendStatus,
+    resendError: clearResendError ? null : (resendError ?? this.resendError),
+    resendCooldown: resendCooldown ?? this.resendCooldown,
+  );
 }
 
 class VerifyController extends Notifier<VerifyState> {
@@ -92,9 +91,13 @@ class VerifyController extends Notifier<VerifyState> {
 
   Future<void> resend({required String contact}) async {
     if (!state.canResend) return;
-    state = state.copyWith(resendStatus: FormStatus.submitting, clearResendError: true);
-    final result =
-        await ref.read(resendVerificationCodeUsecaseProvider).call(contact: contact);
+    state = state.copyWith(
+      resendStatus: FormStatus.submitting,
+      clearResendError: true,
+    );
+    final result = await ref
+        .read(resendVerificationCodeUsecaseProvider)
+        .call(contact: contact);
     result.fold(
       onSuccess: (_) {
         state = state.copyWith(
@@ -122,18 +125,24 @@ class VerifyController extends Notifier<VerifyState> {
       return;
     }
     state = state.copyWith(formStatus: FormStatus.submitting, clearError: true);
-    final result = await ref.read(verifyUsecaseProvider).call(contact: contact, code: code);
+    final result = await ref
+        .read(verifyUsecaseProvider)
+        .call(contact: contact, code: code);
     result.fold(
       onSuccess: (session) {
         _expiryTimer?.cancel();
-        ref.read(authControllerProvider.notifier).setAuthenticated(
-              session.user,
-              expiresAt: session.expiresAt,
-            );
-        state = state.copyWith(formStatus: FormStatus.success, clearError: true);
+        ref
+            .read(authControllerProvider.notifier)
+            .setAuthenticated(session.user, expiresAt: session.expiresAt);
+        state = state.copyWith(
+          formStatus: FormStatus.success,
+          clearError: true,
+        );
       },
-      onFailure: (failure) =>
-          state = state.copyWith(formStatus: FormStatus.failure, error: failure.messageAr),
+      onFailure: (failure) => state = state.copyWith(
+        formStatus: FormStatus.failure,
+        error: failure.messageAr,
+      ),
     );
   }
 }

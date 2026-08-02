@@ -81,6 +81,10 @@ class SelectedStateCard extends StatelessWidget {
   }
 
   void _openPicker(BuildContext context) {
-    showStatePickerSheet(context, currentStateId: currentStateId, onSelected: onChanged);
+    showStatePickerSheet(
+      context,
+      currentStateId: currentStateId,
+      onSelected: onChanged,
+    );
   }
 }

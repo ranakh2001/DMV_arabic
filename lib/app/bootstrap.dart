@@ -10,19 +10,13 @@ Future<ProviderContainer> bootstrap() async {
   final prefs = await SharedPreferences.getInstance();
 
   final container = ProviderContainer(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-    ],
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
   );
 
   // Wire the AuthInterceptor now that the container (and auth controller) exist.
-  attachAuthInterceptor(
-    container,
-    container.read(dioProvider),
-    () async {
-      await container.read(authControllerProvider.notifier).logout();
-    },
-  );
+  attachAuthInterceptor(container, container.read(dioProvider), () async {
+    await container.read(authControllerProvider.notifier).logout();
+  });
 
   // Restore session from secure storage.
   await container.read(authControllerProvider.notifier).bootstrap();

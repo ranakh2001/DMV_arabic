@@ -23,7 +23,11 @@ class HomeTopBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.directions_car_filled_rounded, color: context.appPrimary, size: context.sp(24)),
+            Icon(
+              Icons.directions_car_filled_rounded,
+              color: context.appPrimary,
+              size: context.sp(24),
+            ),
             SizedBox(width: context.sp(8)),
             Text(
               context.t('app.name'),
@@ -80,7 +84,11 @@ class _CircleIconButton extends StatelessWidget {
           onTap: onTap,
           child: Tooltip(
             message: tooltip,
-            child: Icon(icon, color: iconColor ?? context.appTextPrimary, size: context.sp(20)),
+            child: Icon(
+              icon,
+              color: iconColor ?? context.appTextPrimary,
+              size: context.sp(20),
+            ),
           ),
         ),
       ),
@@ -101,7 +109,11 @@ class _AvatarButton extends StatelessWidget {
       child: CircleAvatar(
         radius: context.sp(21),
         backgroundColor: context.appPrimary.withAlpha(40),
-        child: Icon(Icons.person_rounded, color: context.appPrimary, size: context.sp(22)),
+        child: Icon(
+          Icons.person_rounded,
+          color: context.appPrimary,
+          size: context.sp(22),
+        ),
       ),
     );
   }

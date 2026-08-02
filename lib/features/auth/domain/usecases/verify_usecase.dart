@@ -9,6 +9,5 @@ class VerifyUsecase {
   Future<Result<AuthSession>> call({
     required String contact,
     required String code,
-  }) =>
-      _repo.verify(contact: contact, code: code);
+  }) => _repo.verify(contact: contact, code: code);
 }

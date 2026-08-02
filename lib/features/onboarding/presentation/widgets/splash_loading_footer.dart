@@ -21,7 +21,10 @@ class SplashLoadingFooter extends StatelessWidget {
         children: [
           Container(
             height: 2,
-            decoration: BoxDecoration(color: dimColor, borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(
+              color: dimColor,
+              borderRadius: BorderRadius.circular(2),
+            ),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Align(
@@ -31,7 +34,9 @@ class SplashLoadingFooter extends StatelessWidget {
                     width: constraints.maxWidth * progress,
                     height: 2,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [accent, context.appSecondary]),
+                      gradient: LinearGradient(
+                        colors: [accent, context.appSecondary],
+                      ),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -42,12 +47,22 @@ class SplashLoadingFooter extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             context.t('splash.version'),
-            style: TextStyle(fontFamily: 'Almarai', fontSize: 13, fontWeight: FontWeight.w300, color: dimColor),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: 13,
+              fontWeight: FontWeight.w300,
+              color: dimColor,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             context.t('splash.copyright'),
-            style: TextStyle(fontFamily: 'Almarai', fontSize: 12, fontWeight: FontWeight.w300, color: dimColor.withAlpha(150)),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: 12,
+              fontWeight: FontWeight.w300,
+              color: dimColor.withAlpha(150),
+            ),
           ),
         ],
       ),

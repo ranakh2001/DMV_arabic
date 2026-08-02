@@ -15,7 +15,10 @@ class StatsEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassContainer(
       radius: 22,
-      padding: EdgeInsets.symmetric(vertical: context.sp(36), horizontal: context.sp(24)),
+      padding: EdgeInsets.symmetric(
+        vertical: context.sp(36),
+        horizontal: context.sp(24),
+      ),
       child: Column(
         children: [
           Container(
@@ -25,7 +28,11 @@ class StatsEmptyState extends StatelessWidget {
               shape: BoxShape.circle,
               color: context.appPrimary.withAlpha(30),
             ),
-            child: Icon(Icons.bar_chart_rounded, color: context.appPrimary, size: context.sp(30)),
+            child: Icon(
+              Icons.bar_chart_rounded,
+              color: context.appPrimary,
+              size: context.sp(30),
+            ),
           ),
           SizedBox(height: context.sp(18)),
           Text(

@@ -15,7 +15,11 @@ class _NavItemData {
 /// My Account at the left edge — mirroring the source design.
 const _kNavItems = [
   _NavItemData(HomeTab.home, Icons.home_rounded, 'nav.home'),
-  _NavItemData(HomeTab.simulation, Icons.directions_car_rounded, 'nav.simulation'),
+  _NavItemData(
+    HomeTab.simulation,
+    Icons.directions_car_rounded,
+    'nav.simulation',
+  ),
   _NavItemData(HomeTab.stats, Icons.bar_chart_rounded, 'nav.stats'),
   _NavItemData(HomeTab.profile, Icons.person_rounded, 'nav.profile'),
 ];
@@ -35,7 +39,12 @@ class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(context.sp(18), 0, context.sp(18), context.sp(18)),
+      padding: EdgeInsets.fromLTRB(
+        context.sp(18),
+        0,
+        context.sp(18),
+        context.sp(18),
+      ),
       child: Container(
         height: context.sp(66),
         padding: const EdgeInsets.symmetric(horizontal: 6),

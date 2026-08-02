@@ -35,7 +35,11 @@ class QuickActionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: context.appPrimary.withAlpha(30),
               ),
-              child: Icon(icon, color: context.appPrimary, size: context.sp(22)),
+              child: Icon(
+                icon,
+                color: context.appPrimary,
+                size: context.sp(22),
+              ),
             ),
             SizedBox(height: context.sp(10)),
             Text(

@@ -24,7 +24,10 @@ class SuccessRateCard extends StatelessWidget {
 
     return GlassContainer(
       radius: 22,
-      padding: EdgeInsets.symmetric(vertical: context.sp(28), horizontal: context.sp(20)),
+      padding: EdgeInsets.symmetric(
+        vertical: context.sp(28),
+        horizontal: context.sp(20),
+      ),
       child: Column(
         children: [
           CircularProgressRing(
@@ -56,7 +59,10 @@ class SuccessRateCard extends StatelessWidget {
           ),
           SizedBox(height: context.sp(18)),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(7)),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.sp(14),
+              vertical: context.sp(7),
+            ),
             decoration: BoxDecoration(
               color: context.appSuccess.withAlpha(30),
               borderRadius: BorderRadius.circular(100),
@@ -65,10 +71,16 @@ class SuccessRateCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.trending_up_rounded, color: context.appSuccess, size: context.sp(16)),
+                Icon(
+                  Icons.trending_up_rounded,
+                  color: context.appSuccess,
+                  size: context.sp(16),
+                ),
                 SizedBox(width: context.sp(6)),
                 Text(
-                  context.ts('stats.improvement', {'percent': '$improvementPercent'}),
+                  context.ts('stats.improvement', {
+                    'percent': '$improvementPercent',
+                  }),
                   style: TextStyle(
                     fontFamily: 'Almarai',
                     fontSize: context.sp(13),

@@ -20,8 +20,16 @@ class SteeringWheelPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     canvas.drawCircle(Offset(cx, cy), r * 0.90, paint);
-    canvas.drawCircle(Offset(cx, cy), r * 0.18, paint..style = PaintingStyle.fill);
-    canvas.drawCircle(Offset(cx, cy), r * 0.18, paint..style = PaintingStyle.stroke);
+    canvas.drawCircle(
+      Offset(cx, cy),
+      r * 0.18,
+      paint..style = PaintingStyle.fill,
+    );
+    canvas.drawCircle(
+      Offset(cx, cy),
+      r * 0.18,
+      paint..style = PaintingStyle.stroke,
+    );
 
     paint
       ..style = PaintingStyle.stroke
@@ -29,8 +37,14 @@ class SteeringWheelPainter extends CustomPainter {
     for (int i = 0; i < 3; i++) {
       final angle = (90.0 + i * 120.0) * math.pi / 180.0;
       canvas.drawLine(
-        Offset(cx + r * 0.18 * math.cos(angle), cy + r * 0.18 * math.sin(angle)),
-        Offset(cx + r * 0.90 * math.cos(angle), cy + r * 0.90 * math.sin(angle)),
+        Offset(
+          cx + r * 0.18 * math.cos(angle),
+          cy + r * 0.18 * math.sin(angle),
+        ),
+        Offset(
+          cx + r * 0.90 * math.cos(angle),
+          cy + r * 0.90 * math.sin(angle),
+        ),
         paint,
       );
     }
@@ -46,7 +60,14 @@ class SteeringWheelPainter extends CustomPainter {
       final startY = cy - r * 0.90 - 8;
       final path = Path()
         ..moveTo(startX, startY)
-        ..cubicTo(startX - 6, startY - 8, startX + 6, startY - 16, startX, startY - 24);
+        ..cubicTo(
+          startX - 6,
+          startY - 8,
+          startX + 6,
+          startY - 16,
+          startX,
+          startY - 24,
+        );
       canvas.drawPath(path, wavePaint);
     }
   }

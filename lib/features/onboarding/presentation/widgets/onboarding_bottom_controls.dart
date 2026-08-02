@@ -51,9 +51,13 @@ class OnboardingBottomControls extends StatelessWidget {
                         isLastPage
                             ? context.t('onboarding.start')
                             : currentPage == 0
-                                ? context.t('onboarding.slide1.cta')
-                                : context.t('common.next'),
-                        style: const TextStyle(fontFamily: 'Almarai', fontSize: 17, fontWeight: FontWeight.w700),
+                            ? context.t('onboarding.slide1.cta')
+                            : context.t('common.next'),
+                        style: const TextStyle(
+                          fontFamily: 'Almarai',
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       if (isLastPage) ...[
                         const SizedBox(width: 6),
@@ -87,7 +91,11 @@ class OnboardingBottomControls extends StatelessWidget {
                 onTap: onSkip,
                 child: Text(
                   context.t('common.skip'),
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 15, color: context.appTextSecondary),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 15,
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ),
             const SizedBox(height: 8),

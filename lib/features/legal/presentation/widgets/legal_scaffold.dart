@@ -15,13 +15,23 @@ class LegalScaffold extends ConsumerWidget {
   const LegalScaffold({
     super.key,
     required this.title,
-    required this.updatedDate,
+    this.updatedDate,
+    this.metaText,
     required this.children,
     this.footer,
-  });
+  }) : assert(
+         updatedDate != null || metaText != null,
+         'Provide either updatedDate or metaText.',
+       );
 
   final String title;
-  final String updatedDate;
+
+  /// Rendered as "Last updated: {updatedDate}". Ignored when [metaText] is set.
+  final String? updatedDate;
+
+  /// A pre-formatted subtitle line, used instead of the "last updated" text
+  /// when the "last updated" phrasing doesn't fit (e.g. About Us's version).
+  final String? metaText;
   final List<Widget> children;
   final Widget? footer;
 
@@ -35,12 +45,20 @@ class LegalScaffold extends ConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(context.sp(12), context.sp(10), context.sp(16), context.sp(6)),
+              padding: EdgeInsets.fromLTRB(
+                context.sp(12),
+                context.sp(10),
+                context.sp(16),
+                context.sp(6),
+              ),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: () => Navigator.of(context).maybePop(),
-                    icon: Icon(Icons.arrow_back_rounded, color: context.appTextPrimary),
+                    icon: Icon(
+                      Icons.arrow_back_rounded,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   Expanded(
                     child: Text(
@@ -56,8 +74,9 @@ class LegalScaffold extends ConsumerWidget {
                   ),
                   LanguageToggleChip(
                     isArabic: isArabic,
-                    onChanged: (toArabic) =>
-                        ref.read(localeProvider.notifier).setLocale(Locale(toArabic ? 'ar' : 'en')),
+                    onChanged: (toArabic) => ref
+                        .read(localeProvider.notifier)
+                        .setLocale(Locale(toArabic ? 'ar' : 'en')),
                   ),
                 ],
               ),
@@ -65,12 +84,24 @@ class LegalScaffold extends ConsumerWidget {
             Expanded(
               child: Center(
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: context.isDesktop || context.isTablet ? 560 : double.infinity),
+                  constraints: BoxConstraints(
+                    maxWidth: context.isDesktop || context.isTablet
+                        ? 560
+                        : double.infinity,
+                  ),
                   child: ListView(
-                    padding: EdgeInsets.fromLTRB(context.sp(20), context.sp(8), context.sp(20), context.sp(24)),
+                    padding: EdgeInsets.fromLTRB(
+                      context.sp(20),
+                      context.sp(8),
+                      context.sp(20),
+                      context.sp(24),
+                    ),
                     children: [
                       Text(
-                        context.ts('legal.last_updated', {'date': updatedDate}),
+                        metaText ??
+                            context.ts('legal.last_updated', {
+                              'date': updatedDate!,
+                            }),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Almarai',

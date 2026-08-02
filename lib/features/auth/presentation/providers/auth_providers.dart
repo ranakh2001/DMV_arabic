@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/dio_providers.dart';
 import '../../../../core/storage/storage_providers.dart';
+import '../../../states/presentation/providers/states_providers.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -24,6 +25,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
     remote: ref.watch(authRemoteDataSourceProvider),
     secureStorage: ref.watch(secureStorageProvider),
     prefs: ref.watch(prefsServiceProvider),
+    statesRepository: ref.watch(statesRepositoryProvider),
   ),
 );
 

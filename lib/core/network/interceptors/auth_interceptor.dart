@@ -25,12 +25,20 @@ class AuthInterceptor extends Interceptor {
   bool _isRefreshing = false;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    try {
-      final token = await secureStorage.readAccessToken();
-      if (token != null) options.headers['Authorization'] = 'Bearer $token';
-    } catch (_) {
-      // Storage error: continue without token
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    // The refresh-token call sends the refresh token as its Bearer credential
+    // (set explicitly by the caller) — must not be clobbered with the access
+    // token here, or the backend rejects it (wrong Sanctum ability).
+    if (options.path != ApiConstants.refreshToken) {
+      try {
+        final token = await secureStorage.readAccessToken();
+        if (token != null) options.headers['Authorization'] = 'Bearer $token';
+      } catch (_) {
+        // Storage error: continue without token
+      }
     }
     handler.next(options);
   }
@@ -55,7 +63,8 @@ class AuthInterceptor extends Interceptor {
         return handler.next(err);
       }
       final token = await secureStorage.readAccessToken();
-      final opts = err.requestOptions..headers['Authorization'] = 'Bearer $token';
+      final opts = err.requestOptions
+        ..headers['Authorization'] = 'Bearer $token';
       final response = await dio.fetch(opts);
       return handler.resolve(response);
     } catch (_) {
@@ -77,13 +86,17 @@ class AuthInterceptor extends Interceptor {
       );
 
       final body = response.data;
-      if (response.statusCode == 200 && body != null && body['success'] == true) {
+      if (response.statusCode == 200 &&
+          body != null &&
+          body['success'] == true) {
         final data = body['data'] as Map<String, dynamic>?;
         if (data == null) return false;
         await secureStorage.saveTokens(
           accessToken: data['access_token'] as String,
           refreshToken: data['refresh_token'] as String,
-          expiry: DateTime.now().add(Duration(seconds: data['expires_in'] as int? ?? 900)),
+          expiry: DateTime.now().add(
+            Duration(seconds: data['expires_in'] as int? ?? 900),
+          ),
         );
         return true;
       }

@@ -64,7 +64,9 @@ class ScorePathCard extends StatelessWidget {
                 ),
                 Positioned(
                   left: 0,
-                  top: context.sp(_chartHeight) * (1 - passThreshold) - context.sp(16),
+                  top:
+                      context.sp(_chartHeight) * (1 - passThreshold) -
+                      context.sp(16),
                   child: Text(
                     context.t('stats.pass_threshold'),
                     style: TextStyle(
@@ -137,7 +139,9 @@ class _Bar extends StatelessWidget {
       width: context.sp(16),
       height: maxHeight * heightFactor.clamp(0.05, 1.0),
       decoration: BoxDecoration(
-        color: highlighted ? context.appPrimary : context.appTextDisabled.withAlpha(90),
+        color: highlighted
+            ? context.appPrimary
+            : context.appTextDisabled.withAlpha(90),
         borderRadius: BorderRadius.circular(6),
       ),
     );
@@ -163,7 +167,11 @@ class _DashedLine extends StatelessWidget {
               count,
               (_) => Padding(
                 padding: const EdgeInsets.only(right: dashGap),
-                child: Container(width: dashWidth, height: 1.4, color: color.withAlpha(180)),
+                child: Container(
+                  width: dashWidth,
+                  height: 1.4,
+                  color: color.withAlpha(180),
+                ),
               ),
             ),
           );

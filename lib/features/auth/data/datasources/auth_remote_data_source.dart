@@ -38,16 +38,21 @@ class AuthRemoteDataSource {
   /// Returns [unverifiedContact] set to [request.phoneNumber] when the API
   /// reports the account isn't verified yet (BR-02) — the API has no
   /// dedicated error code for this, so it is detected from the message text.
-  Future<({AuthUserModel user, AuthTokensModel tokens, String? unverifiedContact})> login(
-    LoginRequest request,
-  ) async {
+  Future<
+    ({AuthUserModel user, AuthTokensModel tokens, String? unverifiedContact})
+  >
+  login(LoginRequest request) async {
     final response = await _post(ApiConstants.login, request.toJson());
 
     if (!response.success) {
       if (_looksUnverified(response.message)) {
         return (
           user: AuthUserModel(id: '', name: ''),
-          tokens: AuthTokensModel(accessToken: '', refreshToken: '', expiresIn: 0),
+          tokens: AuthTokensModel(
+            accessToken: '',
+            refreshToken: '',
+            expiresIn: 0,
+          ),
           unverifiedContact: request.phoneNumber,
         );
       }
@@ -81,6 +86,26 @@ class AuthRemoteDataSource {
     }
   }
 
+  /// Fetches the current user's profile (`GET /users/profile`) — used by
+  /// [AuthRepositoryImpl.bootstrapSession] as the source of truth for
+  /// "is this session still valid, and who is the user", instead of trusting
+  /// a locally cached name.
+  Future<Map<String, dynamic>> fetchProfile() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        ApiConstants.profile,
+      );
+      final json = response.data ?? {};
+      final apiResponse = ApiResponse<dynamic>.fromJson(json, (data) => data);
+      if (!apiResponse.success) {
+        throw ServerException(messageAr: apiResponse.userMessage);
+      }
+      return apiResponse.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw _dioToServer(e);
+    }
+  }
+
   /// Best-effort — local session cleanup happens regardless of the result.
   Future<void> logout() async {
     try {
@@ -90,9 +115,13 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<void> resendVerificationCode(ResendVerificationCodeRequest request) async {
-    final response =
-        await _post(ApiConstants.resendVerificationCode, request.toJson());
+  Future<void> resendVerificationCode(
+    ResendVerificationCodeRequest request,
+  ) async {
+    final response = await _post(
+      ApiConstants.resendVerificationCode,
+      request.toJson(),
+    );
     _assertSuccess(response);
   }
 
@@ -109,7 +138,9 @@ class AuthRemoteDataSource {
   bool _looksUnverified(String? message) {
     if (message == null) return false;
     final lower = message.toLowerCase();
-    return lower.contains('verify') || message.contains('تحقق') || message.contains('توثيق');
+    return lower.contains('verify') ||
+        message.contains('تحقق') ||
+        message.contains('توثيق');
   }
 
   Future<ApiResponse<dynamic>> _post(
@@ -133,7 +164,9 @@ class AuthRemoteDataSource {
 
   ServerException _dioToServer(DioException e) {
     final body = e.response?.data;
-    final message = body is Map<String, dynamic> ? body['message'] as String? : null;
+    final message = body is Map<String, dynamic>
+        ? body['message'] as String?
+        : null;
     return ServerException(
       messageAr: message ?? 'حدث خطأ. يرجى المحاولة مرة أخرى.',
       statusCode: e.response?.statusCode,

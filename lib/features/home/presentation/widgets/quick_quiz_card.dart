@@ -36,7 +36,11 @@ class QuickQuizCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: context.appPrimary.withAlpha(30),
                 ),
-                child: Icon(Icons.bolt_rounded, color: context.appPrimary, size: context.sp(20)),
+                child: Icon(
+                  Icons.bolt_rounded,
+                  color: context.appPrimary,
+                  size: context.sp(20),
+                ),
               ),
             ],
           ),

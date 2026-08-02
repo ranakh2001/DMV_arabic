@@ -25,7 +25,11 @@ class TestDetailsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.assignment_outlined, color: context.appPrimary, size: context.sp(20)),
+              Icon(
+                Icons.assignment_outlined,
+                color: context.appPrimary,
+                size: context.sp(20),
+              ),
               SizedBox(width: context.sp(8)),
               Text(
                 context.t('simulation.details_title'),
@@ -42,14 +46,18 @@ class TestDetailsCard extends StatelessWidget {
           _TestDetailRow(
             icon: Icons.help_outline_rounded,
             label: context.t('simulation.question_count_label'),
-            value: context.ts('simulation.question_count_value', {'count': '$questionCount'}),
+            value: context.ts('simulation.question_count_value', {
+              'count': '$questionCount',
+            }),
             valueColor: context.appTextPrimary,
           ),
           SizedBox(height: context.sp(12)),
           _TestDetailRow(
             icon: Icons.check_circle_outline_rounded,
             label: context.t('simulation.min_pass_label'),
-            value: context.ts('simulation.min_pass_value', {'count': '$minPassCount'}),
+            value: context.ts('simulation.min_pass_value', {
+              'count': '$minPassCount',
+            }),
             valueColor: context.appSuccess,
           ),
           SizedBox(height: context.sp(12)),
@@ -104,7 +112,10 @@ class _TestDetailRow extends StatelessWidget {
         ),
         SizedBox(width: context.sp(8)),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: context.sp(12), vertical: context.sp(6)),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.sp(12),
+            vertical: context.sp(6),
+          ),
           decoration: BoxDecoration(
             color: valueColor.withAlpha(25),
             borderRadius: BorderRadius.circular(10),

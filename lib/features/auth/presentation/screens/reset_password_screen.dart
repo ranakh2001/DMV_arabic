@@ -16,13 +16,18 @@ import '../widgets/auth_top_bar.dart';
 import '../widgets/glow_elevated_button.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
-  const ResetPasswordScreen({super.key, required this.contact, required this.code});
+  const ResetPasswordScreen({
+    super.key,
+    required this.contact,
+    required this.code,
+  });
 
   final String contact;
   final String code;
 
   @override
-  ConsumerState<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
@@ -51,7 +56,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    await ref.read(resetPasswordControllerProvider.notifier).reset(
+    await ref
+        .read(resetPasswordControllerProvider.notifier)
+        .reset(
           contact: widget.contact,
           code: widget.code,
           newPassword: _passwordCtrl.text,
@@ -71,7 +78,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   bool get _hasLength => _passwordCtrl.text.length >= 8;
   bool get _hasUpper => _passwordCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasDigit => _passwordCtrl.text.contains(RegExp(r'[0-9]'));
-  bool get _hasSpecial => _passwordCtrl.text.contains(RegExp(r'[!@#$%^&*()\-,.?":{}|<>]'));
+  bool get _hasSpecial =>
+      _passwordCtrl.text.contains(RegExp(r'[!@#$%^&*()\-,.?":{}|<>]'));
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +115,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const SizedBox(height: 28),
-                          const Center(child: AnimatedHeroIcon(icon: Icons.lock_open_rounded)),
+                          const Center(
+                            child: AnimatedHeroIcon(
+                              icon: Icons.lock_open_rounded,
+                            ),
+                          ),
                           const SizedBox(height: 28),
                           AuthGlassCard(
                             child: Form(
@@ -115,7 +127,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Center(child: AuthBadgeChip(label: context.t('auth.reset.badge'))),
+                                  Center(
+                                    child: AuthBadgeChip(
+                                      label: context.t('auth.reset.badge'),
+                                    ),
+                                  ),
                                   const SizedBox(height: 16),
                                   Text(
                                     context.t('auth.reset.new_title'),
@@ -132,25 +148,39 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                   Text(
                                     context.t('auth.reset.new_subtitle'),
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appTextSecondary, height: 1.6),
+                                    style: TextStyle(
+                                      fontFamily: 'Almarai',
+                                      fontSize: 13,
+                                      color: context.appTextSecondary,
+                                      height: 1.6,
+                                    ),
                                   ),
                                   const SizedBox(height: 24),
                                   TextFormField(
                                     controller: _passwordCtrl,
                                     obscureText: _obscurePassword,
                                     textInputAction: TextInputAction.next,
-                                    style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+                                    style: TextStyle(
+                                      fontFamily: 'Almarai',
+                                      color: context.appTextPrimary,
+                                      fontSize: 15,
+                                    ),
                                     decoration: authPasswordDecoration(
                                       context: context,
                                       hint: context.t('field.new_password'),
                                       obscure: _obscurePassword,
-                                      onToggle: () => setState(() => _obscurePassword = !_obscurePassword),
+                                      onToggle: () => setState(
+                                        () => _obscurePassword =
+                                            !_obscurePassword,
+                                      ),
                                     ),
                                     validator: Validators.password(context),
                                   ),
                                   if (_passwordCtrl.text.isNotEmpty) ...[
                                     const SizedBox(height: 10),
-                                    PasswordStrengthMeter(strength: _pwStrength),
+                                    PasswordStrengthMeter(
+                                      strength: _pwStrength,
+                                    ),
                                   ],
                                   const SizedBox(height: 16),
                                   TextFormField(
@@ -158,28 +188,58 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                     obscureText: _obscureConfirm,
                                     textInputAction: TextInputAction.done,
                                     onFieldSubmitted: (_) => _submit(),
-                                    style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+                                    style: TextStyle(
+                                      fontFamily: 'Almarai',
+                                      color: context.appTextPrimary,
+                                      fontSize: 15,
+                                    ),
                                     decoration: authFieldDecoration(
                                       context: context,
                                       hint: context.t('field.confirm_password'),
-                                      prefixIcon: Icon(Icons.shield_outlined, color: context.appPrimary, size: 20),
+                                      prefixIcon: Icon(
+                                        Icons.shield_outlined,
+                                        color: context.appPrimary,
+                                        size: 20,
+                                      ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _obscureConfirm ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                                          _obscureConfirm
+                                              ? Icons.visibility_rounded
+                                              : Icons.visibility_off_rounded,
                                           color: context.appPrimary,
                                           size: 20,
                                         ),
-                                        onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                                        onPressed: () => setState(
+                                          () => _obscureConfirm =
+                                              !_obscureConfirm,
+                                        ),
                                       ),
                                     ),
-                                    validator: Validators.confirmPassword(context, _passwordCtrl.text),
+                                    validator: Validators.confirmPassword(
+                                      context,
+                                      _passwordCtrl.text,
+                                    ),
                                   ),
                                   if (_passwordCtrl.text.isNotEmpty) ...[
                                     const SizedBox(height: 20),
-                                    PasswordRuleRow(label: context.t('password.rule.length'), isValid: _hasLength),
-                                    PasswordRuleRow(label: context.t('password.rule.uppercase'), isValid: _hasUpper),
-                                    PasswordRuleRow(label: context.t('password.rule.digit'), isValid: _hasDigit),
-                                    PasswordRuleRow(label: context.t('password.rule.special'), isValid: _hasSpecial),
+                                    PasswordRuleRow(
+                                      label: context.t('password.rule.length'),
+                                      isValid: _hasLength,
+                                    ),
+                                    PasswordRuleRow(
+                                      label: context.t(
+                                        'password.rule.uppercase',
+                                      ),
+                                      isValid: _hasUpper,
+                                    ),
+                                    PasswordRuleRow(
+                                      label: context.t('password.rule.digit'),
+                                      isValid: _hasDigit,
+                                    ),
+                                    PasswordRuleRow(
+                                      label: context.t('password.rule.special'),
+                                      isValid: _hasSpecial,
+                                    ),
                                   ],
                                   const SizedBox(height: 20),
                                   if (state.isFailure && state.error != null)
@@ -188,7 +248,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                       child: Text(
                                         state.error!,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontFamily: 'Almarai', fontSize: 12, color: context.appError),
+                                        style: TextStyle(
+                                          fontFamily: 'Almarai',
+                                          fontSize: 12,
+                                          color: context.appError,
+                                        ),
                                       ),
                                     ),
                                   GlowElevatedButton(

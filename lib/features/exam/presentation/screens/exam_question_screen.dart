@@ -25,7 +25,8 @@ class ExamQuestionScreen extends ConsumerWidget {
     final exam = ref.watch(examControllerProvider);
     final controller = ref.read(examControllerProvider.notifier);
     final isAr = context.l10n.locale.languageCode == 'ar';
-    final stateName = ref.watch(prefsServiceProvider).selectedState ?? 'كاليفورنيا';
+    final stateName =
+        ref.watch(prefsServiceProvider).selectedState ?? 'كاليفورنيا';
     final question = exam.currentQuestion;
 
     return PopScope(
@@ -40,11 +41,24 @@ class ExamQuestionScreen extends ConsumerWidget {
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: context.isDesktop || context.isTablet ? 560 : double.infinity),
+              constraints: BoxConstraints(
+                maxWidth: context.isDesktop || context.isTablet
+                    ? 560
+                    : double.infinity,
+              ),
               child: ListView(
-                padding: EdgeInsets.fromLTRB(context.sp(20), context.sp(16), context.sp(20), context.sp(24)),
+                padding: EdgeInsets.fromLTRB(
+                  context.sp(20),
+                  context.sp(16),
+                  context.sp(20),
+                  context.sp(24),
+                ),
                 children: [
-                  ExamTopBar(current: exam.currentIndex + 1, total: exam.questions.length, stateName: stateName),
+                  ExamTopBar(
+                    current: exam.currentIndex + 1,
+                    total: exam.questions.length,
+                    stateName: stateName,
+                  ),
                   SizedBox(height: context.sp(16)),
                   GlassContainer(
                     radius: 20,
@@ -68,18 +82,21 @@ class ExamQuestionScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: context.sp(16)),
                   for (var i = 0; i < question.options.length; i++) ...[
-                    Builder(builder: (context) {
-                      final option = question.options[i];
-                      final label = option.label(isAr);
-                      return AnswerOptionTile(
-                        letter: optionLetter(isAr, i),
-                        text: label.isEmpty ? null : label,
-                        icon: option.icon,
-                        selected: exam.selectedOptionId == option.id,
-                        onTap: () => controller.selectAnswer(option.id),
-                      );
-                    }),
-                    if (i != question.options.length - 1) SizedBox(height: context.sp(12)),
+                    Builder(
+                      builder: (context) {
+                        final option = question.options[i];
+                        final label = option.label(isAr);
+                        return AnswerOptionTile(
+                          letter: optionLetter(isAr, i),
+                          text: label.isEmpty ? null : label,
+                          icon: option.icon,
+                          selected: exam.selectedOptionId == option.id,
+                          onTap: () => controller.selectAnswer(option.id),
+                        );
+                      },
+                    ),
+                    if (i != question.options.length - 1)
+                      SizedBox(height: context.sp(12)),
                   ],
                   SizedBox(height: context.sp(20)),
                   QuestionProgressBar(
@@ -107,7 +124,8 @@ class ExamQuestionScreen extends ConsumerWidget {
   Set<int> _answeredIndexes(ExamState exam) {
     final answered = <int>{};
     for (var i = 0; i < exam.questions.length; i++) {
-      if (exam.selectedAnswers.containsKey(exam.questions[i].id)) answered.add(i);
+      if (exam.selectedAnswers.containsKey(exam.questions[i].id))
+        answered.add(i);
     }
     return answered;
   }
@@ -115,7 +133,11 @@ class ExamQuestionScreen extends ConsumerWidget {
   void _handleNext(BuildContext context, ExamController controller) {
     final moved = controller.next();
     if (!moved) {
-      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const SubscriptionPlansScreen()));
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const SubscriptionPlansScreen(),
+        ),
+      );
     }
   }
 
@@ -141,7 +163,9 @@ class ExamQuestionScreen extends ConsumerWidget {
       ref.read(examControllerProvider.notifier).submit();
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.t('exam.submitted_message'))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.t('exam.submitted_message'))),
+      );
     }
   }
 
@@ -157,7 +181,9 @@ class ExamQuestionScreen extends ConsumerWidget {
             child: Text(dialogContext.t('common.cancel')),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: dialogContext.appError),
+            style: FilledButton.styleFrom(
+              backgroundColor: dialogContext.appError,
+            ),
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: Text(dialogContext.t('exam.exit_confirm_action')),
           ),

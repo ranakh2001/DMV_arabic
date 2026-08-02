@@ -36,5 +36,6 @@ class CircularProgressPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CircularProgressPainter old) => old.progress != progress || old.color != color;
+  bool shouldRepaint(CircularProgressPainter old) =>
+      old.progress != progress || old.color != color;
 }

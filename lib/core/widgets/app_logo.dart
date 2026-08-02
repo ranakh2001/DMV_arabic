@@ -33,11 +33,7 @@ class AppLogo extends StatelessWidget {
             ],
           ),
         ),
-        Image.asset(
-          'assets/logo/logo.png',
-          width: size,
-          fit: BoxFit.contain,
-        ),
+        Image.asset('assets/logo/logo.png', width: size, fit: BoxFit.contain),
       ],
     );
   }

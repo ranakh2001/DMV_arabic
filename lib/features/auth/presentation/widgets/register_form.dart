@@ -58,7 +58,8 @@ class RegisterForm extends StatelessWidget {
   bool get _hasLength => passwordCtrl.text.length >= 8;
   bool get _hasUpper => passwordCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasDigit => passwordCtrl.text.contains(RegExp(r'[0-9]'));
-  bool get _hasSpecial => passwordCtrl.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+  bool get _hasSpecial =>
+      passwordCtrl.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +75,19 @@ class RegisterForm extends StatelessWidget {
           TextFormField(
             controller: nameCtrl,
             textInputAction: TextInputAction.next,
-            style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              color: context.appTextPrimary,
+              fontSize: 15,
+            ),
             decoration: authFieldDecoration(
               context: context,
               hint: context.t('field.name_hint'),
-              prefixIcon: Icon(Icons.person_outline_rounded, color: context.appPrimary, size: 20),
+              prefixIcon: Icon(
+                Icons.person_outline_rounded,
+                color: context.appPrimary,
+                size: 20,
+              ),
             ),
             validator: Validators.name(context),
           ),
@@ -91,7 +100,11 @@ class RegisterForm extends StatelessWidget {
             controller: passwordCtrl,
             obscureText: obscurePassword,
             textInputAction: TextInputAction.next,
-            style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              color: context.appTextPrimary,
+              fontSize: 15,
+            ),
             decoration: authPasswordDecoration(
               context: context,
               hint: '••••••••',
@@ -104,10 +117,22 @@ class RegisterForm extends StatelessWidget {
             const SizedBox(height: 10),
             PasswordStrengthMeter(strength: passwordStrength),
             const SizedBox(height: 14),
-            PasswordRuleRow(label: context.t('password.rule.length'), isValid: _hasLength),
-            PasswordRuleRow(label: context.t('password.rule.uppercase'), isValid: _hasUpper),
-            PasswordRuleRow(label: context.t('password.rule.digit'), isValid: _hasDigit),
-            PasswordRuleRow(label: context.t('password.rule.special'), isValid: _hasSpecial),
+            PasswordRuleRow(
+              label: context.t('password.rule.length'),
+              isValid: _hasLength,
+            ),
+            PasswordRuleRow(
+              label: context.t('password.rule.uppercase'),
+              isValid: _hasUpper,
+            ),
+            PasswordRuleRow(
+              label: context.t('password.rule.digit'),
+              isValid: _hasDigit,
+            ),
+            PasswordRuleRow(
+              label: context.t('password.rule.special'),
+              isValid: _hasSpecial,
+            ),
           ],
           const SizedBox(height: 6),
           AuthFieldLabel(context.t('field.confirm_password')),
@@ -117,13 +142,27 @@ class RegisterForm extends StatelessWidget {
             obscureText: obscureConfirm,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => onSubmit(),
-            style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              color: context.appTextPrimary,
+              fontSize: 15,
+            ),
             decoration: authFieldDecoration(
               context: context,
               hint: context.t('field.confirm_password_hint'),
-              prefixIcon: Icon(Icons.shield_outlined, color: context.appPrimary, size: 20),
+              prefixIcon: Icon(
+                Icons.shield_outlined,
+                color: context.appPrimary,
+                size: 20,
+              ),
               suffixIcon: IconButton(
-                icon: Icon(obscureConfirm ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: context.appPrimary, size: 20),
+                icon: Icon(
+                  obscureConfirm
+                      ? Icons.visibility_rounded
+                      : Icons.visibility_off_rounded,
+                  color: context.appPrimary,
+                  size: 20,
+                ),
                 onPressed: onToggleConfirm,
               ),
             ),
@@ -134,7 +173,11 @@ class RegisterForm extends StatelessWidget {
           const SizedBox(height: 8),
           RegisterStateDropdownField(
             selectedState: selectedState?.name(arabic: isRtl),
-            onTap: () => showStatePickerSheet(context, currentStateId: selectedState?.id, onSelected: onStateSelected),
+            onTap: () => showStatePickerSheet(
+              context,
+              currentStateId: selectedState?.id,
+              onSelected: onStateSelected,
+            ),
           ),
           const SizedBox(height: 24),
           RegisterTermsRow(accepted: termsAccepted, onChanged: onTermsChanged),
@@ -143,7 +186,10 @@ class RegisterForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 14),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: context.appError.withAlpha(30),
                   borderRadius: BorderRadius.circular(10),
@@ -152,7 +198,11 @@ class RegisterForm extends StatelessWidget {
                 child: Text(
                   errorMessage!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appError),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 13,
+                    color: context.appError,
+                  ),
                 ),
               ),
             ),

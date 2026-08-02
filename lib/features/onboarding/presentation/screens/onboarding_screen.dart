@@ -31,22 +31,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _goNext() {
     if (_currentPage < 2) {
-      _pageController.nextPage(duration: const Duration(milliseconds: 380), curve: Curves.easeInOutCubic);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 380),
+        curve: Curves.easeInOutCubic,
+      );
     } else {
       _finish();
     }
   }
 
   void _skip() {
-    _pageController.animateToPage(2, duration: const Duration(milliseconds: 420), curve: Curves.easeInOutCubic);
+    _pageController.animateToPage(
+      2,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   Future<void> _finish() async {
     if (_currentPage == 2 && _selectedState == null) return;
     if (_selectedState != null) {
       final isAr = context.isRtl;
-      await ref.read(prefsServiceProvider).setSelectedState(_selectedState!.name(arabic: isAr));
-      await ref.read(prefsServiceProvider).setSelectedStateId(_selectedState!.id);
+      await ref
+          .read(prefsServiceProvider)
+          .setSelectedState(_selectedState!.name(arabic: isAr));
+      await ref
+          .read(prefsServiceProvider)
+          .setSelectedStateId(_selectedState!.id);
     }
     await ref.read(onboardingDoneProvider.notifier).complete();
   }

@@ -23,7 +23,10 @@ class ExamTopBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          context.ts('exam.question_progress', {'current': '$current', 'total': '$total'}),
+          context.ts('exam.question_progress', {
+            'current': '$current',
+            'total': '$total',
+          }),
           style: TextStyle(
             fontFamily: 'Almarai',
             fontSize: context.sp(14),
@@ -32,7 +35,10 @@ class ExamTopBar extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: context.sp(12), vertical: context.sp(6)),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.sp(12),
+            vertical: context.sp(6),
+          ),
           decoration: BoxDecoration(
             color: context.appGlassTint,
             borderRadius: BorderRadius.circular(100),
@@ -41,7 +47,11 @@ class ExamTopBar extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.location_on_rounded, size: context.sp(15), color: context.appPrimary),
+              Icon(
+                Icons.location_on_rounded,
+                size: context.sp(15),
+                color: context.appPrimary,
+              ),
               SizedBox(width: context.sp(4)),
               Text(
                 stateName,

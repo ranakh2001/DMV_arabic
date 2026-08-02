@@ -1,75 +1,72 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../network/dio_providers.dart';
 import '../storage/storage_providers.dart';
-import 'notification_service.dart';
+import 'fcm_token_remote_data_source.dart';
 import 'notification_service_provider.dart';
 import 'notification_settings.dart';
 
-/// FCM topic names mapped to each toggleable notification category.
+final fcmTokenRemoteDataSourceProvider = Provider<FcmTokenRemoteDataSource>(
+  (ref) => FcmTokenRemoteDataSource(ref.watch(dioProvider)),
+);
+
+/// FCM topics subscribed to while push notifications are enabled.
 class NotificationTopics {
   const NotificationTopics._();
 
   static const subscriptionReminders = 'subscription_reminders';
   static const contentUpdates = 'content_updates';
   static const announcements = 'announcements';
+
+  static const all = [subscriptionReminders, contentUpdates, announcements];
 }
 
-/// Loads, updates, and persists [NotificationSettings] via shared_preferences,
-/// keeping FCM topic subscriptions in sync with the saved preferences.
+/// Loads, updates, and persists the push-notification permission toggle via
+/// shared_preferences, keeping FCM topic subscriptions in sync.
 class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
   @override
   NotificationSettings build() {
     final prefs = ref.read(prefsServiceProvider);
-    return NotificationSettings.fromMap({
-      'notif_push': prefs.getBool('notif_push'),
-      'notif_reminders': prefs.getBool('notif_reminders'),
-      'notif_content': prefs.getBool('notif_content'),
-      'notif_announcements': prefs.getBool('notif_announcements'),
-      'notif_sound': prefs.getBool('notif_sound'),
-    });
+    return NotificationSettings(push: prefs.getBool('notif_push') ?? true);
   }
 
   Future<void> update(NotificationSettings settings) async {
     state = settings;
     final prefs = ref.read(prefsServiceProvider);
-    for (final entry in settings.toMap().entries) {
-      await prefs.setBool(entry.key, entry.value);
-    }
+    await prefs.setBool('notif_push', settings.push);
     await syncTopics();
   }
 
-  Future<void> toggle({
-    bool? push,
-    bool? subscriptionReminders,
-    bool? contentUpdates,
-    bool? announcements,
-    bool? sound,
-  }) async {
-    await update(
-      state.copyWith(
-        push: push != null ? !state.push : null,
-        subscriptionReminders: subscriptionReminders != null ? !state.subscriptionReminders : null,
-        contentUpdates: contentUpdates != null ? !state.contentUpdates : null,
-        announcements: announcements != null ? !state.announcements : null,
-        sound: sound != null ? !state.sound : null,
-      ),
-    );
-  }
-
-  /// Subscribes/unsubscribes FCM topics to match the current [state].
-  /// The master `push` toggle overrides every individual category.
+  /// Subscribes/unsubscribes every FCM topic to match [state.push].
   Future<void> syncTopics() async {
     final service = ref.read(notificationServiceProvider);
-    await _syncTopic(service, NotificationTopics.subscriptionReminders, state.push && state.subscriptionReminders);
-    await _syncTopic(service, NotificationTopics.contentUpdates, state.push && state.contentUpdates);
-    await _syncTopic(service, NotificationTopics.announcements, state.push && state.announcements);
+    for (final topic in NotificationTopics.all) {
+      await (state.push
+          ? service.subscribeToTopic(topic)
+          : service.unsubscribeFromTopic(topic));
+    }
   }
 
-  Future<void> _syncTopic(NotificationService service, String topic, bool subscribed) {
-    return subscribed ? service.subscribeToTopic(topic) : service.unsubscribeFromTopic(topic);
+  /// Registers this device's FCM token with the backend, skipping the call
+  /// if it's already been registered (same token as last successful sync).
+  Future<void> registerDeviceToken() async {
+    try {
+      final token = await ref.read(notificationServiceProvider).getToken();
+      if (token == null) return;
+
+      final prefs = ref.read(prefsServiceProvider);
+      if (prefs.syncedFcmToken == token) return;
+
+      await ref.read(fcmTokenRemoteDataSourceProvider).register(token);
+      await prefs.setSyncedFcmToken(token);
+    } catch (e) {
+      // Best-effort: push setup must not fail login/app startup.
+      debugPrint('[fcm-token] register failed: $e');
+    }
   }
 }
 
 final notificationSettingsProvider =
     NotifierProvider<NotificationSettingsNotifier, NotificationSettings>(
-  NotificationSettingsNotifier.new,
-);
+      NotificationSettingsNotifier.new,
+    );

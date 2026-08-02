@@ -7,7 +7,11 @@ import 'settings_segment_button.dart';
 /// Settings row with a three-segment System/Light/Dark pill switch, wired
 /// directly to [themeModeProvider].
 class ThemeToggleRow extends StatelessWidget {
-  const ThemeToggleRow({super.key, required this.mode, required this.onChanged});
+  const ThemeToggleRow({
+    super.key,
+    required this.mode,
+    required this.onChanged,
+  });
 
   final ThemeMode mode;
   final ValueChanged<ThemeMode> onChanged;
@@ -21,7 +25,11 @@ class ThemeToggleRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.dark_mode_outlined, size: context.sp(20), color: context.appPrimary),
+              Icon(
+                Icons.dark_mode_outlined,
+                size: context.sp(20),
+                color: context.appPrimary,
+              ),
               SizedBox(width: context.sp(12)),
               Flexible(
                 child: Text(

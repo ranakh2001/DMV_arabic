@@ -68,14 +68,17 @@ class _ForgotVerifyScreenState extends ConsumerState<ForgotVerifyScreen> {
     ref.read(forgotVerifyControllerProvider.notifier).reset();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => ResetPasswordScreen(contact: widget.contact, code: _code),
+        builder: (_) =>
+            ResetPasswordScreen(contact: widget.contact, code: _code),
       ),
     );
   }
 
   Future<void> _resend() async {
     if (_secondsLeft > 0) return;
-    final result = await ref.read(forgotPasswordControllerProvider.notifier).send(contact: widget.contact);
+    final result = await ref
+        .read(forgotPasswordControllerProvider.notifier)
+        .send(contact: widget.contact);
     if (!mounted) return;
     ref.read(forgotPasswordControllerProvider.notifier).reset();
     if (result.isFailure) {
@@ -112,7 +115,13 @@ class _ForgotVerifyScreenState extends ConsumerState<ForgotVerifyScreen> {
                             child: AnimatedHeroIcon(
                               icon: Icons.security_rounded,
                               badges: const [
-                                HeroBadge(top: 12, left: 12, size: 32, iconSize: 15, icon: Icons.mail_outline_rounded),
+                                HeroBadge(
+                                  top: 12,
+                                  left: 12,
+                                  size: 32,
+                                  iconSize: 15,
+                                  icon: Icons.mail_outline_rounded,
+                                ),
                                 HeroBadge(
                                   bottom: 12,
                                   right: 12,

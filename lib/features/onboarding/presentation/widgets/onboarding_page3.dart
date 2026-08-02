@@ -10,7 +10,11 @@ import 'painters/us_outline_painter.dart';
 
 /// Onboarding slide 3: pick the user's DMV state on a stylized US map.
 class OnboardingPage3 extends StatefulWidget {
-  const OnboardingPage3({super.key, required this.selectedState, required this.onStateChanged});
+  const OnboardingPage3({
+    super.key,
+    required this.selectedState,
+    required this.onStateChanged,
+  });
 
   final UsState? selectedState;
   final ValueChanged<UsState?> onStateChanged;
@@ -19,7 +23,8 @@ class OnboardingPage3 extends StatefulWidget {
   State<OnboardingPage3> createState() => _OnboardingPage3State();
 }
 
-class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProviderStateMixin {
+class _OnboardingPage3State extends State<OnboardingPage3>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _pinsCtrl;
 
   static const _pinPositions = [
@@ -35,7 +40,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _pinsCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))..forward();
+    _pinsCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..forward();
   }
 
   @override
@@ -45,7 +53,11 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
   }
 
   void _showStatePicker(BuildContext context) {
-    showStatePickerSheet(context, currentStateId: widget.selectedState?.id, onSelected: widget.onStateChanged);
+    showStatePickerSheet(
+      context,
+      currentStateId: widget.selectedState?.id,
+      onSelected: widget.onStateChanged,
+    );
   }
 
   @override
@@ -69,8 +81,20 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
                     final h = constraints.maxHeight;
                     return Stack(
                       children: [
-                        Positioned.fill(child: CustomPaint(painter: MapGridPainter(color: context.appTextSecondary.withAlpha(8)))),
-                        Positioned.fill(child: CustomPaint(painter: UsOutlinePainter(color: accent.withAlpha(55)))),
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: MapGridPainter(
+                              color: context.appTextSecondary.withAlpha(8),
+                            ),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: UsOutlinePainter(
+                              color: accent.withAlpha(55),
+                            ),
+                          ),
+                        ),
                         Positioned(
                           left: w * 0.16,
                           top: h * 0.35,
@@ -79,7 +103,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
                             height: h * 0.50,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: RadialGradient(colors: [context.appSecondary.withAlpha(95), context.appSecondary.withAlpha(0)]),
+                              gradient: RadialGradient(
+                                colors: [
+                                  context.appSecondary.withAlpha(95),
+                                  context.appSecondary.withAlpha(0),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -109,43 +138,70 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
                 Text(
                   context.t('onboarding.slide3.title'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 22, fontWeight: FontWeight.w700, color: context.appTextPrimary, height: 1.4),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: context.appTextPrimary,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   context.t('onboarding.slide3.subtitle'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 15, color: context.appTextSecondary, height: 1.5),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 15,
+                    color: context.appTextSecondary,
+                    height: 1.5,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 GestureDetector(
                   onTap: () => _showStatePicker(context),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
                       color: context.appSurface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: widget.selectedState != null ? accent : accent.withAlpha(80),
+                        color: widget.selectedState != null
+                            ? accent
+                            : accent.withAlpha(80),
                         width: widget.selectedState != null ? 1.5 : 1,
                       ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.account_balance_rounded, color: accent, size: 20),
+                        Icon(
+                          Icons.account_balance_rounded,
+                          color: accent,
+                          size: 20,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            widget.selectedState?.name(arabic: isAr) ?? context.t('onboarding.slide3.placeholder'),
+                            widget.selectedState?.name(arabic: isAr) ??
+                                context.t('onboarding.slide3.placeholder'),
                             style: TextStyle(
                               fontFamily: 'Almarai',
                               fontSize: 15,
-                              color: widget.selectedState != null ? context.appTextPrimary : context.appTextSecondary,
+                              color: widget.selectedState != null
+                                  ? context.appTextPrimary
+                                  : context.appTextSecondary,
                             ),
                           ),
                         ),
-                        Icon(Icons.keyboard_arrow_down_rounded, color: accent, size: 22),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: accent,
+                          size: 22,
+                        ),
                       ],
                     ),
                   ),
@@ -154,7 +210,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> with SingleTickerProv
                 Text(
                   context.t('onboarding.slide3.hint'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appTextSecondary, height: 1.4),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 13,
+                    color: context.appTextSecondary,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),

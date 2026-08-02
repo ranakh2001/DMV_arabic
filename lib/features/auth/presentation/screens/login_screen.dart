@@ -38,7 +38,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    await ref.read(loginControllerProvider.notifier).login(contact: _contactCtrl.text.trim(), password: _passwordCtrl.text);
+    await ref
+        .read(loginControllerProvider.notifier)
+        .login(contact: _contactCtrl.text.trim(), password: _passwordCtrl.text);
   }
 
   @override
@@ -49,7 +51,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.isFailure && (next.error?.startsWith('UNVERIFIED:') ?? false)) {
         final contact = next.error!.replaceFirst('UNVERIFIED:', '');
         ref.read(loginControllerProvider.notifier).reset();
-        Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => VerifyScreen(contact: contact)));
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => VerifyScreen(contact: contact),
+          ),
+        );
       }
     });
 
@@ -65,7 +71,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
                     child: Row(
                       children: [
-                        CircleNavButton(icon: Icons.arrow_back_rounded, onTap: () => Navigator.of(context).maybePop()),
+                        CircleNavButton(
+                          icon: Icons.arrow_back_rounded,
+                          onTap: () => Navigator.of(context).maybePop(),
+                        ),
                       ],
                     ),
                   ),
@@ -90,7 +99,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text(
                             context.t('auth.login.subtitle'),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: 'Almarai', fontSize: 14, color: context.appTextSecondary, height: 1.6),
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 14,
+                              color: context.appTextSecondary,
+                              height: 1.6,
+                            ),
                           ),
                           const SizedBox(height: 36),
                           AuthGlassCard(
@@ -99,7 +113,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  PhoneField(controller: _contactCtrl, label: context.t('field.phone')),
+                                  PhoneField(
+                                    controller: _contactCtrl,
+                                    label: context.t('field.phone'),
+                                  ),
                                   const SizedBox(height: 20),
                                   AuthFieldLabel(context.t('field.password')),
                                   const SizedBox(height: 8),
@@ -108,12 +125,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     obscureText: _obscurePassword,
                                     textInputAction: TextInputAction.done,
                                     onFieldSubmitted: (_) => _submit(),
-                                    style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+                                    style: TextStyle(
+                                      fontFamily: 'Almarai',
+                                      color: context.appTextPrimary,
+                                      fontSize: 15,
+                                    ),
                                     decoration: authPasswordDecoration(
                                       context: context,
                                       hint: '••••••••',
                                       obscure: _obscurePassword,
-                                      onToggle: () => setState(() => _obscurePassword = !_obscurePassword),
+                                      onToggle: () => setState(
+                                        () => _obscurePassword =
+                                            !_obscurePassword,
+                                      ),
                                     ),
                                     validator: Validators.password(context),
                                   ),
@@ -122,7 +146,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     alignment: AlignmentDirectional.centerEnd,
                                     child: GestureDetector(
                                       onTap: () => Navigator.of(context).push(
-                                        MaterialPageRoute<void>(builder: (_) => const ForgotPasswordScreen()),
+                                        MaterialPageRoute<void>(
+                                          builder: (_) =>
+                                              const ForgotPasswordScreen(),
+                                        ),
                                       ),
                                       child: Text(
                                         context.t('auth.login.forgot'),
@@ -136,17 +163,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 24),
-                                  if (state.isFailure && state.error != null && !state.error!.startsWith('UNVERIFIED:'))
+                                  if (state.isFailure &&
+                                      state.error != null &&
+                                      !state.error!.startsWith('UNVERIFIED:'))
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 12),
+                                      padding: const EdgeInsets.only(
+                                        bottom: 12,
+                                      ),
                                       child: Text(
                                         state.error!,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontFamily: 'Almarai', fontSize: 13, color: context.appError),
+                                        style: TextStyle(
+                                          fontFamily: 'Almarai',
+                                          fontSize: 13,
+                                          color: context.appError,
+                                        ),
                                       ),
                                     ),
                                   GlowElevatedButton(
-                                    onPressed: state.isSubmitting ? null : _submit,
+                                    onPressed: state.isSubmitting
+                                        ? null
+                                        : _submit,
                                     label: context.t('auth.login.submit'),
                                     loading: state.isSubmitting,
                                   ),
@@ -160,12 +197,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             children: [
                               Text(
                                 context.t('auth.login.no_account'),
-                                style: TextStyle(fontFamily: 'Almarai', fontSize: 14, color: context.appTextSecondary),
+                                style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: 14,
+                                  color: context.appTextSecondary,
+                                ),
                               ),
                               const SizedBox(width: 6),
                               GestureDetector(
                                 onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute<void>(builder: (_) => const RegisterScreen()),
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const RegisterScreen(),
+                                  ),
                                 ),
                                 child: Text(
                                   context.t('auth.login.sign_up'),

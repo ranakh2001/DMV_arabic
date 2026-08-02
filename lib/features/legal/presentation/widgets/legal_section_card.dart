@@ -14,8 +14,14 @@ class LegalSectionCard extends StatelessWidget {
     required this.title,
     this.body,
     this.children,
-  })  : assert(number != null || icon != null, 'Provide either a number or an icon.'),
-        assert(body != null || children != null, 'Provide either body text or children.');
+  }) : assert(
+         number != null || icon != null,
+         'Provide either a number or an icon.',
+       ),
+       assert(
+         body != null || children != null,
+         'Provide either body text or children.',
+       );
 
   final int? number;
   final IconData? icon;
@@ -51,7 +57,11 @@ class LegalSectionCard extends StatelessWidget {
                           color: context.appPrimary,
                         ),
                       )
-                    : Icon(icon, size: context.sp(17), color: context.appPrimary),
+                    : Icon(
+                        icon,
+                        size: context.sp(17),
+                        color: context.appPrimary,
+                      ),
               ),
               SizedBox(width: context.sp(10)),
               Expanded(

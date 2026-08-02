@@ -14,7 +14,11 @@ InputDecoration authFieldDecoration({
   final accent = context.appPrimary;
   return InputDecoration(
     hintText: hint,
-    hintStyle: TextStyle(fontFamily: 'Almarai', color: context.appTextSecondary, fontSize: 14),
+    hintStyle: TextStyle(
+      fontFamily: 'Almarai',
+      color: context.appTextSecondary,
+      fontSize: 14,
+    ),
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
     filled: true,
@@ -58,7 +62,11 @@ InputDecoration authPasswordDecoration({
     hint: hint,
     prefixIcon: Icon(Icons.lock_outline_rounded, color: accent, size: 20),
     suffixIcon: IconButton(
-      icon: Icon(obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: accent, size: 20),
+      icon: Icon(
+        obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+        color: accent,
+        size: 20,
+      ),
       onPressed: onToggle,
     ),
   );

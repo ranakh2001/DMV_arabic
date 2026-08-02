@@ -56,12 +56,11 @@ abstract final class AppTypography {
     double size = 15,
     FontWeight weight = FontWeight.w400,
     Color? color,
-  }) =>
-      TextStyle(
-        fontFamily: 'Almarai',
-        fontSize: context.sp(size.clamp(15.0, double.infinity)),
-        fontWeight: weight,
-        color: color,
-        height: 1.5,
-      );
+  }) => TextStyle(
+    fontFamily: 'Almarai',
+    fontSize: context.sp(size.clamp(15.0, double.infinity)),
+    fontWeight: weight,
+    color: color,
+    height: 1.5,
+  );
 }

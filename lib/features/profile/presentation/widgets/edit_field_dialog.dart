@@ -52,7 +52,9 @@ class _EditFieldDialogState extends State<_EditFieldDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(context.ts('profile.edit_field_title', {'field': widget.label})),
+      title: Text(
+        context.ts('profile.edit_field_title', {'field': widget.label}),
+      ),
       content: Form(
         key: _formKey,
         child: TextFormField(

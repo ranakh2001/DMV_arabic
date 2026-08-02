@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/utils/result.dart';
@@ -8,7 +10,8 @@ import '../datasources/profile_remote_data_source.dart';
 /// Concrete implementation of [ProfileRepository].
 /// Converts exceptions to [Result.failure] with localized [Failure] values.
 class ProfileRepositoryImpl implements ProfileRepository {
-  const ProfileRepositoryImpl({required ProfileRemoteDataSource remote}) : _remote = remote;
+  const ProfileRepositoryImpl({required ProfileRemoteDataSource remote})
+    : _remote = remote;
 
   final ProfileRemoteDataSource _remote;
 
@@ -37,6 +40,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
+  Future<Result<UserProfile>> uploadProfilePhoto(File photo) async {
+    try {
+      final model = await _remote.uploadProfilePhoto(photo);
+      return Result.success(model.toEntity());
+    } on ServerException catch (e) {
+      return Result.failure(_fromServer(e));
+    } catch (_) {
+      return Result.failure(const NetworkFailure());
+    }
+  }
+
+  @override
   Future<Result<void>> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -56,9 +71,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   ApiFailure _fromServer(ServerException e) => ApiFailure(
-        messageAr: e.messageAr,
-        messageEn: e.messageEn,
-        statusCode: e.statusCode,
-        errorCode: e.errorCode,
-      );
+    messageAr: e.messageAr,
+    messageEn: e.messageEn,
+    statusCode: e.statusCode,
+    errorCode: e.errorCode,
+  );
 }

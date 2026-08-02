@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -12,7 +14,9 @@ class ProfileRemoteDataSource {
   final Dio _dio;
 
   Future<UserProfileModel> getProfile() async {
-    final response = await _request(() => _dio.get<Map<String, dynamic>>(ApiConstants.profile));
+    final response = await _request(
+      () => _dio.get<Map<String, dynamic>>(ApiConstants.profile),
+    );
     return UserProfileModel.fromJson(response.data as Map<String, dynamic>);
   }
 
@@ -21,6 +25,33 @@ class ProfileRemoteDataSource {
       () => _dio.put<Map<String, dynamic>>(ApiConstants.profile, data: fields),
     );
     return UserProfileModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  /// Uploads a new profile photo. Unlike the other `/users/*` endpoints,
+  /// this one nests the updated user under `data.user` (`data` itself only
+  /// holds `profile_photo_url` + `user`), so it's unwrapped here rather
+  /// than reusing `UserProfileModel.fromJson(response.data)` directly.
+  Future<UserProfileModel> uploadProfilePhoto(File photo) async {
+    final formData = FormData.fromMap({
+      'photo': await MultipartFile.fromFile(
+        photo.path,
+        filename: photo.uri.pathSegments.last,
+      ),
+    });
+    final response = await _request(
+      () => _dio.post<Map<String, dynamic>>(
+        ApiConstants.profilePhoto,
+        data: formData,
+        options: Options(
+          sendTimeout: const Duration(milliseconds: ApiConstants.uploadSendTimeoutMs),
+          receiveTimeout: const Duration(
+            milliseconds: ApiConstants.uploadReceiveTimeoutMs,
+          ),
+        ),
+      ),
+    );
+    final data = response.data as Map<String, dynamic>;
+    return UserProfileModel.fromJson(data['user'] as Map<String, dynamic>);
   }
 
   Future<void> changePassword({
@@ -53,7 +84,9 @@ class ProfileRemoteDataSource {
       return parsed;
     } on DioException catch (e) {
       final body = e.response?.data;
-      final message = body is Map<String, dynamic> ? body['message'] as String? : null;
+      final message = body is Map<String, dynamic>
+          ? body['message'] as String?
+          : null;
       throw ServerException(
         messageAr: message ?? 'حدث خطأ. يرجى المحاولة مرة أخرى.',
         statusCode: e.response?.statusCode,

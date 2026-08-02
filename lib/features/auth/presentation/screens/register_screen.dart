@@ -65,10 +65,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
     if (!_termsAccepted) {
-      _showSnackBar(context.t('auth.register.agree_terms') + context.t('auth.register.terms_use'));
+      _showSnackBar(
+        context.t('auth.register.agree_terms') +
+            context.t('auth.register.terms_use'),
+      );
       return;
     }
-    await ref.read(registerControllerProvider.notifier).register(
+    await ref
+        .read(registerControllerProvider.notifier)
+        .register(
           name: _nameCtrl.text.trim(),
           contact: _contactCtrl.text.trim(),
           stateId: _selectedState!.id,
@@ -78,7 +83,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: context.appPrimary, behavior: SnackBarBehavior.floating),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: context.appPrimary,
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -89,7 +98,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     ref.listen(registerControllerProvider, (_, next) {
       if (next.isSuccess) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute<void>(builder: (_) => VerifyScreen(contact: _contactCtrl.text.trim())),
+          MaterialPageRoute<void>(
+            builder: (_) => VerifyScreen(contact: _contactCtrl.text.trim()),
+          ),
         );
       }
     });
@@ -106,11 +117,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
                     child: Row(
                       children: [
-                        CircleNavButton(icon: Icons.arrow_back_rounded, onTap: () => Navigator.of(context).maybePop()),
+                        CircleNavButton(
+                          icon: Icons.arrow_back_rounded,
+                          onTap: () => Navigator.of(context).maybePop(),
+                        ),
                         const Spacer(),
                         Text(
                           context.t('auth.register.title'),
-                          style: TextStyle(fontFamily: 'Almarai', fontSize: 18, fontWeight: FontWeight.w700, color: context.appTextPrimary),
+                          style: TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: context.appTextPrimary,
+                          ),
                         ),
                         const Spacer(),
                       ],
@@ -125,13 +144,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           Text(
                             context.t('auth.register.welcome_title'),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: 'Almarai', fontSize: 32, fontWeight: FontWeight.w800, color: context.appTextPrimary, height: 1.2),
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: context.appTextPrimary,
+                              height: 1.2,
+                            ),
                           ),
                           const SizedBox(height: 10),
                           Text(
                             context.t('auth.register.welcome_subtitle'),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: 'Almarai', fontSize: 14, color: context.appTextSecondary, height: 1.65),
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: 14,
+                              color: context.appTextSecondary,
+                              height: 1.65,
+                            ),
                           ),
                           const SizedBox(height: 30),
                           RegisterForm(
@@ -142,13 +172,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             confirmCtrl: _confirmCtrl,
                             obscurePassword: _obscurePassword,
                             obscureConfirm: _obscureConfirm,
-                            onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword),
-                            onToggleConfirm: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                            onTogglePassword: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                            onToggleConfirm: () => setState(
+                              () => _obscureConfirm = !_obscureConfirm,
+                            ),
                             passwordStrength: _pwStrength,
                             selectedState: _selectedState,
-                            onStateSelected: (s) => setState(() => _selectedState = s),
+                            onStateSelected: (s) =>
+                                setState(() => _selectedState = s),
                             termsAccepted: _termsAccepted,
-                            onTermsChanged: (v) => setState(() => _termsAccepted = v ?? false),
+                            onTermsChanged: (v) =>
+                                setState(() => _termsAccepted = v ?? false),
                             errorMessage: state.isFailure ? state.error : null,
                             submitting: state.isSubmitting,
                             onSubmit: _submit,
@@ -159,14 +195,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             children: [
                               Text(
                                 context.t('auth.register.have_account'),
-                                style: TextStyle(fontFamily: 'Almarai', fontSize: 14, color: context.appTextSecondary),
+                                style: TextStyle(
+                                  fontFamily: 'Almarai',
+                                  fontSize: 14,
+                                  color: context.appTextSecondary,
+                                ),
                               ),
                               const SizedBox(width: 6),
                               GestureDetector(
-                                onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const LoginScreen())),
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                ),
                                 child: Text(
                                   context.t('auth.register.sign_in'),
-                                  style: TextStyle(fontFamily: 'Almarai', fontSize: 14, fontWeight: FontWeight.w700, color: context.appPrimary),
+                                  style: TextStyle(
+                                    fontFamily: 'Almarai',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: context.appPrimary,
+                                  ),
                                 ),
                               ),
                             ],

@@ -22,7 +22,11 @@ class OnboardingAnimatedPin extends StatelessWidget {
   Widget build(BuildContext context) {
     final anim = CurvedAnimation(
       parent: controller,
-      curve: Interval(delay, (delay + 0.35).clamp(0.0, 1.0), curve: Curves.elasticOut),
+      curve: Interval(
+        delay,
+        (delay + 0.35).clamp(0.0, 1.0),
+        curve: Curves.elasticOut,
+      ),
     );
 
     return Positioned(

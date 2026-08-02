@@ -23,7 +23,8 @@ const Map<String, String> stringsAr = {
 
   // --- Welcome screen
   'auth.welcome.greeting': 'أهلا بك',
-  'auth.welcome.subtitle': 'سجّل الدخول أو أنشئ حسابًا للبدء في رحلة الحصول على رخصة القيادة',
+  'auth.welcome.subtitle':
+      'سجّل الدخول أو أنشئ حسابًا للبدء في رحلة الحصول على رخصة القيادة',
   'auth.welcome.login_btn': 'تسجيل الدخول',
   'auth.welcome.register_btn': 'إنشاء حساب جديد',
   'auth.welcome.terms': 'بتسجيلك أنت توافق على شروط الخدمة',
@@ -39,7 +40,8 @@ const Map<String, String> stringsAr = {
   'auth.register.title': 'إنشاء حساب',
   'auth.register.subtitle': 'انضم الآن وابدأ الاستعداد',
   'auth.register.welcome_title': 'مرحباً بك معنا',
-  'auth.register.welcome_subtitle': 'ابدأ رحلتك للحصول على رخصة القيادة الأمريكية بكل سهولة واحترافية.',
+  'auth.register.welcome_subtitle':
+      'ابدأ رحلتك للحصول على رخصة القيادة الأمريكية بكل سهولة واحترافية.',
   'auth.register.submit': 'إنشاء الحساب +',
   'auth.register.have_account': 'لديك حساب بالفعل؟',
   'auth.register.sign_in': 'تسجيل الدخول',
@@ -56,8 +58,10 @@ const Map<String, String> stringsAr = {
   'auth.verify.resend_in': 'إعادة الإرسال بعد',
   'auth.verify.expires_in': 'ينتهي الرمز بعد',
   'auth.verify.expired': 'انتهت صلاحية الرمز',
-  'auth.verify.max_resends': 'لقد وصلت إلى الحد الأقصى لإعادة الإرسال (3 مرات/ساعة).',
-  'auth.verify.resend_unavailable': 'لم يصلك الرمز؟ يرجى المحاولة لاحقاً أو التواصل مع الدعم.',
+  'auth.verify.max_resends':
+      'لقد وصلت إلى الحد الأقصى لإعادة الإرسال (3 مرات/ساعة).',
+  'auth.verify.resend_unavailable':
+      'لم يصلك الرمز؟ يرجى المحاولة لاحقاً أو التواصل مع الدعم.',
 
   'auth.forgot.title': 'نسيت كلمة المرور',
   'auth.forgot.subtitle': 'أدخل بريدك أو رقم هاتفك لإعادة تعيين كلمة المرور',
@@ -121,6 +125,7 @@ const Map<String, String> stringsAr = {
   'home.start_first_simulation_title': 'ابدأ أول محاكاة لك الآن',
   'home.view_all': 'عرض الكل',
   'home.simulation_test_title': 'اختبار محاكاة – ولاية كاليفورنيا',
+  'home.simulation_test_title_named': 'اختبار محاكاة – ولاية {state}',
   'home.continue_now': 'استمر الآن',
   'home.start_now': 'ابدأ الآن',
   'home.quick_quiz_subtitle': 'أجب على 10 أسئلة عشوائية',
@@ -172,12 +177,9 @@ const Map<String, String> stringsAr = {
 
   // --- Notifications
   'notifications.title': 'الإشعارات',
-  'notifications.subtitle': 'اختر التنبيهات التي تريد استقبالها. إيقاف إشعارات الدفع يوقف جميع الفئات أدناه.',
+  'notifications.empty': 'لا توجد إشعارات بعد',
+  'notifications.error': 'تعذر جلب الإشعارات.',
   'notif.push': 'إشعارات الدفع',
-  'notif.reminders': 'تذكيرات الاشتراك',
-  'notif.content': 'تحديثات المحتوى',
-  'notif.announcements': 'الإعلانات',
-  'notif.sound': 'صوت الإشعارات',
 
   // --- Forgot password flow
   'auth.forgot.badge': 'استعادة كلمة المرور',
@@ -215,9 +217,14 @@ const Map<String, String> stringsAr = {
   'profile.selected_state': 'الولاية المختارة',
   'profile.field_photo': 'الصورة الشخصية',
   'profile.edit_photo': 'تعديل الصورة',
+  'profile.photo_gallery': 'اختيار من المعرض',
+  'profile.photo_camera': 'التقاط صورة',
+  'profile.photo_updated': 'تم تحديث الصورة الشخصية',
   'profile.change_password': 'تغيير كلمة المرور',
   'profile.privacy_policy': 'سياسة الخصوصية',
+  'profile.terms_of_use': 'شروط الاستخدام',
   'profile.contact_us': 'تواصل معنا',
+  'profile.about_us': 'من نحن',
   'profile.ui_language': 'لغة الواجهة',
   'profile.ui_theme': 'مظهر التطبيق',
   'profile.edit_field_title': 'تعديل {field}',
@@ -227,10 +234,12 @@ const Map<String, String> stringsAr = {
 
   // --- Stats tab
   'stats.title': 'الاحصائيات',
-  'stats.empty_message': 'لا توجد بيانات بعد — أكمل أول محاكاة لك لعرض إحصائياتك',
+  'stats.empty_message':
+      'لا توجد بيانات بعد — أكمل أول محاكاة لك لعرض إحصائياتك',
   'stats.success_rate': 'نسبة النجاح',
   'stats.improvement': 'تحسّن {percent}% عن المعدل السابق',
-  'stats.performance_message': 'أداء ممتاز! أنت تقترب من الجاهزية التامة للاختبار الحقيقي.',
+  'stats.performance_message':
+      'أداء ممتاز! أنت تقترب من الجاهزية التامة للاختبار الحقيقي.',
   'stats.completed_simulations': 'المحاكاة المنجزة',
   'stats.total_questions': 'إجمالي الأسئلة',
   'stats.total_questions_more': 'أكثر من {count}',
@@ -241,6 +250,8 @@ const Map<String, String> stringsAr = {
   'stats.pass_threshold': 'حد النجاح',
   'stats.last_attempt': 'المحاولة الأخيرة',
   'stats.first_attempt': 'المحاولة الأولى',
+  'stats.by_category_title': 'الأداء حسب الفئة',
+  'stats.load_error': 'تعذر تحميل الإحصائيات.',
 
   // --- Simulation tab
   'simulation.title': 'محاكاة اختبار DMV',
@@ -255,6 +266,17 @@ const Map<String, String> stringsAr = {
   'simulation.autosave_note': 'يتم حفظ تقدمك تلقائياً كل 30 ثانية',
   'simulation.review_note': 'يمكنك مراجعة وتعديل إجاباتك قبل التسليم',
   'simulation.start': 'بدء المحاكاة',
+  'simulation.free_trial_button': 'التجربة المجانية',
+
+  // --- Practice (free trial) question screen
+  'practice.question_progress': 'سؤال {current} من {total}',
+  'practice.correct': 'إجابة صحيحة!',
+  'practice.incorrect': 'إجابة خاطئة',
+  'practice.next': 'السؤال التالي',
+  'practice.previous': 'السؤال السابق',
+  'practice.trial_ended_title': 'انتهت التجربة المجانية',
+  'practice.trial_ended_message': 'لقد استخدمت {used} من {total} أسئلة مجانية',
+  'practice.subscribe_now': 'اشترك الآن',
 
   // --- Exam question screen
   'exam.question_progress': 'سؤال {current} من {total}',
@@ -262,11 +284,37 @@ const Map<String, String> stringsAr = {
   'exam.previous': 'السابق',
   'exam.submit': 'تسليم الاختبار',
   'exam.submit_confirm_title': 'تسليم الاختبار؟',
-  'exam.submit_confirm_message': 'هل أنت متأكد من رغبتك في التسليم؟ لن تتمكن من تعديل إجاباتك بعد ذلك.',
+  'exam.submit_confirm_message':
+      'هل أنت متأكد من رغبتك في التسليم؟ لن تتمكن من تعديل إجاباتك بعد ذلك.',
   'exam.submitted_message': 'تم تسليم الاختبار بنجاح',
   'exam.exit_confirm_title': 'الخروج من المحاكاة؟',
   'exam.exit_confirm_message': 'سيتم فقدان تقدمك في هذه المحاولة.',
   'exam.exit_confirm_action': 'خروج',
+
+  // --- Simulation exam (live API)
+  'exam.picker.title': 'اختر اختبار المحاكاة',
+  'exam.picker.empty': 'لا توجد اختبارات متاحة لهذه الولاية حالياً.',
+  'exam.picker.error': 'تعذر جلب قائمة الاختبارات.',
+  'exam.picker.questions_count': '{count} سؤال',
+  'exam.picker.start': 'ابدأ',
+  'exam.select_state_first': 'يرجى اختيار الولاية أولاً.',
+  'exam.start_error': 'تعذر بدء الاختبار. حاول مرة أخرى.',
+  'exam.history_title': 'سجل المحاولات',
+  'exam.history_empty': 'لا توجد محاولات سابقة بعد.',
+  'exam.history_error': 'تعذر جلب سجل المحاولات.',
+  'exam.result.title': 'نتيجة الاختبار',
+  'exam.result.passed': 'ناجح',
+  'exam.result.failed': 'راسب',
+  'exam.result.score_label': 'النتيجة',
+  'exam.result.correct_label': 'إجابات صحيحة',
+  'exam.result.incorrect_label': 'إجابات خاطئة',
+  'exam.result.time_label_value': 'الوقت: {time}',
+  'exam.result.review_title': 'مراجعة الإجابات',
+  'exam.result.your_answer': 'إجابتك',
+  'exam.result.correct_answer': 'الصحيحة',
+  'exam.result.no_answer': 'لم تتم الإجابة',
+  'exam.result.error': 'تعذر جلب نتيجة الاختبار.',
+  'exam.result.done': 'تم',
 
   // --- Validators
   'validator.email.required': 'البريد الإلكتروني مطلوب.',
@@ -308,7 +356,8 @@ const Map<String, String> stringsAr = {
   'legal.privacy.s5.body':
       'باستخدامك تطبيق DMV بالعربي، فإنك تقر بأنك قرأت وفهمت هذه الشروط وتوافق على الالتزام بها. إذا كنت لا توافق على أي جزء منها، يرجى التوقف عن استخدام التطبيق. نحتفظ بالحق في تحديث هذه الشروط في أي وقت، وسيتم إخطارك بأي تغييرات جوهرية.',
   'legal.privacy.contact.title': 'للتواصل معنا',
-  'legal.privacy.contact.body': 'إذا كانت لديك أي استفسارات، يسعدنا تواصلك معنا عبر:',
+  'legal.privacy.contact.body':
+      'إذا كانت لديك أي استفسارات، يسعدنا تواصلك معنا عبر:',
   'legal.privacy.delete_account': 'حذف حسابي',
   'legal.privacy.delete_account.subtitle':
       'سيتم حذف جميع بيانات حسابك ونتائجك نهائياً. لا يمكن التراجع عن هذا الإجراء.',
@@ -330,18 +379,26 @@ const Map<String, String> stringsAr = {
   'legal.terms.s3.item1': 'يجب استخدام التطبيق للأغراض التعليمية الشخصية فقط.',
   'legal.terms.s3.item2':
       'يُمنع منعاً باتاً محاولة نسخ أو استخراج المحتوى البرمجي أو قواعد البيانات الخاصة بالتطبيق.',
-  'legal.terms.s3.item3': 'أنت مسؤول عن الحفاظ على سرية معلومات حسابك ونشاطك داخل التطبيق.',
+  'legal.terms.s3.item3':
+      'أنت مسؤول عن الحفاظ على سرية معلومات حسابك ونشاطك داخل التطبيق.',
   'legal.terms.s4.title': 'إخلاء المسؤولية القانونية',
   'legal.terms.s4.body':
       'لا يتحمل فريق DMV بالعربي أي مسؤولية عن رسوب أي مستخدم في اختبار القيادة الحقيقي، أو عن أي مخالفات مرورية قد يرتكبها. المعلومات المقدمة لأغراض إرشادية وتدريبية فقط، والقوانين قد تختلف من ولاية لأخرى وقد تتغير من وقت لآخر؛ لذا يجب دائماً الرجوع إلى الكتيب الرسمي لولاية إقامتك.',
   'legal.terms.s5.title': 'التعديلات على الخدمة',
   'legal.terms.s5.body':
       'نحتفظ بالحق في تعديل الخدمة أو تعليقها أو إيقافها (أو أي جزء منها) في أي وقت، مع أو بدون إشعار مسبق. كما يحق لنا تحديث هذه الشروط بشكل دوري، ويُعد استمرارك في استخدام التطبيق بعد نشر أي تعديلات موافقة صريحة منك عليها.',
-  'legal.terms.footer_note': 'بضغطك على «متابعة»، فإنك توافق على شروط الاستخدام وسياسة الخصوصية',
+  'legal.terms.footer_note':
+      'بضغطك على «متابعة»، فإنك توافق على شروط الاستخدام وسياسة الخصوصية',
   'legal.terms.continue': 'متابعة',
 
+  // --- شاشة من نحن
+  'legal.about.title': 'من نحن',
+  'legal.about.version': 'الإصدار {version}',
+  'legal.about.description_title': 'عن التطبيق',
+
   // --- شاشة تغيير كلمة المرور
-  'change_password.hero_subtitle': 'قم بتأمين حسابك عبر تحديث كلمة المرور الخاصة بك بانتظام',
+  'change_password.hero_subtitle':
+      'قم بتأمين حسابك عبر تحديث كلمة المرور الخاصة بك بانتظام',
   'change_password.save': 'حفظ التغييرات',
   'change_password.success': 'تم تغيير كلمة المرور بنجاح',
 
@@ -363,9 +420,11 @@ const Map<String, String> stringsAr = {
 
   // --- خطط الاشتراك
   'subscription.title': 'خطط الاشتراك',
-  'subscription.trial_remaining': 'لديك {remaining} من {total} أسئلة مجانية متبقية',
+  'subscription.trial_remaining':
+      'لديك {remaining} من {total} أسئلة مجانية متبقية',
   'subscription.unlock_title': 'افتح كل المميزات',
-  'subscription.unlock_subtitle': 'اختبر بثقة وتقدم بسرعة أكبر نحو رخصتك من خلال الوصول غير المحدود',
+  'subscription.unlock_subtitle':
+      'اختبر بثقة وتقدم بسرعة أكبر نحو رخصتك من خلال الوصول غير المحدود',
   'subscription.plan.monthly': 'شهري',
   'subscription.plan.yearly': 'سنوي',
   'subscription.price.per_month': '/ شهر',
@@ -391,22 +450,13 @@ const Map<String, String> stringsAr = {
   'payment.method.google_pay': 'Google Pay',
   'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'بطاقة ائتمان / خصم',
-  'payment.card.holder_name': 'اسم حامل البطاقة',
-  'payment.card.number': 'رقم البطاقة',
-  'payment.card.expiry': 'تاريخ الانتهاء',
-  'payment.card.cvv': 'رمز الأمان (CVV)',
+  'payment.divider_or': 'أو',
   'payment.pay_now': 'ادفع {price}',
   'payment.secure_note': 'معلومات دفعك مشفّرة وآمنة',
   'payment.success.title': 'تم الاشتراك بنجاح!',
   'payment.success.subtitle': 'أصبح لديك الآن وصول كامل لجميع الميزات',
   'payment.success.start': 'ابدأ الآن',
-
-  // --- التحقق من بيانات البطاقة
-  'validator.card.holder_required': 'اسم حامل البطاقة مطلوب.',
-  'validator.card.number_required': 'رقم البطاقة مطلوب.',
-  'validator.card.number_invalid': 'أدخل رقم بطاقة صحيح مكوّن من 16 رقمًا.',
-  'validator.card.expiry_required': 'تاريخ الانتهاء مطلوب.',
-  'validator.card.expiry_invalid': 'أدخل تاريخ انتهاء صحيح (MM/YY).',
-  'validator.card.cvv_required': 'رمز الأمان مطلوب.',
-  'validator.card.cvv_invalid': 'أدخل رمز أمان صحيح.',
+  'payment.activating': 'جاري تفعيل اشتراكك...',
+  'payment.activation_pending':
+      'تم استلام الدفع، جاري تفعيل اشتراكك وسيصلك إشعار قريباً',
 };

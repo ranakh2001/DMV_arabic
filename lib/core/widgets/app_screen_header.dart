@@ -15,7 +15,12 @@ class AppScreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(context.sp(12), context.sp(10), context.sp(16), context.sp(6)),
+      padding: EdgeInsets.fromLTRB(
+        context.sp(12),
+        context.sp(10),
+        context.sp(16),
+        context.sp(6),
+      ),
       child: Row(
         children: [
           IconButton(

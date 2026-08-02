@@ -7,13 +7,17 @@ import '../constants/app_constants.dart';
 class ThemeModeNotifier extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
-    final raw = ref.read(prefsServiceProvider).getString(AppConstants.themePrefsKey);
+    final raw = ref
+        .read(prefsServiceProvider)
+        .getString(AppConstants.themePrefsKey);
     return _fromString(raw);
   }
 
   Future<void> setMode(ThemeMode mode) async {
     state = mode;
-    await ref.read(prefsServiceProvider).setString(AppConstants.themePrefsKey, mode.name);
+    await ref
+        .read(prefsServiceProvider)
+        .setString(AppConstants.themePrefsKey, mode.name);
   }
 
   /// Cycles: system → dark → light → system
@@ -27,11 +31,11 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   }
 
   static ThemeMode _fromString(String? raw) => switch (raw) {
-        'dark' => ThemeMode.dark,
-        'light' => ThemeMode.light,
-        'system' => ThemeMode.system,
-        _ => ThemeMode.system,
-      };
+    'dark' => ThemeMode.dark,
+    'light' => ThemeMode.light,
+    'system' => ThemeMode.system,
+    _ => ThemeMode.system,
+  };
 }
 
 /// Global provider for [ThemeMode].

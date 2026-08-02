@@ -10,13 +10,17 @@ class OnboardingStarfield extends StatefulWidget {
   State<OnboardingStarfield> createState() => _OnboardingStarfieldState();
 }
 
-class _OnboardingStarfieldState extends State<OnboardingStarfield> with SingleTickerProviderStateMixin {
+class _OnboardingStarfieldState extends State<OnboardingStarfield>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))..repeat();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    )..repeat();
   }
 
   @override
@@ -30,7 +34,9 @@ class _OnboardingStarfieldState extends State<OnboardingStarfield> with SingleTi
     final color = context.appPrimary;
     return AnimatedBuilder(
       animation: _ctrl,
-      builder: (_, _) => CustomPaint(painter: StarlightPainter(progress: _ctrl.value, color: color)),
+      builder: (_, _) => CustomPaint(
+        painter: StarlightPainter(progress: _ctrl.value, color: color),
+      ),
     );
   }
 }

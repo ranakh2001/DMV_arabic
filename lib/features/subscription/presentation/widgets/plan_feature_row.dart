@@ -21,7 +21,10 @@ class PlanFeatureRow extends StatelessWidget {
           Container(
             width: context.sp(20),
             height: context.sp(20),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: tint.withAlpha(35)),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: tint.withAlpha(35),
+            ),
             child: Icon(Icons.check_rounded, size: context.sp(13), color: tint),
           ),
           SizedBox(width: context.sp(10)),

@@ -8,11 +8,7 @@ class ErrorInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final failure = _toFailure(err);
     // Attach the failure to the error's extra for downstream use.
-    handler.next(
-      err.copyWith(
-        error: failure,
-      ),
-    );
+    handler.next(err.copyWith(error: failure));
   }
 
   Failure _toFailure(DioException err) {
@@ -74,14 +70,14 @@ class ErrorInterceptor extends Interceptor {
   }
 
   String _defaultArMessage(int status) => switch (status) {
-        400 => 'طلب غير صحيح. تحقق من البيانات المدخلة.',
-        401 => 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
-        403 => 'ليس لديك صلاحية للوصول.',
-        404 => 'المورد المطلوب غير موجود.',
-        409 => 'هذا الحساب موجود بالفعل.',
-        422 => 'بيانات غير صالحة.',
-        429 => 'طلبات كثيرة. أعد المحاولة لاحقاً.',
-        500 => 'خطأ في الخادم. يرجى المحاولة لاحقاً.',
-        _ => 'حدث خطأ ($status). يرجى المحاولة مرة أخرى.',
-      };
+    400 => 'طلب غير صحيح. تحقق من البيانات المدخلة.',
+    401 => 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
+    403 => 'ليس لديك صلاحية للوصول.',
+    404 => 'المورد المطلوب غير موجود.',
+    409 => 'هذا الحساب موجود بالفعل.',
+    422 => 'بيانات غير صالحة.',
+    429 => 'طلبات كثيرة. أعد المحاولة لاحقاً.',
+    500 => 'خطأ في الخادم. يرجى المحاولة لاحقاً.',
+    _ => 'حدث خطأ ($status). يرجى المحاولة مرة أخرى.',
+  };
 }

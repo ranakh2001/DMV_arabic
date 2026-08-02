@@ -128,7 +128,11 @@ class _OtpCell extends StatelessWidget {
         decoration: InputDecoration(
           counterText: '',
           hintText: '-',
-          hintStyle: TextStyle(color: context.appTextSecondary, fontSize: 22, fontWeight: FontWeight.w700),
+          hintStyle: TextStyle(
+            color: context.appTextSecondary,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
         ),
         onChanged: (val) {
@@ -144,7 +148,10 @@ class _BackspaceOnEmptyFormatter extends TextInputFormatter {
   final VoidCallback onDelete;
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (oldValue.text.isEmpty && newValue.text.isEmpty) {
       onDelete();
     }

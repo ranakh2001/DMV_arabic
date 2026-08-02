@@ -26,7 +26,8 @@ final secureStorageProvider = Provider<SecureStorageService>(
 
 /// Provider for [SharedPreferences]. Must be overridden in bootstrap.
 final sharedPreferencesProvider = Provider<SharedPreferences>(
-  (ref) => throw UnimplementedError('sharedPreferencesProvider not initialized'),
+  (ref) =>
+      throw UnimplementedError('sharedPreferencesProvider not initialized'),
 );
 
 /// Provider for [PrefsService].

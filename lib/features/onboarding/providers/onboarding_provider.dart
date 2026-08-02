@@ -5,7 +5,8 @@ import '../../../core/storage/storage_providers.dart';
 class OnboardingNotifier extends Notifier<bool> {
   @override
   bool build() =>
-      ref.read(prefsServiceProvider).getBool(AppConstants.onboardingDoneKey) ?? false;
+      ref.read(prefsServiceProvider).getBool(AppConstants.onboardingDoneKey) ??
+      false;
 
   Future<void> complete() async {
     state = true;
@@ -15,5 +16,6 @@ class OnboardingNotifier extends Notifier<bool> {
   }
 }
 
-final onboardingDoneProvider =
-    NotifierProvider<OnboardingNotifier, bool>(OnboardingNotifier.new);
+final onboardingDoneProvider = NotifierProvider<OnboardingNotifier, bool>(
+  OnboardingNotifier.new,
+);

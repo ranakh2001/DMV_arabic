@@ -28,7 +28,8 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
   }
 
   void _measureNavBar() {
-    final renderBox = _navBarKey.currentContext?.findRenderObject() as RenderBox?;
+    final renderBox =
+        _navBarKey.currentContext?.findRenderObject() as RenderBox?;
     final height = renderBox?.size.height ?? 0;
     if (mounted && height != _navBarHeight) {
       setState(() => _navBarHeight = height);
@@ -64,7 +65,8 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               child: AppBottomNavBar(
                 key: _navBarKey,
                 current: currentTab,
-                onSelect: (tab) => ref.read(homeTabProvider.notifier).select(tab),
+                onSelect: (tab) =>
+                    ref.read(homeTabProvider.notifier).select(tab),
               ),
             ),
           ),

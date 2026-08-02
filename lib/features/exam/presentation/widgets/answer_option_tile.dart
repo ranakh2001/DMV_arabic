@@ -12,7 +12,10 @@ class AnswerOptionTile extends StatelessWidget {
     this.icon,
     required this.selected,
     required this.onTap,
-  }) : assert(text != null || icon != null, 'An option needs text and/or an icon.');
+  }) : assert(
+         text != null || icon != null,
+         'An option needs text and/or an icon.',
+       );
 
   final String letter;
   final String? text;
@@ -28,9 +31,14 @@ class AnswerOptionTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(14)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.sp(14),
+          vertical: context.sp(14),
+        ),
         decoration: BoxDecoration(
-          color: selected ? context.appPrimary.withAlpha(28) : context.appGlassTint,
+          color: selected
+              ? context.appPrimary.withAlpha(28)
+              : context.appGlassTint,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: borderColor, width: selected ? 1.6 : 1),
         ),
@@ -40,11 +48,20 @@ class AnswerOptionTile extends StatelessWidget {
             SizedBox(width: context.sp(12)),
             Expanded(
               child: Row(
-                mainAxisAlignment: text == null ? MainAxisAlignment.center : MainAxisAlignment.start,
+                mainAxisAlignment: text == null
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
                 children: [
                   if (icon != null)
-                    Icon(icon, size: context.sp(26), color: selected ? context.appPrimary : context.appTextSecondary),
-                  if (icon != null && text != null) SizedBox(width: context.sp(10)),
+                    Icon(
+                      icon,
+                      size: context.sp(26),
+                      color: selected
+                          ? context.appPrimary
+                          : context.appTextSecondary,
+                    ),
+                  if (icon != null && text != null)
+                    SizedBox(width: context.sp(10)),
                   if (text != null)
                     Expanded(
                       child: Text(
@@ -84,7 +101,9 @@ class _LetterBadge extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: selected ? context.appPrimary : Colors.transparent,
-        border: Border.all(color: selected ? context.appPrimary : context.appTextSecondary),
+        border: Border.all(
+          color: selected ? context.appPrimary : context.appTextSecondary,
+        ),
       ),
       child: Text(
         letter,

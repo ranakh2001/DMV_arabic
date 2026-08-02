@@ -19,8 +19,9 @@ class AuthGate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final splashDone = ref.watch(splashDoneProvider);
     final onboardingDone = ref.watch(onboardingDoneProvider);
-    final authStatus =
-        ref.watch(authControllerProvider.select((s) => s.status));
+    final authStatus = ref.watch(
+      authControllerProvider.select((s) => s.status),
+    );
 
     // Login/register/verify are pushed as routes on top of this widget, so
     // becoming authenticated alone doesn't bring them back down — pop them
@@ -50,7 +51,20 @@ class _AuthenticatedRoot extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSubscribed = ref.watch(subscriptionProvider.select((s) => s.isSubscribed));
+    final hydrationStatus = ref.watch(
+      subscriptionProvider.select((s) => s.hydrationStatus),
+    );
+    // Wait for the real `/subscriptions/status` check before deciding —
+    // otherwise an already-subscribed user would flash the paywall for a
+    // frame while `isSubscribed` still holds its default `false`.
+    if (hydrationStatus == SubscriptionHydrationStatus.idle ||
+        hydrationStatus == SubscriptionHydrationStatus.loading) {
+      return const SplashScreen();
+    }
+
+    final isSubscribed = ref.watch(
+      subscriptionProvider.select((s) => s.isSubscribed),
+    );
     final paywallDismissed = ref.watch(paywallDismissedProvider);
 
     if (!isSubscribed && !paywallDismissed) {

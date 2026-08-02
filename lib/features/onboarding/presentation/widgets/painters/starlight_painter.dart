@@ -56,7 +56,11 @@ class StarlightPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     for (final l in _lines) {
-      canvas.drawLine(Offset(l.$1 * w, l.$2 * h), Offset(l.$3 * w, l.$4 * h), linePaint);
+      canvas.drawLine(
+        Offset(l.$1 * w, l.$2 * h),
+        Offset(l.$3 * w, l.$4 * h),
+        linePaint,
+      );
     }
 
     for (final s in _stars) {
@@ -74,7 +78,11 @@ class StarlightPainter extends CustomPainter {
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
       );
 
-      canvas.drawCircle(Offset(cx, cy), r, Paint()..color = Colors.white.withAlpha(alpha));
+      canvas.drawCircle(
+        Offset(cx, cy),
+        r,
+        Paint()..color = Colors.white.withAlpha(alpha),
+      );
 
       if (s.$3 > 1.9) {
         final arm = r * 3.5 * (0.4 + 0.6 * twinkle);
@@ -90,5 +98,6 @@ class StarlightPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(StarlightPainter old) => old.progress != progress || old.color != color;
+  bool shouldRepaint(StarlightPainter old) =>
+      old.progress != progress || old.color != color;
 }

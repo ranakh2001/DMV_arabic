@@ -26,7 +26,9 @@ class PasswordStrengthMeter extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: context.sp(2)),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
-                    color: i < strength ? color : context.appTextDisabled.withAlpha(60),
+                    color: i < strength
+                        ? color
+                        : context.appTextDisabled.withAlpha(60),
                   ),
                 ),
               );

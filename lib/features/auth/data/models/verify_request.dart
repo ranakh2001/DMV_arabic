@@ -4,8 +4,5 @@ class VerifyRequest {
   final String phoneNumber;
   final String code;
 
-  Map<String, dynamic> toJson() => {
-        'phone_number': phoneNumber,
-        'code': code,
-      };
+  Map<String, dynamic> toJson() => {'phone_number': phoneNumber, 'code': code};
 }

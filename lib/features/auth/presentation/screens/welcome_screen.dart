@@ -44,7 +44,9 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.06,
+                    ),
                     child: AuthGlassCard(
                       padding: const EdgeInsets.fromLTRB(28, 32, 28, 32),
                       child: Column(
@@ -76,7 +78,9 @@ class WelcomeScreen extends StatelessWidget {
                             label: context.t('auth.welcome.login_btn'),
                             icon: Icons.login_rounded,
                             onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
+                              MaterialPageRoute<void>(
+                                builder: (_) => const LoginScreen(),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 14),
@@ -85,11 +89,16 @@ class WelcomeScreen extends StatelessWidget {
                             height: 54,
                             child: OutlinedButton(
                               onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(builder: (_) => const RegisterScreen()),
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const RegisterScreen(),
+                                ),
                               ),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: context.appTextPrimary,
-                                side: BorderSide(color: context.appTextDisabled, width: 1.2),
+                                side: BorderSide(
+                                  color: context.appTextDisabled,
+                                  width: 1.2,
+                                ),
                               ),
                               child: Text(
                                 context.t('auth.welcome.register_btn'),

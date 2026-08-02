@@ -11,7 +11,8 @@ final statesRemoteDataSourceProvider = Provider<StatesRemoteDataSource>(
 );
 
 final statesRepositoryProvider = Provider<StatesRepository>(
-  (ref) => StatesRepositoryImpl(remote: ref.watch(statesRemoteDataSourceProvider)),
+  (ref) =>
+      StatesRepositoryImpl(remote: ref.watch(statesRemoteDataSourceProvider)),
 );
 
 final getStatesUsecaseProvider = Provider(
@@ -24,5 +25,8 @@ final getStatesUsecaseProvider = Provider(
 final statesProvider = FutureProvider<List<UsState>>((ref) async {
   ref.keepAlive();
   final result = await ref.watch(getStatesUsecaseProvider).call();
-  return result.fold(onSuccess: (states) => states, onFailure: (failure) => throw failure);
+  return result.fold(
+    onSuccess: (states) => states,
+    onFailure: (failure) => throw failure,
+  );
 });

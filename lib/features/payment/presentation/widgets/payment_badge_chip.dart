@@ -15,7 +15,10 @@ class PaymentBadgeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(10)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.sp(14),
+        vertical: context.sp(10),
+      ),
       decoration: BoxDecoration(
         color: context.appSurface,
         borderRadius: BorderRadius.circular(12),

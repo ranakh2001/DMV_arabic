@@ -1,34 +1,22 @@
-/// Billing cadence for a [SubscriptionPlan].
-enum SubscriptionPeriod { monthly, yearly }
-
-/// A purchasable subscription tier. Pricing and copy are mock data until
-/// the billing backend is wired up — see [MockSubscriptionPlans].
+/// A subscription tier picked for checkout, with its display text already
+/// resolved for the current locale — see `SubscriptionPlansScreen._toPlans`,
+/// which builds these from the real [SubscriptionPackage] catalogue.
 class SubscriptionPlan {
   const SubscriptionPlan({
     required this.id,
-    required this.period,
+    required this.title,
+    required this.periodSuffix,
     required this.price,
-    required this.featureKeys,
+    required this.featureLabels,
     this.isBestValue = false,
   });
 
-  final String id;
-  final SubscriptionPeriod period;
+  final int id;
+  final String title;
+  final String periodSuffix;
   final double price;
-
-  /// Localization keys for the bullet list shown on the plan card.
-  final List<String> featureKeys;
+  final List<String> featureLabels;
 
   /// Highlights this plan as the recommended/best-value choice.
   final bool isBestValue;
-
-  String get titleKey => switch (period) {
-        SubscriptionPeriod.monthly => 'subscription.plan.monthly',
-        SubscriptionPeriod.yearly => 'subscription.plan.yearly',
-      };
-
-  String get periodSuffixKey => switch (period) {
-        SubscriptionPeriod.monthly => 'subscription.price.per_month',
-        SubscriptionPeriod.yearly => 'subscription.price.per_year',
-      };
 }

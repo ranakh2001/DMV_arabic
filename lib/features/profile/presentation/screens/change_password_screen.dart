@@ -17,7 +17,8 @@ class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  ConsumerState<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
@@ -64,15 +65,15 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   bool get _hasLength => _newCtrl.text.length >= 8;
   bool get _hasUpper => _newCtrl.text.contains(RegExp(r'[A-Z]'));
   bool get _hasDigit => _newCtrl.text.contains(RegExp(r'[0-9]'));
-  bool get _hasSpecial => _newCtrl.text.contains(RegExp(r'[!@#$%^&*()\-,.?":{}|<>]'));
+  bool get _hasSpecial =>
+      _newCtrl.text.contains(RegExp(r'[!@#$%^&*()\-,.?":{}|<>]'));
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     FocusScope.of(context).unfocus();
-    await ref.read(changePasswordControllerProvider.notifier).submit(
-          currentPassword: _currentCtrl.text,
-          newPassword: _newCtrl.text,
-        );
+    await ref
+        .read(changePasswordControllerProvider.notifier)
+        .submit(currentPassword: _currentCtrl.text, newPassword: _newCtrl.text);
   }
 
   @override
@@ -100,10 +101,17 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   child: Center(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: context.isDesktop || context.isTablet ? 520 : double.infinity,
+                        maxWidth: context.isDesktop || context.isTablet
+                            ? 520
+                            : double.infinity,
                       ),
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.fromLTRB(context.sp(20), context.sp(8), context.sp(20), context.sp(24)),
+                        padding: EdgeInsets.fromLTRB(
+                          context.sp(20),
+                          context.sp(8),
+                          context.sp(20),
+                          context.sp(24),
+                        ),
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -111,7 +119,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                             children: [
                               GlassContainer(
                                 radius: 20,
-                                padding: EdgeInsets.symmetric(vertical: context.sp(24), horizontal: context.sp(20)),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: context.sp(24),
+                                  horizontal: context.sp(20),
+                                ),
                                 child: Column(
                                   children: [
                                     Container(
@@ -121,11 +132,17 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                                         shape: BoxShape.circle,
                                         color: context.appPrimary.withAlpha(30),
                                       ),
-                                      child: Icon(Icons.lock_reset_rounded, color: context.appPrimary, size: context.sp(30)),
+                                      child: Icon(
+                                        Icons.lock_reset_rounded,
+                                        color: context.appPrimary,
+                                        size: context.sp(30),
+                                      ),
                                     ),
                                     SizedBox(height: context.sp(14)),
                                     Text(
-                                      context.t('change_password.hero_subtitle'),
+                                      context.t(
+                                        'change_password.hero_subtitle',
+                                      ),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: 'Almarai',
@@ -142,7 +159,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                                 controller: _currentCtrl,
                                 obscure: _obscureCurrent,
                                 label: context.t('field.current_password'),
-                                onToggle: () => setState(() => _obscureCurrent = !_obscureCurrent),
+                                onToggle: () => setState(
+                                  () => _obscureCurrent = !_obscureCurrent,
+                                ),
                                 validator: Validators.password(context),
                                 textInputAction: TextInputAction.next,
                               ),
@@ -151,7 +170,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                                 controller: _newCtrl,
                                 obscure: _obscureNew,
                                 label: context.t('field.new_password'),
-                                onToggle: () => setState(() => _obscureNew = !_obscureNew),
+                                onToggle: () =>
+                                    setState(() => _obscureNew = !_obscureNew),
                                 validator: Validators.password(context),
                                 textInputAction: TextInputAction.next,
                               ),
@@ -162,22 +182,42 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                                 controller: _confirmCtrl,
                                 obscure: _obscureConfirm,
                                 label: context.t('field.confirm_password'),
-                                onToggle: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                                validator: Validators.confirmPassword(context, _newCtrl.text),
+                                onToggle: () => setState(
+                                  () => _obscureConfirm = !_obscureConfirm,
+                                ),
+                                validator: Validators.confirmPassword(
+                                  context,
+                                  _newCtrl.text,
+                                ),
                                 textInputAction: TextInputAction.done,
                                 onSubmitted: (_) => _submit(),
                               ),
                               SizedBox(height: context.sp(18)),
-                              PasswordRuleRow(label: context.t('password.rule.length'), isValid: _hasLength),
-                              PasswordRuleRow(label: context.t('password.rule.uppercase'), isValid: _hasUpper),
-                              PasswordRuleRow(label: context.t('password.rule.digit'), isValid: _hasDigit),
-                              PasswordRuleRow(label: context.t('password.rule.special'), isValid: _hasSpecial),
+                              PasswordRuleRow(
+                                label: context.t('password.rule.length'),
+                                isValid: _hasLength,
+                              ),
+                              PasswordRuleRow(
+                                label: context.t('password.rule.uppercase'),
+                                isValid: _hasUpper,
+                              ),
+                              PasswordRuleRow(
+                                label: context.t('password.rule.digit'),
+                                isValid: _hasDigit,
+                              ),
+                              PasswordRuleRow(
+                                label: context.t('password.rule.special'),
+                                isValid: _hasSpecial,
+                              ),
                               if (state.isSuccess) ...[
                                 SizedBox(height: context.sp(18)),
                                 _SuccessBanner(
                                   message: context.t('change_password.success'),
                                   onDismiss: () => ref
-                                      .read(changePasswordControllerProvider.notifier)
+                                      .read(
+                                        changePasswordControllerProvider
+                                            .notifier,
+                                      )
                                       .reset(),
                                 ),
                               ],
@@ -248,10 +288,18 @@ class _PasswordField extends StatelessWidget {
       obscureText: obscure,
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted,
-      style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: context.sp(15)),
+      style: TextStyle(
+        fontFamily: 'Almarai',
+        color: context.appTextPrimary,
+        fontSize: context.sp(15),
+      ),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(Icons.lock_outline_rounded, color: context.appPrimary, size: context.sp(20)),
+        prefixIcon: Icon(
+          Icons.lock_outline_rounded,
+          color: context.appPrimary,
+          size: context.sp(20),
+        ),
         suffixIcon: IconButton(
           icon: Icon(
             obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded,
@@ -275,7 +323,10 @@ class _SuccessBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(12)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.sp(14),
+        vertical: context.sp(12),
+      ),
       decoration: BoxDecoration(
         color: context.appSuccess.withAlpha(30),
         borderRadius: BorderRadius.circular(14),
@@ -283,7 +334,11 @@ class _SuccessBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.check_circle_rounded, size: context.sp(20), color: context.appSuccess),
+          Icon(
+            Icons.check_circle_rounded,
+            size: context.sp(20),
+            color: context.appSuccess,
+          ),
           SizedBox(width: context.sp(10)),
           Expanded(
             child: Text(
@@ -301,7 +356,11 @@ class _SuccessBanner extends StatelessWidget {
           InkWell(
             onTap: onDismiss,
             borderRadius: BorderRadius.circular(100),
-            child: Icon(Icons.close_rounded, size: context.sp(18), color: context.appTextSecondary),
+            child: Icon(
+              Icons.close_rounded,
+              size: context.sp(18),
+              color: context.appTextSecondary,
+            ),
           ),
         ],
       ),

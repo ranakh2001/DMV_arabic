@@ -4,9 +4,12 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/storage/storage_providers.dart';
 import '../../../auth/presentation/providers/auth_controller_provider.dart';
 import '../../../exam/presentation/providers/exam_controller.dart';
-import '../../../notifications/presentation/screens/notifications_screen.dart';
+import '../../../notifications/presentation/screens/notifications_list_screen.dart';
+import '../../../practice/presentation/practice_navigation.dart';
+import '../../../profile/presentation/providers/profile_providers.dart';
 import '../../../subscription/presentation/screens/subscription_plans_screen.dart';
 import '../providers/home_tab_provider.dart';
 import '../widgets/continue_test_card.dart';
@@ -26,86 +29,116 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
     final userName = authState.user?.name ?? '';
+    final profileState = ref.watch(profileControllerProvider);
+    final progress = profileState.profile?.progress?.averageScore ?? 0.0;
     final examState = ref.watch(examControllerProvider);
     final hasProgress = examState.answeredCount > 0;
+    final selectedState = ref.watch(prefsServiceProvider).selectedState;
+    final simulationTestTitle = selectedState == null
+        ? context.t('home.simulation_test_title')
+        : context.ts('home.simulation_test_title_named', {
+            'state': selectedState,
+          });
 
     return SafeArea(
       bottom: false,
       child: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: context.isDesktop || context.isTablet ? 520 : double.infinity),
-          child: ListView(
-            padding: EdgeInsets.fromLTRB(
-              context.sp(20),
-              context.sp(16),
-              context.sp(20),
-              context.sp(24),
+          constraints: BoxConstraints(
+            maxWidth: context.isDesktop || context.isTablet
+                ? 520
+                : double.infinity,
+          ),
+          child: RefreshIndicator(
+            onRefresh: () =>
+                ref.read(profileControllerProvider.notifier).load(),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(
+                context.sp(20),
+                context.sp(16),
+                context.sp(20),
+                context.sp(24),
+              ),
+              children: [
+                HomeTopBar(
+                  onAvatarTap: () => ref
+                      .read(homeTabProvider.notifier)
+                      .select(HomeTab.profile),
+                  onNotificationsTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const NotificationsListScreen(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: context.sp(20)),
+                WelcomeProgressCard(userName: userName, progress: progress),
+                SizedBox(height: context.sp(16)),
+                SubscribeBanner(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SubscriptionPlansScreen(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: context.sp(16)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: QuickActionCard(
+                        icon: Icons.bolt_rounded,
+                        label: context.t('home.quick_test_card'),
+                        onTap: () => _showComingSoon(context),
+                      ),
+                    ),
+                    SizedBox(width: context.sp(14)),
+                    Expanded(
+                      child: QuickActionCard(
+                        icon: Icons.bar_chart_rounded,
+                        label: context.t('home.stats_card'),
+                        onTap: () => ref
+                            .read(homeTabProvider.notifier)
+                            .select(HomeTab.stats),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: context.sp(24)),
+                SectionHeader(
+                  title: context.t(
+                    hasProgress
+                        ? 'home.continue_section_title'
+                        : 'home.start_first_simulation_title',
+                  ),
+                  actionLabel: hasProgress ? context.t('home.view_all') : null,
+                  onActionTap: hasProgress
+                      ? () => _showComingSoon(context)
+                      : null,
+                ),
+                SizedBox(height: context.sp(12)),
+                ContinueTestCard(
+                  title: simulationTestTitle,
+                  answered: examState.answeredCount,
+                  total: AppConstants.examQuestionCount,
+                  onTap: hasProgress
+                      ? () => _showComingSoon(context)
+                      : () => ref
+                            .read(homeTabProvider.notifier)
+                            .select(HomeTab.simulation),
+                ),
+                SizedBox(height: context.sp(20)),
+                Text(
+                  context.t('home.quick_test_card'),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: context.sp(17),
+                    fontWeight: FontWeight.w700,
+                    color: context.appTextPrimary,
+                  ),
+                ),
+                SizedBox(height: context.sp(12)),
+                QuickQuizCard(onStart: () => startFreeTrial(context, ref)),
+              ],
             ),
-            children: [
-              HomeTopBar(
-                onAvatarTap: () => ref.read(homeTabProvider.notifier).select(HomeTab.profile),
-                onNotificationsTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const NotificationsScreen()),
-                ),
-              ),
-              SizedBox(height: context.sp(20)),
-              WelcomeProgressCard(userName: userName, progress: 0.0),
-              SizedBox(height: context.sp(16)),
-              SubscribeBanner(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const SubscriptionPlansScreen()),
-                ),
-              ),
-              SizedBox(height: context.sp(16)),
-              Row(
-                children: [
-                  Expanded(
-                    child: QuickActionCard(
-                      icon: Icons.bolt_rounded,
-                      label: context.t('home.quick_test_card'),
-                      onTap: () => _showComingSoon(context),
-                    ),
-                  ),
-                  SizedBox(width: context.sp(14)),
-                  Expanded(
-                    child: QuickActionCard(
-                      icon: Icons.bar_chart_rounded,
-                      label: context.t('home.stats_card'),
-                      onTap: () => ref.read(homeTabProvider.notifier).select(HomeTab.stats),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: context.sp(24)),
-              SectionHeader(
-                title: context.t(
-                  hasProgress ? 'home.continue_section_title' : 'home.start_first_simulation_title',
-                ),
-                actionLabel: hasProgress ? context.t('home.view_all') : null,
-                onActionTap: hasProgress ? () => _showComingSoon(context) : null,
-              ),
-              SizedBox(height: context.sp(12)),
-              ContinueTestCard(
-                title: context.t('home.simulation_test_title'),
-                answered: examState.answeredCount,
-                total: AppConstants.examQuestionCount,
-                onTap: hasProgress
-                    ? () => _showComingSoon(context)
-                    : () => ref.read(homeTabProvider.notifier).select(HomeTab.simulation),
-              ),
-              SizedBox(height: context.sp(20)),
-              Text(
-                context.t('home.quick_test_card'),
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: context.sp(17),
-                  fontWeight: FontWeight.w700,
-                  color: context.appTextPrimary,
-                ),
-              ),
-              SizedBox(height: context.sp(12)),
-              QuickQuizCard(onStart: () => _showComingSoon(context)),
-            ],
           ),
         ),
       ),

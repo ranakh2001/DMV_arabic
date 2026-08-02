@@ -9,6 +9,9 @@ class ResetPasswordUsecase {
     required String contact,
     required String code,
     required String newPassword,
-  }) =>
-      _repo.resetPassword(contact: contact, code: code, newPassword: newPassword);
+  }) => _repo.resetPassword(
+    contact: contact,
+    code: code,
+    newPassword: newPassword,
+  );
 }

@@ -45,7 +45,8 @@ class AnimatedHeroIcon extends StatefulWidget {
   State<AnimatedHeroIcon> createState() => _AnimatedHeroIconState();
 }
 
-class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProviderStateMixin {
+class _AnimatedHeroIconState extends State<AnimatedHeroIcon>
+    with TickerProviderStateMixin {
   late final AnimationController _floatCtrl;
   late final AnimationController _spinCtrl;
   late final AnimationController _pulseCtrl;
@@ -56,12 +57,27 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _floatCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 3))..repeat(reverse: true);
-    _spinCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 14))..repeat();
-    _pulseCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);
+    _floatCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+    _spinCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 14),
+    )..repeat();
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
 
-    _float = Tween<double>(begin: -6, end: 6).animate(CurvedAnimation(parent: _floatCtrl, curve: Curves.easeInOut));
-    _pulse = Tween<double>(begin: 0.97, end: 1.04).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _float = Tween<double>(
+      begin: -6,
+      end: 6,
+    ).animate(CurvedAnimation(parent: _floatCtrl, curve: Curves.easeInOut));
+    _pulse = Tween<double>(
+      begin: 0.97,
+      end: 1.04,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -72,7 +88,12 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
     super.dispose();
   }
 
-  Widget _ring({required double size, required int borderAlpha, required double dotSize, required Color color}) {
+  Widget _ring({
+    required double size,
+    required int borderAlpha,
+    required double dotSize,
+    required Color color,
+  }) {
     return SizedBox(
       width: size,
       height: size,
@@ -94,7 +115,13 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color,
-                boxShadow: [BoxShadow(color: color.withAlpha(140), blurRadius: 6, spreadRadius: 1)],
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withAlpha(140),
+                    blurRadius: 6,
+                    spreadRadius: 1,
+                  ),
+                ],
               ),
             ),
           ),
@@ -123,11 +150,21 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
               children: [
                 Transform.rotate(
                   angle: spinAngle,
-                  child: _ring(size: 176, borderAlpha: 22, dotSize: 8, color: color),
+                  child: _ring(
+                    size: 176,
+                    borderAlpha: 22,
+                    dotSize: 8,
+                    color: color,
+                  ),
                 ),
                 Transform.rotate(
                   angle: -spinAngle * 1.6,
-                  child: _ring(size: 130, borderAlpha: 45, dotSize: 6, color: color),
+                  child: _ring(
+                    size: 130,
+                    borderAlpha: 45,
+                    dotSize: 6,
+                    color: color,
+                  ),
                 ),
                 Transform.scale(
                   scale: _pulse.value,
@@ -137,10 +174,25 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: badgeFill,
-                      border: Border.all(color: color.withAlpha(90), width: 1.5),
-                      boxShadow: [BoxShadow(color: color.withAlpha(60), blurRadius: 20, spreadRadius: -4)],
+                      border: Border.all(
+                        color: color.withAlpha(90),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withAlpha(60),
+                          blurRadius: 20,
+                          spreadRadius: -4,
+                        ),
+                      ],
                     ),
-                    child: Center(child: Icon(widget.icon, color: color, size: widget.iconSize)),
+                    child: Center(
+                      child: Icon(
+                        widget.icon,
+                        color: color,
+                        size: widget.iconSize,
+                      ),
+                    ),
                   ),
                 ),
                 for (final badge in widget.badges)
@@ -155,9 +207,18 @@ class _AnimatedHeroIconState extends State<AnimatedHeroIcon> with TickerProvider
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: badgeFill,
-                        border: Border.all(color: color.withAlpha(80), width: 1),
+                        border: Border.all(
+                          color: color.withAlpha(80),
+                          width: 1,
+                        ),
                       ),
-                      child: Center(child: Icon(badge.icon, color: color, size: badge.iconSize)),
+                      child: Center(
+                        child: Icon(
+                          badge.icon,
+                          color: color,
+                          size: badge.iconSize,
+                        ),
+                      ),
                     ),
                   ),
               ],

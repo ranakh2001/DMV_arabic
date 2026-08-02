@@ -10,7 +10,7 @@ class ConnectivityService {
 
   final Connectivity _connectivity;
 
-  static const _probeHost = 'google.com';
+  static const _probeHost = 'usaarabdrivers.com';
   static const _probeTimeout = Duration(seconds: 4);
 
   /// True only if there's a network interface up AND it can actually reach
@@ -31,7 +31,9 @@ class ConnectivityService {
 
   Future<bool> _hasInternetAccess() async {
     try {
-      final result = await InternetAddress.lookup(_probeHost).timeout(_probeTimeout);
+      final result = await InternetAddress.lookup(
+        _probeHost,
+      ).timeout(_probeTimeout);
       return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
     } on SocketException {
       return false;

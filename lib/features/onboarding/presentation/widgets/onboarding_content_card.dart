@@ -22,8 +22,16 @@ class OnboardingContentCard extends StatelessWidget {
         border: accent.withAlpha(90),
         padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
         boxShadow: [
-          BoxShadow(color: Colors.black.withAlpha(45), blurRadius: 32, offset: const Offset(0, 10)),
-          BoxShadow(color: accent.withAlpha(24), blurRadius: 24, spreadRadius: -6),
+          BoxShadow(
+            color: Colors.black.withAlpha(45),
+            blurRadius: 32,
+            offset: const Offset(0, 10),
+          ),
+          BoxShadow(
+            color: accent.withAlpha(24),
+            blurRadius: 24,
+            spreadRadius: -6,
+          ),
         ],
         child: child,
       ),

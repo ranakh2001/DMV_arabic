@@ -28,7 +28,9 @@ class SecurePaymentBadgesRow extends StatelessWidget {
           alignment: WrapAlignment.center,
           spacing: context.sp(10),
           runSpacing: context.sp(10),
-          children: PaymentMethodType.values.map((type) => PaymentBadgeChip(type: type)).toList(),
+          children: PaymentMethodType.values
+              .map((type) => PaymentBadgeChip(type: type))
+              .toList(),
         ),
       ],
     );

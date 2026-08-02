@@ -7,38 +7,38 @@ import 'glass_effect_theme.dart';
 /// constructors — they always read from [Theme.of(context)] or [AppColors].
 abstract final class AppTheme {
   static ThemeData light(BuildContext context) => _build(
-        context: context,
-        brightness: Brightness.light,
-        background: AppColorsLight.background,
-        surface: AppColorsLight.surface,
-        surfaceVariant: const Color(0xFFE8EEF7),
-        primary: AppColorsLight.primary,
-        secondary: AppColorsLight.secondary,
-        tertiary: AppColorsLight.success,
-        error: AppColorsLight.error,
-        onPrimary: Colors.white,
-        onSecondary: Colors.white,
-        onSurface: AppColorsLight.textPrimary,
-        onSurfaceVariant: AppColorsLight.textSecondary,
-        outline: AppColorsLight.textDisabled,
-      );
+    context: context,
+    brightness: Brightness.light,
+    background: AppColorsLight.background,
+    surface: AppColorsLight.surface,
+    surfaceVariant: const Color(0xFFE8EEF7),
+    primary: AppColorsLight.primary,
+    secondary: AppColorsLight.secondary,
+    tertiary: AppColorsLight.success,
+    error: AppColorsLight.error,
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    onSurface: AppColorsLight.textPrimary,
+    onSurfaceVariant: AppColorsLight.textSecondary,
+    outline: AppColorsLight.textDisabled,
+  );
 
   static ThemeData dark(BuildContext context) => _build(
-        context: context,
-        brightness: Brightness.dark,
-        background: AppColorsDark.background,
-        surface: AppColorsDark.background,
-        surfaceVariant: AppColorsDark.surface,
-        primary: AppColorsDark.primary,
-        secondary: AppColorsDark.secondary,
-        tertiary: AppColorsDark.success,
-        error: AppColorsDark.error,
-        onPrimary: Colors.white,
-        onSecondary: AppColorsDark.background,
-        onSurface: AppColorsDark.textPrimary,
-        onSurfaceVariant: AppColorsDark.textSecondary,
-        outline: AppColorsDark.textDisabled,
-      );
+    context: context,
+    brightness: Brightness.dark,
+    background: AppColorsDark.background,
+    surface: AppColorsDark.background,
+    surfaceVariant: AppColorsDark.surface,
+    primary: AppColorsDark.primary,
+    secondary: AppColorsDark.secondary,
+    tertiary: AppColorsDark.success,
+    error: AppColorsDark.error,
+    onPrimary: Colors.white,
+    onSecondary: AppColorsDark.background,
+    onSurface: AppColorsDark.textPrimary,
+    onSurfaceVariant: AppColorsDark.textSecondary,
+    outline: AppColorsDark.textDisabled,
+  );
 
   static ThemeData _build({
     required BuildContext context,
@@ -111,7 +111,9 @@ abstract final class AppTheme {
           backgroundColor: primary,
           foregroundColor: onPrimary,
           minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           textStyle: textTheme.labelLarge,
         ),
       ),
@@ -120,7 +122,9 @@ abstract final class AppTheme {
           foregroundColor: primary,
           minimumSize: const Size.fromHeight(52),
           side: BorderSide(color: primary),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           textStyle: textTheme.labelLarge,
         ),
       ),
@@ -133,7 +137,10 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceVariant.withAlpha(120),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: outline),
@@ -163,7 +170,10 @@ abstract final class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      dividerTheme: DividerThemeData(color: outline.withAlpha(60), thickness: 1),
+      dividerTheme: DividerThemeData(
+        color: outline.withAlpha(60),
+        thickness: 1,
+      ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: surfaceVariant,
         contentTextStyle: textTheme.bodyMedium?.copyWith(color: onSurface),
@@ -171,7 +181,9 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       extensions: [
-        brightness == Brightness.dark ? GlassEffectTheme.dark : GlassEffectTheme.light,
+        brightness == Brightness.dark
+            ? GlassEffectTheme.dark
+            : GlassEffectTheme.light,
       ],
     );
   }

@@ -29,13 +29,12 @@ class ExamState {
     int? currentIndex,
     Map<String, String>? selectedAnswers,
     bool? submitted,
-  }) =>
-      ExamState(
-        questions: questions,
-        currentIndex: currentIndex ?? this.currentIndex,
-        selectedAnswers: selectedAnswers ?? this.selectedAnswers,
-        submitted: submitted ?? this.submitted,
-      );
+  }) => ExamState(
+    questions: questions,
+    currentIndex: currentIndex ?? this.currentIndex,
+    selectedAnswers: selectedAnswers ?? this.selectedAnswers,
+    submitted: submitted ?? this.submitted,
+  );
 }
 
 /// Drives one simulation run. Free (unsubscribed) users may only view the
@@ -44,7 +43,8 @@ class ExamState {
 /// instead of advancing.
 class ExamController extends Notifier<ExamState> {
   @override
-  ExamState build() => ExamState(questions: buildExamQuestions(AppConstants.examQuestionCount));
+  ExamState build() =>
+      ExamState(questions: buildExamQuestions(AppConstants.examQuestionCount));
 
   void selectAnswer(String optionId) {
     final questionId = state.currentQuestion.id;
@@ -64,7 +64,8 @@ class ExamController extends Notifier<ExamState> {
     if (state.isLast) return true;
     final nextIndex = state.currentIndex + 1;
     final subscription = ref.read(subscriptionProvider);
-    if (!subscription.isSubscribed && nextIndex >= subscription.trialQuestionsTotal) {
+    if (!subscription.isSubscribed &&
+        nextIndex >= subscription.trialQuestionsTotal) {
       return false;
     }
     state = state.copyWith(currentIndex: nextIndex);
@@ -75,7 +76,11 @@ class ExamController extends Notifier<ExamState> {
   void submit() => state = state.copyWith(submitted: true);
 
   /// Starts a fresh run, discarding all answers.
-  void restart() => state = ExamState(questions: buildExamQuestions(AppConstants.examQuestionCount));
+  void restart() => state = ExamState(
+    questions: buildExamQuestions(AppConstants.examQuestionCount),
+  );
 }
 
-final examControllerProvider = NotifierProvider<ExamController, ExamState>(ExamController.new);
+final examControllerProvider = NotifierProvider<ExamController, ExamState>(
+  ExamController.new,
+);

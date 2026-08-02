@@ -11,16 +11,24 @@ class StatesRemoteDataSource {
 
   Future<List<UsStateModel>> getStates() async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>(ApiConstants.states);
+      final response = await _dio.get<Map<String, dynamic>>(
+        ApiConstants.states,
+      );
       final json = response.data ?? {};
       if (json['success'] != true) {
-        throw ServerException(messageAr: json['message'] as String? ?? 'تعذر جلب الولايات.');
+        throw ServerException(
+          messageAr: json['message'] as String? ?? 'تعذر جلب الولايات.',
+        );
       }
       final list = json['data'] as List<dynamic>? ?? [];
-      return list.map((e) => UsStateModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => UsStateModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       final body = e.response?.data;
-      final message = body is Map<String, dynamic> ? body['message'] as String? : null;
+      final message = body is Map<String, dynamic>
+          ? body['message'] as String?
+          : null;
       throw ServerException(
         messageAr: message ?? 'تعذر جلب الولايات. يرجى المحاولة مرة أخرى.',
         statusCode: e.response?.statusCode,

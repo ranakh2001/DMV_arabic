@@ -39,7 +39,9 @@ class SettingsSegmentButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? context.appPrimary : Colors.transparent,
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: selected ? context.appPrimary : context.appGlassBorder),
+          border: Border.all(
+            color: selected ? context.appPrimary : context.appGlassBorder,
+          ),
         ),
         child: Text(
           label,

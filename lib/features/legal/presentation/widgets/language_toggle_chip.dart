@@ -7,19 +7,28 @@ import '../../../../core/theme/app_colors.dart';
 /// switches to that language. Used in headers where a full two-segment
 /// switch (see `LanguageToggleRow`) would be too wide.
 class LanguageToggleChip extends StatelessWidget {
-  const LanguageToggleChip({super.key, required this.isArabic, required this.onChanged});
+  const LanguageToggleChip({
+    super.key,
+    required this.isArabic,
+    required this.onChanged,
+  });
 
   final bool isArabic;
   final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final targetLabel = isArabic ? context.t('settings.language.en') : context.t('settings.language.ar');
+    final targetLabel = isArabic
+        ? context.t('settings.language.en')
+        : context.t('settings.language.ar');
     return InkWell(
       borderRadius: BorderRadius.circular(100),
       onTap: () => onChanged(!isArabic),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(7)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.sp(14),
+          vertical: context.sp(7),
+        ),
         decoration: BoxDecoration(
           color: context.appGlassTint,
           borderRadius: BorderRadius.circular(100),

@@ -32,11 +32,15 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       return;
     }
     setState(() => _localError = '');
-    await ref.read(verifyControllerProvider.notifier).verify(contact: widget.contact, code: _code);
+    await ref
+        .read(verifyControllerProvider.notifier)
+        .verify(contact: widget.contact, code: _code);
   }
 
   Future<void> _resend() async {
-    await ref.read(verifyControllerProvider.notifier).resend(contact: widget.contact);
+    await ref
+        .read(verifyControllerProvider.notifier)
+        .resend(contact: widget.contact);
   }
 
   @override
@@ -67,7 +71,13 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                             child: AnimatedHeroIcon(
                               icon: Icons.verified_user_rounded,
                               badges: const [
-                                HeroBadge(top: 12, left: 12, size: 32, iconSize: 15, icon: Icons.mail_outline_rounded),
+                                HeroBadge(
+                                  top: 12,
+                                  left: 12,
+                                  size: 32,
+                                  iconSize: 15,
+                                  icon: Icons.mail_outline_rounded,
+                                ),
                                 HeroBadge(
                                   bottom: 12,
                                   right: 12,
@@ -83,7 +93,11 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Center(child: AuthBadgeChip(label: context.t('auth.verify.title'))),
+                                Center(
+                                  child: AuthBadgeChip(
+                                    label: context.t('auth.verify.title'),
+                                  ),
+                                ),
                                 const SizedBox(height: 16),
                                 Text(
                                   context.t('auth.verify.title'),
@@ -107,7 +121,10 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                                       height: 1.6,
                                     ),
                                     children: [
-                                      TextSpan(text: '${context.t('auth.verify.subtitle')} '),
+                                      TextSpan(
+                                        text:
+                                            '${context.t('auth.verify.subtitle')} ',
+                                      ),
                                       TextSpan(
                                         text: widget.contact,
                                         style: TextStyle(
@@ -134,13 +151,23 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                                     child: Text(
                                       error,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(fontFamily: 'Almarai', fontSize: 12, color: context.appError),
+                                      style: TextStyle(
+                                        fontFamily: 'Almarai',
+                                        fontSize: 12,
+                                        color: context.appError,
+                                      ),
                                     ),
                                   ),
-                                _ExpiryRow(isExpired: state.isExpired, secondsRemaining: state.secondsRemaining),
+                                _ExpiryRow(
+                                  isExpired: state.isExpired,
+                                  secondsRemaining: state.secondsRemaining,
+                                ),
                                 const SizedBox(height: 20),
                                 GlowElevatedButton(
-                                  onPressed: (state.isSubmitting || state.isExpired) ? null : _submit,
+                                  onPressed:
+                                      (state.isSubmitting || state.isExpired)
+                                      ? null
+                                      : _submit,
                                   label: context.t('auth.verify.submit'),
                                   loading: state.isSubmitting,
                                 ),
@@ -181,13 +208,22 @@ class _ExpiryRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(isExpired ? Icons.timer_off_outlined : Icons.timer_outlined, color: color, size: 16),
+        Icon(
+          isExpired ? Icons.timer_off_outlined : Icons.timer_outlined,
+          color: color,
+          size: 16,
+        ),
         const SizedBox(width: 5),
         Text(
           isExpired
               ? context.t('auth.verify.expired')
               : '${context.t('auth.verify.expires_in')} ${formatMmSs(secondsRemaining)}',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 13, fontWeight: FontWeight.w700, color: color),
+          style: TextStyle(
+            fontFamily: 'Almarai',
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
         ),
       ],
     );
@@ -219,7 +255,11 @@ class _ResendSection extends StatelessWidget {
             child: Text(
               resendError!,
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Almarai', fontSize: 12, color: context.appError),
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: 12,
+                color: context.appError,
+              ),
             ),
           ),
         GestureDetector(
@@ -227,16 +267,23 @@ class _ResendSection extends StatelessWidget {
           child: isResending
               ? SizedBox.square(
                   dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: context.appPrimary),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.appPrimary,
+                  ),
                 )
               : Text(
-                  canResend ? context.t('auth.verify.resend') : '${context.t('auth.verify.resend_in')} ${formatMmSs(resendCooldown)}',
+                  canResend
+                      ? context.t('auth.verify.resend')
+                      : '${context.t('auth.verify.resend_in')} ${formatMmSs(resendCooldown)}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Almarai',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: canResend ? context.appPrimary : context.appTextDisabled,
+                    color: canResend
+                        ? context.appPrimary
+                        : context.appTextDisabled,
                     decoration: canResend ? TextDecoration.underline : null,
                     decorationColor: context.appPrimary,
                   ),

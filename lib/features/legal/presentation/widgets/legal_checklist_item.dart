@@ -16,7 +16,11 @@ class LegalChecklistItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check_circle_rounded, size: context.sp(18), color: context.appSuccess),
+          Icon(
+            Icons.check_circle_rounded,
+            size: context.sp(18),
+            color: context.appSuccess,
+          ),
           SizedBox(width: context.sp(10)),
           Expanded(
             child: Text(

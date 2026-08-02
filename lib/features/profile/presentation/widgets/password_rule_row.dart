@@ -5,7 +5,11 @@ import '../../../../core/theme/app_colors.dart';
 /// A single password-rule checklist row: check icon + label, dimmed until
 /// [isValid] is met. Repeats 4x on the Change Password screen.
 class PasswordRuleRow extends StatelessWidget {
-  const PasswordRuleRow({super.key, required this.label, required this.isValid});
+  const PasswordRuleRow({
+    super.key,
+    required this.label,
+    required this.isValid,
+  });
 
   final String label;
   final bool isValid;
@@ -18,7 +22,9 @@ class PasswordRuleRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+            isValid
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_unchecked_rounded,
             color: color,
             size: context.sp(18),
           ),
@@ -26,7 +32,11 @@ class PasswordRuleRow extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(fontFamily: 'Almarai', fontSize: context.sp(13), color: color),
+              style: TextStyle(
+                fontFamily: 'Almarai',
+                fontSize: context.sp(13),
+                color: color,
+              ),
             ),
           ),
         ],

@@ -10,6 +10,10 @@ class RegisterUsecase {
     required String contact,
     required int stateId,
     required String password,
-  }) =>
-      _repo.register(name: name, contact: contact, stateId: stateId, password: password);
+  }) => _repo.register(
+    name: name,
+    contact: contact,
+    stateId: stateId,
+    password: password,
+  );
 }

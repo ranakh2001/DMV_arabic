@@ -41,7 +41,11 @@ class PhoneField extends StatelessWidget {
       textInputAction: textInputAction,
       textDirection: textDirection,
       onFieldSubmitted: onFieldSubmitted,
-      style: TextStyle(fontFamily: 'Almarai', color: context.appTextPrimary, fontSize: 15),
+      style: TextStyle(
+        fontFamily: 'Almarai',
+        color: context.appTextPrimary,
+        fontSize: 15,
+      ),
       decoration: authFieldDecoration(
         context: context,
         hint: hint ?? context.t('field.phone_hint'),
@@ -55,11 +59,7 @@ class PhoneField extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AuthFieldLabel(label!),
-        const SizedBox(height: 8),
-        field,
-      ],
+      children: [AuthFieldLabel(label!), const SizedBox(height: 8), field],
     );
   }
 }

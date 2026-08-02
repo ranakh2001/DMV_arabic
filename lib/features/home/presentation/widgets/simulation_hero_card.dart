@@ -13,7 +13,10 @@ class SimulationHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassContainer(
       radius: 20,
-      padding: EdgeInsets.symmetric(vertical: context.sp(28), horizontal: context.sp(20)),
+      padding: EdgeInsets.symmetric(
+        vertical: context.sp(28),
+        horizontal: context.sp(20),
+      ),
       child: Column(
         children: [
           Container(
@@ -23,10 +26,18 @@ class SimulationHeroCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: context.appPrimary.withAlpha(30),
               boxShadow: [
-                BoxShadow(color: context.appPrimary.withAlpha(60), blurRadius: 24, spreadRadius: -4),
+                BoxShadow(
+                  color: context.appPrimary.withAlpha(60),
+                  blurRadius: 24,
+                  spreadRadius: -4,
+                ),
               ],
             ),
-            child: Icon(Icons.directions_car_filled_rounded, color: context.appPrimary, size: context.sp(38)),
+            child: Icon(
+              Icons.directions_car_filled_rounded,
+              color: context.appPrimary,
+              size: context.sp(38),
+            ),
           ),
           SizedBox(height: context.sp(18)),
           Text(

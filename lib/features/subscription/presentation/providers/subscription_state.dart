@@ -1,6 +1,15 @@
 import '../../domain/entities/subscription_plan.dart';
 
-/// Local, mock representation of the user's subscription — no backend yet.
+/// Whether [SubscriptionState.isSubscribed] reflects a confirmed
+/// `GET /subscriptions/status` response yet. [AuthGate] waits for
+/// [loaded]/[failed] before deciding whether to show the paywall, so a
+/// still-subscribed user never sees it flash on cold start.
+enum SubscriptionHydrationStatus { idle, loading, loaded, failed }
+
+/// The user's subscription status, backed by `GET /subscriptions/status`
+/// (see [SubscriptionController.hydrate]) once hydrated; `isSubscribed`
+/// starts false and is also flipped optimistically by [SubscriptionController.activate]
+/// right after a successful payment.
 class SubscriptionState {
   const SubscriptionState({
     this.isSubscribed = false,
@@ -8,6 +17,7 @@ class SubscriptionState {
     this.autoRenew = true,
     this.trialQuestionsUsed = 0,
     this.trialQuestionsTotal = 10,
+    this.hydrationStatus = SubscriptionHydrationStatus.idle,
   });
 
   final bool isSubscribed;
@@ -15,6 +25,7 @@ class SubscriptionState {
   final bool autoRenew;
   final int trialQuestionsUsed;
   final int trialQuestionsTotal;
+  final SubscriptionHydrationStatus hydrationStatus;
 
   int get trialQuestionsRemaining =>
       (trialQuestionsTotal - trialQuestionsUsed).clamp(0, trialQuestionsTotal);
@@ -27,12 +38,13 @@ class SubscriptionState {
     SubscriptionPlan? activePlan,
     bool? autoRenew,
     int? trialQuestionsUsed,
-  }) =>
-      SubscriptionState(
-        isSubscribed: isSubscribed ?? this.isSubscribed,
-        activePlan: activePlan ?? this.activePlan,
-        autoRenew: autoRenew ?? this.autoRenew,
-        trialQuestionsUsed: trialQuestionsUsed ?? this.trialQuestionsUsed,
-        trialQuestionsTotal: trialQuestionsTotal,
-      );
+    SubscriptionHydrationStatus? hydrationStatus,
+  }) => SubscriptionState(
+    isSubscribed: isSubscribed ?? this.isSubscribed,
+    activePlan: activePlan ?? this.activePlan,
+    autoRenew: autoRenew ?? this.autoRenew,
+    trialQuestionsUsed: trialQuestionsUsed ?? this.trialQuestionsUsed,
+    trialQuestionsTotal: trialQuestionsTotal,
+    hydrationStatus: hydrationStatus ?? this.hydrationStatus,
+  );
 }

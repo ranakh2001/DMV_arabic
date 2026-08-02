@@ -30,11 +30,18 @@ class SelectableChipGroup<T> extends StatelessWidget {
           onTap: () => onChanged(option.$1),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            padding: EdgeInsets.symmetric(horizontal: context.sp(16), vertical: context.sp(10)),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.sp(16),
+              vertical: context.sp(10),
+            ),
             decoration: BoxDecoration(
-              color: selected ? context.appPrimary.withAlpha(30) : context.appGlassTint,
+              color: selected
+                  ? context.appPrimary.withAlpha(30)
+                  : context.appGlassTint,
               borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: selected ? context.appPrimary : context.appGlassBorder),
+              border: Border.all(
+                color: selected ? context.appPrimary : context.appGlassBorder,
+              ),
             ),
             child: Text(
               option.$2,

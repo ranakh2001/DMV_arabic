@@ -36,7 +36,8 @@ class App extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      builder: (context, child) => AppShield(child: ConnectivityBanner(child: child!)),
+      builder: (context, child) =>
+          AppShield(child: ConnectivityBanner(child: child!)),
       home: const AuthGate(),
     );
   }

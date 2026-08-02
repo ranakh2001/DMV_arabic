@@ -3,11 +3,16 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 
-/// Confirmation shown right after a (mock) successful payment. "Start Now"
+/// Confirmation shown right after a successful Stripe payment. "Start Now"
 /// pops back to the app root — by then [subscriptionProvider] already
 /// reports the user as subscribed, so [AuthGate] resolves to the home shell.
 class PaymentSuccessScreen extends StatelessWidget {
-  const PaymentSuccessScreen({super.key});
+  const PaymentSuccessScreen({super.key, this.activationPending = false});
+
+  /// True when the charge succeeded but the backend hadn't confirmed
+  /// activation yet after polling — shows a "hang tight" message instead of
+  /// claiming the subscription is already fully active.
+  final bool activationPending;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,11 @@ class PaymentSuccessScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: context.isDesktop || context.isTablet ? 480 : double.infinity),
+            constraints: BoxConstraints(
+              maxWidth: context.isDesktop || context.isTablet
+                  ? 480
+                  : double.infinity,
+            ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: context.sp(32)),
               child: Column(
@@ -29,7 +38,11 @@ class PaymentSuccessScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: context.appSuccess.withAlpha(30),
                     ),
-                    child: Icon(Icons.check_rounded, color: context.appSuccess, size: context.sp(52)),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: context.appSuccess,
+                      size: context.sp(52),
+                    ),
                   ),
                   SizedBox(height: context.sp(28)),
                   Text(
@@ -44,7 +57,9 @@ class PaymentSuccessScreen extends StatelessWidget {
                   ),
                   SizedBox(height: context.sp(10)),
                   Text(
-                    context.t('payment.success.subtitle'),
+                    activationPending
+                        ? context.t('payment.activation_pending')
+                        : context.t('payment.success.subtitle'),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'Almarai',
@@ -57,7 +72,9 @@ class PaymentSuccessScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                      onPressed: () => Navigator.of(
+                        context,
+                      ).popUntil((route) => route.isFirst),
                       child: Text(context.t('payment.success.start')),
                     ),
                   ),

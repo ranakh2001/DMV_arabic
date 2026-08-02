@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 
+const _activeDotSize = 26.0;
+const _inactiveDotSize = 8.0;
+const _dotGap = 6.0;
+
 /// Horizontally scrollable dot trail showing answered/unanswered questions,
 /// with the current question rendered as a numbered bubble that stays in
 /// view, plus a "current/total" label.
@@ -11,11 +15,18 @@ class QuestionProgressBar extends StatefulWidget {
     required this.total,
     required this.currentIndex,
     required this.answeredIndexes,
+    this.correctness = const {},
   });
 
   final int total;
   final int currentIndex;
   final Set<int> answeredIndexes;
+
+  /// Per-question-index correctness, for flows that grade each answer as
+  /// it's picked. An index missing here (but present in [answeredIndexes])
+  /// falls back to the plain "answered" green — flows with no live grading
+  /// (correctness only known after submit) can simply omit this.
+  final Map<int, bool> correctness;
 
   @override
   State<QuestionProgressBar> createState() => _QuestionProgressBarState();
@@ -56,22 +67,46 @@ class _QuestionProgressBarState extends State<QuestionProgressBar> {
 
   @override
   Widget build(BuildContext context) {
+    final dotsRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < widget.total; i++) ...[
+          _Dot(
+            active: i == widget.currentIndex,
+            answered: widget.answeredIndexes.contains(i),
+            isCorrect: widget.correctness[i],
+            number: i + 1,
+          ),
+          if (i != widget.total - 1) SizedBox(width: context.sp(_dotGap)),
+        ],
+      ],
+    );
+
     return Row(
       children: [
         Expanded(
           child: SizedBox(
             height: context.sp(28),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var i = 0; i < widget.total; i++) ...[
-                    _Dot(active: i == widget.currentIndex, answered: widget.answeredIndexes.contains(i), number: i + 1),
-                    if (i != widget.total - 1) SizedBox(width: context.sp(6)),
-                  ],
-                ],
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Exactly one dot is active (larger) at a time; the rest
+                // are the smaller inactive size, joined by gaps. Mirrors
+                // `_Dot`'s actual rendered sizes so this never
+                // underestimates the row's real width (which would let it
+                // overflow the Center branch below).
+                final contentWidth =
+                    context.sp(_activeDotSize) +
+                    (widget.total - 1) *
+                        (context.sp(_inactiveDotSize) + context.sp(_dotGap));
+                if (contentWidth <= constraints.maxWidth) {
+                  return Center(child: dotsRow);
+                }
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: dotsRow,
+                );
+              },
             ),
           ),
         ),
@@ -91,20 +126,32 @@ class _QuestionProgressBarState extends State<QuestionProgressBar> {
 }
 
 class _Dot extends StatelessWidget {
-  const _Dot({required this.active, required this.answered, required this.number});
+  const _Dot({
+    required this.active,
+    required this.answered,
+    this.isCorrect,
+    required this.number,
+  });
 
   final bool active;
   final bool answered;
+
+  /// Null when correctness isn't tracked for this flow, or the question
+  /// hasn't been graded yet.
+  final bool? isCorrect;
   final int number;
 
   @override
   Widget build(BuildContext context) {
     if (active) {
       return Container(
-        width: context.sp(26),
-        height: context.sp(26),
+        width: context.sp(_activeDotSize),
+        height: context.sp(_activeDotSize),
         alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: context.appPrimary),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: context.appPrimary,
+        ),
         child: Text(
           '$number',
           style: TextStyle(
@@ -116,13 +163,18 @@ class _Dot extends StatelessWidget {
         ),
       );
     }
+    final Color color;
+    if (!answered) {
+      color = context.appTextDisabled.withAlpha(90);
+    } else if (isCorrect == null) {
+      color = context.appSuccess;
+    } else {
+      color = isCorrect! ? context.appSuccess : context.appError;
+    }
     return Container(
-      width: context.sp(8),
-      height: context.sp(8),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: answered ? context.appSuccess : context.appTextDisabled.withAlpha(90),
-      ),
+      width: context.sp(_inactiveDotSize),
+      height: context.sp(_inactiveDotSize),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 }

@@ -37,7 +37,11 @@ class TrialUsageCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: context.appPrimary.withAlpha(30),
                 ),
-                child: Icon(Icons.star_rounded, color: context.appPrimary, size: context.sp(20)),
+                child: Icon(
+                  Icons.star_rounded,
+                  color: context.appPrimary,
+                  size: context.sp(20),
+                ),
               ),
               SizedBox(width: context.sp(12)),
               Expanded(

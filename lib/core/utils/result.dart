@@ -11,28 +11,27 @@ sealed class Result<T> {
   bool get isFailure => this is FailureResult<T>;
 
   T? get valueOrNull => switch (this) {
-        Success(:final value) => value,
-        FailureResult() => null,
-      };
+    Success(:final value) => value,
+    FailureResult() => null,
+  };
 
   Failure? get failureOrNull => switch (this) {
-        Success() => null,
-        FailureResult(:final failure) => failure,
-      };
+    Success() => null,
+    FailureResult(:final failure) => failure,
+  };
 
   Result<R> map<R>(R Function(T value) transform) => switch (this) {
-        Success(:final value) => Result.success(transform(value)),
-        FailureResult(:final failure) => Result.failure(failure),
-      };
+    Success(:final value) => Result.success(transform(value)),
+    FailureResult(:final failure) => Result.failure(failure),
+  };
 
   R fold<R>({
     required R Function(T value) onSuccess,
     required R Function(Failure failure) onFailure,
-  }) =>
-      switch (this) {
-        Success(:final value) => onSuccess(value),
-        FailureResult(:final failure) => onFailure(failure),
-      };
+  }) => switch (this) {
+    Success(:final value) => onSuccess(value),
+    FailureResult(:final failure) => onFailure(failure),
+  };
 }
 
 final class Success<T> extends Result<T> {

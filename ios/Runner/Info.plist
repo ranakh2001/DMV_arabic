@@ -49,7 +49,22 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>يحتاج التطبيق للوصول إلى معرض الصور لاختيار صورة الملف الشخصي.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>يحتاج التطبيق للوصول إلى الكاميرا لالتقاط صورة الملف الشخصي.</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
+	<key>GIDClientID</key>
+	<string>336279109689-9a46cih9soo35cqj2f1jsga69aa24lbv.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+  	<dict>
+    	<key>CFBundleURLSchemes</key>
+    	<array>
+      <string>com.googleusercontent.apps.336279109689-9a46cih9soo35cqj2f1jsga69aa24lbv</string>
+    </array>
+  </dict>
+</array>
 </dict>
 </plist>

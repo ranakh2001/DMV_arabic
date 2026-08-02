@@ -18,8 +18,12 @@ Dio createDio(ConnectivityService connectivity) {
   final dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
-      connectTimeout: const Duration(milliseconds: ApiConstants.connectTimeoutMs),
-      receiveTimeout: const Duration(milliseconds: ApiConstants.receiveTimeoutMs),
+      connectTimeout: const Duration(
+        milliseconds: ApiConstants.connectTimeoutMs,
+      ),
+      receiveTimeout: const Duration(
+        milliseconds: ApiConstants.receiveTimeoutMs,
+      ),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

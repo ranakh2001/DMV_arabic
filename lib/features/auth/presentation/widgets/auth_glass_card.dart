@@ -22,8 +22,16 @@ class AuthGlassCard extends StatelessWidget {
       border: accent.withAlpha(90),
       padding: padding ?? const EdgeInsets.all(24),
       boxShadow: [
-        BoxShadow(color: Colors.black.withAlpha(60), blurRadius: 30, offset: const Offset(0, 10)),
-        BoxShadow(color: accent.withAlpha(18), blurRadius: 26, spreadRadius: -4),
+        BoxShadow(
+          color: Colors.black.withAlpha(60),
+          blurRadius: 30,
+          offset: const Offset(0, 10),
+        ),
+        BoxShadow(
+          color: accent.withAlpha(18),
+          blurRadius: 26,
+          spreadRadius: -4,
+        ),
       ],
       child: child,
     );

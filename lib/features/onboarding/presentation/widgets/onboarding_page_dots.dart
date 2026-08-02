@@ -4,7 +4,11 @@ import '../../../../core/theme/app_colors.dart';
 /// Row of dot indicators for the onboarding [PageView], the active one
 /// stretched into a pill.
 class OnboardingPageDots extends StatelessWidget {
-  const OnboardingPageDots({super.key, required this.current, required this.total});
+  const OnboardingPageDots({
+    super.key,
+    required this.current,
+    required this.total,
+  });
 
   final int current;
   final int total;

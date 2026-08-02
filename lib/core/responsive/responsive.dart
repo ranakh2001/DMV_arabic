@@ -29,7 +29,8 @@ class Responsive {
   double get height => size.height;
 
   bool get isPhone => width <= Breakpoints.phoneMax;
-  bool get isTablet => width > Breakpoints.phoneMax && width <= Breakpoints.tabletMax;
+  bool get isTablet =>
+      width > Breakpoints.phoneMax && width <= Breakpoints.tabletMax;
   bool get isDesktop => width > Breakpoints.tabletMax;
   bool get isLandscape => orientation == Orientation.landscape;
   bool get isPortrait => orientation == Orientation.portrait;

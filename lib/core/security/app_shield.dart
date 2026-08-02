@@ -35,7 +35,8 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
     // Obscure while inactive or paused so the switcher snapshot is blank.
     // TODO(security): On Android, also set FLAG_SECURE via a platform channel.
     setState(() {
-      _obscured = state == AppLifecycleState.inactive ||
+      _obscured =
+          state == AppLifecycleState.inactive ||
           state == AppLifecycleState.paused;
     });
   }
@@ -45,7 +46,10 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
     return Stack(
       alignment: Alignment.topLeft,
       children: [
-        KeyedSubtree(key: const ValueKey('app_shield_child'), child: widget.child),
+        KeyedSubtree(
+          key: const ValueKey('app_shield_child'),
+          child: widget.child,
+        ),
         if (_obscured) const _Shield(key: ValueKey('app_shield_overlay')),
       ],
     );

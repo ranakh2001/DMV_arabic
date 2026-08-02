@@ -13,11 +13,13 @@ class ProfileHeaderCard extends StatelessWidget {
     required this.name,
     required this.email,
     required this.onEditAvatar,
+    this.photoUrl,
   });
 
   final String name;
   final String email;
   final VoidCallback onEditAvatar;
+  final String? photoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,16 @@ class ProfileHeaderCard extends StatelessWidget {
             CircleAvatar(
               radius: context.sp(48),
               backgroundColor: context.appPrimary.withAlpha(35),
-              child: Icon(Icons.person_rounded, color: context.appPrimary, size: context.sp(52)),
+              backgroundImage: photoUrl != null
+                  ? NetworkImage(photoUrl!)
+                  : null,
+              child: photoUrl == null
+                  ? Icon(
+                      Icons.person_rounded,
+                      color: context.appPrimary,
+                      size: context.sp(52),
+                    )
+                  : null,
             ),
             Positioned.directional(
               textDirection: Directionality.of(context),
@@ -46,7 +57,11 @@ class ProfileHeaderCard extends StatelessWidget {
                     color: context.appPrimary,
                     border: Border.all(color: context.appBackground, width: 2),
                   ),
-                  child: Icon(Icons.edit_rounded, color: Colors.white, size: context.sp(16)),
+                  child: Icon(
+                    Icons.edit_rounded,
+                    color: Colors.white,
+                    size: context.sp(16),
+                  ),
                 ),
               ),
             ),
@@ -73,7 +88,10 @@ class ProfileHeaderCard extends StatelessWidget {
         ),
         SizedBox(height: context.sp(10)),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(6)),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.sp(14),
+            vertical: context.sp(6),
+          ),
           decoration: BoxDecoration(
             color: _kGoldAccent.withAlpha(30),
             borderRadius: BorderRadius.circular(100),
@@ -82,7 +100,11 @@ class ProfileHeaderCard extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.star_rounded, color: _kGoldAccent, size: context.sp(15)),
+              Icon(
+                Icons.star_rounded,
+                color: _kGoldAccent,
+                size: context.sp(15),
+              ),
               SizedBox(width: context.sp(6)),
               Text(
                 context.t('profile.subscriber'),

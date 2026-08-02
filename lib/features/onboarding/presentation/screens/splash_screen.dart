@@ -57,10 +57,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
 
     _textSlide = Tween<Offset>(begin: const Offset(0, 0.6), end: Offset.zero)
-        .animate(CurvedAnimation(
-      parent: _main,
-      curve: const Interval(0.38, 0.60, curve: Curves.easeOut),
-    ));
+        .animate(
+          CurvedAnimation(
+            parent: _main,
+            curve: const Interval(0.38, 0.60, curve: Curves.easeOut),
+          ),
+        );
 
     _tagOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -70,10 +72,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
 
     _tagSlide = Tween<Offset>(begin: const Offset(0, 0.6), end: Offset.zero)
-        .animate(CurvedAnimation(
-      parent: _main,
-      curve: const Interval(0.50, 0.70, curve: Curves.easeOut),
-    ));
+        .animate(
+          CurvedAnimation(
+            parent: _main,
+            curve: const Interval(0.50, 0.70, curve: Curves.easeOut),
+          ),
+        );
 
     _barProgress = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -131,7 +135,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   height: 300,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [accent.withAlpha(20), Colors.transparent]),
+                    gradient: RadialGradient(
+                      colors: [accent.withAlpha(20), Colors.transparent],
+                    ),
                   ),
                 ),
               ),

@@ -1,10 +1,6 @@
 /// Models the API envelope: { success, message, data }
 class ApiResponse<T> {
-  const ApiResponse({
-    required this.success,
-    this.data,
-    this.message,
-  });
+  const ApiResponse({required this.success, this.data, this.message});
 
   final bool success;
   final T? data;
@@ -22,5 +18,6 @@ class ApiResponse<T> {
   }
 
   /// Arabic-first user-facing message (the API only sends one message field).
-  String get userMessage => message ?? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
+  String get userMessage =>
+      message ?? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
 }

@@ -1,54 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/glass.dart';
+import '../providers/legal_providers.dart';
+import '../widgets/legal_async_content.dart';
 import '../widgets/legal_scaffold.dart';
 import '../widgets/legal_section_card.dart';
 
 /// "سياسة الخصوصية والشروط" — reached from the Profile tab (My Account)
 /// and from the sign-up screen's terms checkbox. When opened from sign-up,
 /// [showDeleteAccount] is `false`, since there is no account to delete yet.
-class PrivacyPolicyScreen extends StatelessWidget {
+/// Content is fetched live from `GET /privacy-policy`.
+class PrivacyPolicyScreen extends ConsumerWidget {
   const PrivacyPolicyScreen({super.key, this.showDeleteAccount = true});
 
   final bool showDeleteAccount;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final contentAsync = ref.watch(privacyPolicyProvider);
+
     return LegalScaffold(
       title: context.t('legal.privacy.title'),
       updatedDate: context.t('legal.privacy.updated_date'),
       children: [
-        LegalSectionCard(
-          number: 1,
-          title: context.t('legal.privacy.s1.title'),
-          body: context.t('legal.privacy.s1.body'),
-        ),
-        SizedBox(height: context.sp(14)),
-        LegalSectionCard(
-          number: 2,
-          title: context.t('legal.privacy.s2.title'),
-          body: context.t('legal.privacy.s2.body'),
-        ),
-        SizedBox(height: context.sp(14)),
-        LegalSectionCard(
-          number: 3,
-          title: context.t('legal.privacy.s3.title'),
-          body: context.t('legal.privacy.s3.body'),
-        ),
-        SizedBox(height: context.sp(14)),
-        LegalSectionCard(
-          number: 4,
-          title: context.t('legal.privacy.s4.title'),
-          body: context.t('legal.privacy.s4.body'),
-        ),
-        SizedBox(height: context.sp(14)),
-        LegalSectionCard(
-          number: 5,
-          title: context.t('legal.privacy.s5.title'),
-          body: context.t('legal.privacy.s5.body'),
+        contentAsync.when(
+          data: (content) => LegalSectionCard(
+            number: 1,
+            title: content.title,
+            body: content.content,
+          ),
+          loading: () => const LegalLoadingCard(),
+          error: (error, _) => LegalErrorCard(
+            message: error is Failure
+                ? error.messageAr
+                : context.t('error.unknown'),
+            onRetry: () => ref.invalidate(privacyPolicyProvider),
+          ),
         ),
         SizedBox(height: context.sp(20)),
         const _ContactUsCard(),
@@ -97,14 +89,21 @@ class _ContactUsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             onTap: () => _copyEmail(context, email),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: context.sp(14), vertical: context.sp(12)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.sp(14),
+                vertical: context.sp(12),
+              ),
               decoration: BoxDecoration(
                 color: context.appPrimary.withAlpha(20),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.mail_outline_rounded, size: context.sp(18), color: context.appPrimary),
+                  Icon(
+                    Icons.mail_outline_rounded,
+                    size: context.sp(18),
+                    color: context.appPrimary,
+                  ),
                   SizedBox(width: context.sp(10)),
                   Expanded(
                     child: Text(
@@ -118,7 +117,11 @@ class _ContactUsCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Icon(Icons.copy_rounded, size: context.sp(16), color: context.appPrimary),
+                  Icon(
+                    Icons.copy_rounded,
+                    size: context.sp(16),
+                    color: context.appPrimary,
+                  ),
                 ],
               ),
             ),
@@ -132,7 +135,9 @@ class _ContactUsCard extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: email));
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.t('legal.contact.copied'))));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.t('legal.contact.copied'))));
   }
 }
 
@@ -173,15 +178,21 @@ class _DeleteAccountSection extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(dialogContext.t('legal.privacy.delete_account.confirm_title')),
-        content: Text(dialogContext.t('legal.privacy.delete_account.confirm_message')),
+        title: Text(
+          dialogContext.t('legal.privacy.delete_account.confirm_title'),
+        ),
+        content: Text(
+          dialogContext.t('legal.privacy.delete_account.confirm_message'),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
             child: Text(dialogContext.t('common.cancel')),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: dialogContext.appError),
+            style: FilledButton.styleFrom(
+              backgroundColor: dialogContext.appError,
+            ),
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: Text(dialogContext.t('common.confirm')),
           ),
@@ -190,7 +201,9 @@ class _DeleteAccountSection extends StatelessWidget {
     );
     if (confirmed == true && context.mounted) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.t('home.coming_soon'))));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.t('home.coming_soon'))));
     }
   }
 }

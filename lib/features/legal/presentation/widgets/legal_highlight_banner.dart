@@ -5,7 +5,11 @@ import '../../../../core/theme/app_colors.dart';
 /// Centered, bordered callout used to surface a single reassuring
 /// statement (e.g. "we protect your rights and data") between sections.
 class LegalHighlightBanner extends StatelessWidget {
-  const LegalHighlightBanner({super.key, required this.icon, required this.text});
+  const LegalHighlightBanner({
+    super.key,
+    required this.icon,
+    required this.text,
+  });
 
   final IconData icon;
   final String text;
@@ -13,7 +17,10 @@ class LegalHighlightBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: context.sp(16), vertical: context.sp(14)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.sp(16),
+        vertical: context.sp(14),
+      ),
       decoration: BoxDecoration(
         color: context.appPrimary.withAlpha(20),
         borderRadius: BorderRadius.circular(16),

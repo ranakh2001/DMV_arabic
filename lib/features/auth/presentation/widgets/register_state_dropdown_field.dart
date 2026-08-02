@@ -5,7 +5,11 @@ import '../../../../core/theme/app_colors.dart';
 /// The "select your state" field on the register screen — opens the shared
 /// state picker sheet and displays the current selection.
 class RegisterStateDropdownField extends StatelessWidget {
-  const RegisterStateDropdownField({super.key, required this.selectedState, required this.onTap});
+  const RegisterStateDropdownField({
+    super.key,
+    required this.selectedState,
+    required this.onTap,
+  });
 
   final String? selectedState;
   final VoidCallback onTap;
@@ -14,7 +18,9 @@ class RegisterStateDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasValue = selectedState != null;
     final accent = context.appPrimary;
-    final valueColor = hasValue ? context.appTextPrimary : context.appTextSecondary;
+    final valueColor = hasValue
+        ? context.appTextPrimary
+        : context.appTextSecondary;
     final isRtl = context.isRtl;
 
     return GestureDetector(
@@ -25,7 +31,10 @@ class RegisterStateDropdownField extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.appSurface,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: hasValue ? accent : accent.withAlpha(60), width: hasValue ? 1.5 : 1),
+          border: Border.all(
+            color: hasValue ? accent : accent.withAlpha(60),
+            width: hasValue ? 1.5 : 1,
+          ),
         ),
         // Layout is pinned LTR so the chevron/icon sit on the same physical
         // side regardless of locale — only the text alignment follows RTL.
@@ -39,7 +48,11 @@ class RegisterStateDropdownField extends StatelessWidget {
                 child: Text(
                   selectedState ?? context.t('field.state_hint'),
                   textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                  style: TextStyle(fontFamily: 'Almarai', fontSize: 14, color: valueColor),
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: 14,
+                    color: valueColor,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

@@ -28,5 +28,6 @@ class PulseRingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PulseRingPainter old) => old.progress != progress || old.color != color;
+  bool shouldRepaint(PulseRingPainter old) =>
+      old.progress != progress || old.color != color;
 }

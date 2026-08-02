@@ -21,7 +21,8 @@ const Map<String, String> stringsEn = {
 
   // --- Welcome screen
   'auth.welcome.greeting': 'Welcome',
-  'auth.welcome.subtitle': 'Sign in or create an account to begin your journey towards a driver\'s license',
+  'auth.welcome.subtitle':
+      'Sign in or create an account to begin your journey towards a driver\'s license',
   'auth.welcome.login_btn': 'Sign In',
   'auth.welcome.register_btn': 'Create New Account',
   'auth.welcome.terms': 'By registering you agree to the Terms of Service',
@@ -36,7 +37,8 @@ const Map<String, String> stringsEn = {
   'auth.register.title': 'Create Account',
   'auth.register.subtitle': 'Join now and start practicing',
   'auth.register.welcome_title': 'Welcome Aboard',
-  'auth.register.welcome_subtitle': 'Start your journey to get your American driver\'s license with ease and professionalism.',
+  'auth.register.welcome_subtitle':
+      'Start your journey to get your American driver\'s license with ease and professionalism.',
   'auth.register.submit': 'Create Account +',
   'auth.register.have_account': 'Already have an account?',
   'auth.register.sign_in': 'Sign In',
@@ -53,8 +55,10 @@ const Map<String, String> stringsEn = {
   'auth.verify.resend_in': 'Resend in',
   'auth.verify.expires_in': 'Code expires in',
   'auth.verify.expired': 'Code expired',
-  'auth.verify.max_resends': 'You have reached the maximum resend limit (3/hour).',
-  'auth.verify.resend_unavailable': "Didn't get the code? Please try again later or contact support.",
+  'auth.verify.max_resends':
+      'You have reached the maximum resend limit (3/hour).',
+  'auth.verify.resend_unavailable':
+      "Didn't get the code? Please try again later or contact support.",
 
   'auth.forgot.title': 'Forgot Password',
   'auth.forgot.subtitle': 'Enter your email or phone to reset your password',
@@ -116,6 +120,7 @@ const Map<String, String> stringsEn = {
   'home.start_first_simulation_title': 'Start your first simulation now',
   'home.view_all': 'View All',
   'home.simulation_test_title': 'Simulation Test — California State',
+  'home.simulation_test_title_named': 'Simulation Test — {state} State',
   'home.continue_now': 'Continue Now',
   'home.start_now': 'Start Now',
   'home.quick_quiz_subtitle': 'Answer 10 random questions',
@@ -163,13 +168,11 @@ const Map<String, String> stringsEn = {
   'onboarding.start': 'Let\'s Start',
   'onboarding.have_account': 'Have an account? Sign in',
 
+  // --- Notifications
   'notifications.title': 'Notifications',
-  'notifications.subtitle': 'Choose which alerts you want to receive. Turning off Push Notifications disables all categories below.',
+  'notifications.empty': 'No notifications yet',
+  'notifications.error': 'Failed to load notifications.',
   'notif.push': 'Push Notifications',
-  'notif.reminders': 'Subscription Reminders',
-  'notif.content': 'Content Updates',
-  'notif.announcements': 'Announcements',
-  'notif.sound': 'Notification Sound',
 
   // --- Forgot password flow
   'auth.forgot.badge': 'Password Recovery',
@@ -207,9 +210,14 @@ const Map<String, String> stringsEn = {
   'profile.selected_state': 'Selected State',
   'profile.field_photo': 'Profile Photo',
   'profile.edit_photo': 'Edit Photo',
+  'profile.photo_gallery': 'Choose from Gallery',
+  'profile.photo_camera': 'Take Photo',
+  'profile.photo_updated': 'Profile photo updated',
   'profile.change_password': 'Change Password',
   'profile.privacy_policy': 'Privacy Policy',
+  'profile.terms_of_use': 'Terms of Use',
   'profile.contact_us': 'Contact Us',
+  'profile.about_us': 'About Us',
   'profile.ui_language': 'Interface Language',
   'profile.ui_theme': 'App Theme',
   'profile.edit_field_title': 'Edit {field}',
@@ -219,10 +227,12 @@ const Map<String, String> stringsEn = {
 
   // --- Stats tab
   'stats.title': 'Statistics',
-  'stats.empty_message': 'No data yet — complete your first simulation to see your stats',
+  'stats.empty_message':
+      'No data yet — complete your first simulation to see your stats',
   'stats.success_rate': 'Success Rate',
   'stats.improvement': 'Improved {percent}% from previous average',
-  'stats.performance_message': "Excellent performance! You're getting close to full readiness for the real test.",
+  'stats.performance_message':
+      "Excellent performance! You're getting close to full readiness for the real test.",
   'stats.completed_simulations': 'Completed Simulations',
   'stats.total_questions': 'Total Questions',
   'stats.total_questions_more': 'More than {count}',
@@ -233,6 +243,8 @@ const Map<String, String> stringsEn = {
   'stats.pass_threshold': 'Passing Threshold',
   'stats.last_attempt': 'Last Attempt',
   'stats.first_attempt': 'First Attempt',
+  'stats.by_category_title': 'Performance by Category',
+  'stats.load_error': 'Failed to load stats.',
 
   // --- Simulation tab
   'simulation.title': 'DMV Test Simulation',
@@ -244,15 +256,29 @@ const Map<String, String> stringsEn = {
   'simulation.min_pass_value': '{count} correct answers',
   'simulation.time_label': 'Time Allowed',
   'simulation.time_value': 'No time limit',
-  'simulation.autosave_note': 'Your progress is saved automatically every 30 seconds',
-  'simulation.review_note': 'You can review and edit your answers before submitting',
+  'simulation.autosave_note':
+      'Your progress is saved automatically every 30 seconds',
+  'simulation.review_note':
+      'You can review and edit your answers before submitting',
   'simulation.start': 'Start Simulation',
+  'simulation.free_trial_button': 'Free Trial',
+
+  // --- Practice (free trial) question screen
+  'practice.question_progress': 'Question {current} of {total}',
+  'practice.correct': 'Correct answer!',
+  'practice.incorrect': 'Incorrect answer',
+  'practice.next': 'Next Question',
+  'practice.previous': 'Previous Question',
+  'practice.trial_ended_title': 'Free Trial Ended',
+  'practice.trial_ended_message':
+      'You have used {used} of {total} free questions',
+  'practice.subscribe_now': 'Subscribe Now',
 
   // --- Exam question screen
   'exam.question_progress': 'Question {current} of {total}',
   'exam.next': 'Next',
   'exam.previous': 'Previous',
-  'exam.submit': 'Submit Exam',
+  'exam.submit': 'Submit',
   'exam.submit_confirm_title': 'Submit Exam?',
   'exam.submit_confirm_message':
       "Are you sure you want to submit? You won't be able to change your answers afterwards.",
@@ -260,6 +286,31 @@ const Map<String, String> stringsEn = {
   'exam.exit_confirm_title': 'Exit Simulation?',
   'exam.exit_confirm_message': 'Your progress on this run will be lost.',
   'exam.exit_confirm_action': 'Exit',
+
+  // --- Simulation exam (live API)
+  'exam.picker.title': 'Choose a Simulation Exam',
+  'exam.picker.empty': 'No exams available for this state yet.',
+  'exam.picker.error': 'Failed to load exams.',
+  'exam.picker.questions_count': '{count} questions',
+  'exam.picker.start': 'Start',
+  'exam.select_state_first': 'Please select your state first.',
+  'exam.start_error': 'Could not start the exam. Please try again.',
+  'exam.history_title': 'Attempt History',
+  'exam.history_empty': 'No previous attempts yet.',
+  'exam.history_error': 'Failed to load attempt history.',
+  'exam.result.title': 'Exam Result',
+  'exam.result.passed': 'Passed',
+  'exam.result.failed': 'Failed',
+  'exam.result.score_label': 'Score',
+  'exam.result.correct_label': 'Correct',
+  'exam.result.incorrect_label': 'Incorrect',
+  'exam.result.time_label_value': 'Time: {time}',
+  'exam.result.review_title': 'Review Answers',
+  'exam.result.your_answer': 'Your Answer',
+  'exam.result.correct_answer': 'Correct',
+  'exam.result.no_answer': 'Not answered',
+  'exam.result.error': 'Failed to load exam result.',
+  'exam.result.done': 'Done',
 
   // --- Validators
   'validator.email.required': 'Email is required.',
@@ -301,7 +352,8 @@ const Map<String, String> stringsEn = {
   'legal.privacy.s5.body':
       'By using the DMV in Arabic app, you acknowledge that you have read and understood these terms and agree to abide by them. If you do not agree with any part of them, please stop using the app. We reserve the right to update these terms at any time, and you will be notified of any material changes.',
   'legal.privacy.contact.title': 'Contact Us',
-  'legal.privacy.contact.body': 'If you have any questions, we would love to hear from you at:',
+  'legal.privacy.contact.body':
+      'If you have any questions, we would love to hear from you at:',
   'legal.privacy.delete_account': 'Delete My Account',
   'legal.privacy.delete_account.subtitle':
       'All your account data and results will be permanently deleted. This action cannot be undone.',
@@ -318,9 +370,11 @@ const Map<String, String> stringsEn = {
   'legal.terms.s2.title': 'Service Description',
   'legal.terms.s2.body':
       'DMV in Arabic provides educational materials, practice tests, and translations of traffic laws across various US states. We strive to provide the most accurate information possible, but it cannot be considered a substitute for official documents issued by the Department of Motor Vehicles (DMV). The service is provided "as is", without warranties of any kind.',
-  'legal.terms.highlight': 'We are committed to protecting your rights and data',
+  'legal.terms.highlight':
+      'We are committed to protecting your rights and data',
   'legal.terms.s3.title': 'User Conduct',
-  'legal.terms.s3.item1': 'The app must be used for personal educational purposes only.',
+  'legal.terms.s3.item1':
+      'The app must be used for personal educational purposes only.',
   'legal.terms.s3.item2':
       'Attempting to copy or extract the app\'s code or databases is strictly prohibited.',
   'legal.terms.s3.item3':
@@ -331,11 +385,18 @@ const Map<String, String> stringsEn = {
   'legal.terms.s5.title': 'Modifications to Service',
   'legal.terms.s5.body':
       'We reserve the right to modify, suspend, or discontinue the service (or any part of it) at any time, with or without prior notice. We may also update these terms periodically, and your continued use of the app after any changes are published constitutes your explicit acceptance of them.',
-  'legal.terms.footer_note': 'By tapping Continue, you agree to the Terms of Use and Privacy Policy',
+  'legal.terms.footer_note':
+      'By tapping Continue, you agree to the Terms of Use and Privacy Policy',
   'legal.terms.continue': 'Continue',
 
+  // --- About Us screen
+  'legal.about.title': 'About Us',
+  'legal.about.version': 'Version {version}',
+  'legal.about.description_title': 'About the App',
+
   // --- Change password screen
-  'change_password.hero_subtitle': 'Secure your account by regularly updating your password',
+  'change_password.hero_subtitle':
+      'Secure your account by regularly updating your password',
   'change_password.save': 'Save Changes',
   'change_password.success': 'Password changed successfully',
 
@@ -357,7 +418,8 @@ const Map<String, String> stringsEn = {
 
   // --- Subscription plans (paywall)
   'subscription.title': 'Subscription Plans',
-  'subscription.trial_remaining': 'You have {remaining} of {total} free questions left',
+  'subscription.trial_remaining':
+      'You have {remaining} of {total} free questions left',
   'subscription.unlock_title': 'Unlock All Features',
   'subscription.unlock_subtitle':
       'Test with confidence and move faster toward your license with unlimited access',
@@ -368,7 +430,8 @@ const Map<String, String> stringsEn = {
   'subscription.best_value': 'Best Value',
   'subscription.choose_plan': 'Choose This Plan',
   'subscription.feature.unlimited_questions': 'Unlimited questions',
-  'subscription.feature.detailed_explanations': 'Detailed explanation for every question',
+  'subscription.feature.detailed_explanations':
+      'Detailed explanation for every question',
   'subscription.feature.real_simulation': 'Real exam simulation',
   'subscription.feature.all_monthly': 'All monthly plan features',
   'subscription.feature.save_50': 'Save 50% yearly',
@@ -386,22 +449,13 @@ const Map<String, String> stringsEn = {
   'payment.method.google_pay': 'Google Pay',
   'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'Credit / Debit Card',
-  'payment.card.holder_name': 'Cardholder Name',
-  'payment.card.number': 'Card Number',
-  'payment.card.expiry': 'Expiry Date',
-  'payment.card.cvv': 'CVV',
+  'payment.divider_or': 'or',
   'payment.pay_now': 'Pay {price}',
   'payment.secure_note': 'Your payment info is encrypted and secure',
   'payment.success.title': 'Subscribed Successfully!',
   'payment.success.subtitle': 'You now have full access to all features',
   'payment.success.start': 'Start Now',
-
-  // --- Card validators
-  'validator.card.holder_required': 'Cardholder name is required.',
-  'validator.card.number_required': 'Card number is required.',
-  'validator.card.number_invalid': 'Enter a valid 16-digit card number.',
-  'validator.card.expiry_required': 'Expiry date is required.',
-  'validator.card.expiry_invalid': 'Enter a valid expiry date (MM/YY).',
-  'validator.card.cvv_required': 'CVV is required.',
-  'validator.card.cvv_invalid': 'Enter a valid CVV.',
+  'payment.activating': 'Activating your subscription...',
+  'payment.activation_pending':
+      'Payment received — your subscription is being activated and you\'ll be notified shortly',
 };

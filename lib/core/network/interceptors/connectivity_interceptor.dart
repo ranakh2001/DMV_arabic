@@ -11,7 +11,10 @@ class ConnectivityInterceptor extends Interceptor {
   final ConnectivityService _connectivity;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (await _connectivity.isConnected) return handler.next(options);
     handler.reject(
       DioException(
