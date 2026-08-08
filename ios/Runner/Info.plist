@@ -53,6 +53,8 @@
 	<string>يحتاج التطبيق للوصول إلى معرض الصور لاختيار صورة الملف الشخصي.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>يحتاج التطبيق للوصول إلى الكاميرا لالتقاط صورة الملف الشخصي.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 	<key>GIDClientID</key>

@@ -4,10 +4,9 @@
 <dict>
 	<key>com.apple.developer.in-app-payments</key>
 	<array>
-		<!-- TODO: replace with the real Apple Pay merchant identifier
-		     registered in the Apple Developer account before launch —
-		     must match StripeConfig.appleMerchantIdentifier. -->
 		<string>merchant.com.dmvarabic.app</string>
 	</array>
+	<key>aps-environment</key>
+	<string>production</string>
 </dict>
 </plist>
