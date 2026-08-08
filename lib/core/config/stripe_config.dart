@@ -9,8 +9,7 @@ class StripeConfig {
 
   /// Apple Pay merchant identifier registered in the Apple Developer
   /// account, required by `Stripe.instance.applySettings()` on iOS.
-  /// TODO: replace with the real merchant identifier before launch, and
-  /// enable the Apple Pay capability for this merchant ID in Xcode
+  /// Enable the Apple Pay capability for this merchant ID in Xcode
   /// (Signing & Capabilities → + Capability → Apple Pay).
-  static const String appleMerchantIdentifier = 'merchant.com.dmvarabic.app';
+  static const String appleMerchantIdentifier = 'merchant.com.dmv.arabic.us';
 }

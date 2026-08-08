@@ -10,12 +10,9 @@ class PaymentPlatformHelper {
   static bool get isGooglePayAvailable => Platform.isAndroid;
 
   /// Value sent as `platform` to `POST /subscriptions/initiate`.
-  /// The backend currently documents only `"android"` and `"web"` — there
-  /// is no confirmed value for iOS yet.
-  /// TODO: confirm the correct iOS value with the backend before launch.
-  /// Sending `"web"` for now since it is one of the two accepted values.
   static String get apiPlatformValue {
     if (Platform.isAndroid) return 'android';
+    if (Platform.isIOS) return 'ios';
     return 'web';
   }
 }
