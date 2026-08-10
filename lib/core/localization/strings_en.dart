@@ -447,7 +447,8 @@ const Map<String, String> stringsEn = {
   'payment.order_summary': 'Order Summary',
   'payment.method_title': 'Payment Method',
   'payment.method.google_pay': 'Google Pay',
-  'payment.method.apple_pay': 'Apple Pay',
+  // Apple Pay disabled — see payment_method.dart.
+  // 'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'Credit / Debit Card',
   'payment.divider_or': 'or',
   'payment.pay_now': 'Pay {price}',

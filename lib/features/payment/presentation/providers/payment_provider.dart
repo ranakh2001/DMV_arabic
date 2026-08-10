@@ -60,30 +60,45 @@ class PaymentController extends Notifier<PaymentState> {
     final initiate = await _initiate(plan: plan);
     if (initiate == null) return;
 
+    // Apple Pay disabled — see stripe_config.dart, platform_pay_button.dart.
+    // iOS has no platform-pay path anymore (the button no longer renders there).
+    if (Platform.isIOS) {
+      _handleUnknownError();
+      return;
+    }
+
     try {
       await Stripe.instance.confirmPlatformPayPaymentIntent(
         clientSecret: initiate.clientSecret,
-        confirmParams: Platform.isIOS
-            ? PlatformPayConfirmParams.applePay(
-                applePay: ApplePayParams(
-                  merchantCountryCode: _merchantCountryCode,
-                  currencyCode: _currencyCode,
-                  cartItems: [
-                    ApplePayCartSummaryItem.immediate(
-                      label: plan.title,
-                      amount: plan.price.toStringAsFixed(2),
-                    ),
-                  ],
-                ),
-              )
-            : PlatformPayConfirmParams.googlePay(
-                googlePay: const GooglePayParams(
-                  merchantCountryCode: _merchantCountryCode,
-                  currencyCode: _currencyCode,
-                  testEnv: true,
-                  merchantName: 'DMV Exam App',
-                ),
-              ),
+        // confirmParams: Platform.isIOS
+        //     ? PlatformPayConfirmParams.applePay(
+        //         applePay: ApplePayParams(
+        //           merchantCountryCode: _merchantCountryCode,
+        //           currencyCode: _currencyCode,
+        //           cartItems: [
+        //             ApplePayCartSummaryItem.immediate(
+        //               label: plan.title,
+        //               amount: plan.price.toStringAsFixed(2),
+        //             ),
+        //           ],
+        //         ),
+        //       )
+        //     : PlatformPayConfirmParams.googlePay(
+        //         googlePay: const GooglePayParams(
+        //           merchantCountryCode: _merchantCountryCode,
+        //           currencyCode: _currencyCode,
+        //           testEnv: true,
+        //           merchantName: 'DMV Exam App',
+        //         ),
+        //       ),
+        confirmParams: PlatformPayConfirmParams.googlePay(
+          googlePay: const GooglePayParams(
+            merchantCountryCode: _merchantCountryCode,
+            currencyCode: _currencyCode,
+            testEnv: true,
+            merchantName: 'DMV Exam App',
+          ),
+        ),
       );
     } on StripeException catch (e) {
       _handleStripeException(e);

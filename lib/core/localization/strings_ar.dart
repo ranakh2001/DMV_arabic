@@ -448,7 +448,8 @@ const Map<String, String> stringsAr = {
   'payment.order_summary': 'ملخص الطلب',
   'payment.method_title': 'طريقة الدفع',
   'payment.method.google_pay': 'Google Pay',
-  'payment.method.apple_pay': 'Apple Pay',
+  // Apple Pay disabled — see payment_method.dart.
+  // 'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'بطاقة ائتمان / خصم',
   'payment.divider_or': 'أو',
   'payment.pay_now': 'ادفع {price}',

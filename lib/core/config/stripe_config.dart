@@ -11,5 +11,6 @@ class StripeConfig {
   /// account, required by `Stripe.instance.applySettings()` on iOS.
   /// Enable the Apple Pay capability for this merchant ID in Xcode
   /// (Signing & Capabilities → + Capability → Apple Pay).
-  static const String appleMerchantIdentifier = 'merchant.com.dmv.arabic.us';
+  // Apple Pay disabled — see main.dart, payment_provider.dart, platform_pay_button.dart.
+  // static const String appleMerchantIdentifier = 'merchant.com.dmv.arabic.us';
 }
