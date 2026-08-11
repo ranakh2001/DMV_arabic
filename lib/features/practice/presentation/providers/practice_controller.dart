@@ -89,11 +89,16 @@ class PracticeController extends Notifier<PracticeState> {
         .read(getQuestionsUsecaseProvider)
         .call(stateId: stateId);
     result.fold(
-      onSuccess: (questions) => state = PracticeState(
-        loadStatus: PracticeLoadStatus.loaded,
-        pool: questions,
-        poolIndex: ref.read(freeTrialProvider).used,
-      ),
+      onSuccess: (questions) => state = questions.isEmpty
+          ? state.copyWith(
+              loadStatus: PracticeLoadStatus.failed,
+              error: 'لا توجد أسئلة متاحة لهذه الولاية حالياً.',
+            )
+          : PracticeState(
+              loadStatus: PracticeLoadStatus.loaded,
+              pool: questions,
+              poolIndex: ref.read(freeTrialProvider).used,
+            ),
       onFailure: (failure) => state = state.copyWith(
         loadStatus: PracticeLoadStatus.failed,
         error: failure.messageAr,

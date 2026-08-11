@@ -113,6 +113,13 @@ class ExamAttemptController extends Notifier<ExamAttemptState> {
         .call(examId: examId);
     return result.fold(
       onSuccess: (data) {
+        if (data.questions.isEmpty) {
+          state = state.copyWith(
+            status: ExamAttemptStatus.failed,
+            error: 'لا توجد أسئلة متاحة لهذا الاختبار حالياً.',
+          );
+          return false;
+        }
         state = ExamAttemptState(
           status: ExamAttemptStatus.inProgress,
           attemptId: data.attemptId,
