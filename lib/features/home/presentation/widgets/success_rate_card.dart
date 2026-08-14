@@ -77,15 +77,17 @@ class SuccessRateCard extends StatelessWidget {
                   size: context.sp(16),
                 ),
                 SizedBox(width: context.sp(6)),
-                Text(
-                  context.ts('stats.improvement', {
-                    'percent': '$improvementPercent',
-                  }),
-                  style: TextStyle(
-                    fontFamily: 'Almarai',
-                    fontSize: context.sp(13),
-                    fontWeight: FontWeight.w700,
-                    color: context.appSuccess,
+                Flexible(
+                  child: Text(
+                    context.ts('stats.improvement', {
+                      'percent': '$improvementPercent',
+                    }),
+                    style: TextStyle(
+                      fontFamily: 'Almarai',
+                      fontSize: context.sp(13),
+                      fontWeight: FontWeight.w700,
+                      color: context.appSuccess,
+                    ),
                   ),
                 ),
               ],
