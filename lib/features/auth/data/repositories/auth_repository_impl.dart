@@ -38,6 +38,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Result<void>> register({
     required String name,
+    required String email,
     required String contact,
     required int stateId,
     required String password,
@@ -45,6 +46,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _remote.register(
         RegisterRequest(
+          email: email,
           fullName: name,
           phoneNumber: contact,
           stateId: stateId,
@@ -208,7 +210,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
   }) async {
     try {
-      await _remote.verify(VerifyRequest(phoneNumber: contact, code: code));
+      await _remote.verifyResetCode(
+        VerifyRequest(phoneNumber: contact, code: code),
+      );
       return const Result.success(null);
     } on ServerException catch (e) {
       return Result.failure(_fromServer(e));

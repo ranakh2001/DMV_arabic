@@ -7,11 +7,13 @@ class RegisterUsecase {
 
   Future<Result<void>> call({
     required String name,
+    required String email,
     required String contact,
     required int stateId,
     required String password,
   }) => _repo.register(
     name: name,
+    email: email,
     contact: contact,
     stateId: stateId,
     password: password,

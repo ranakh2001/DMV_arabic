@@ -134,7 +134,6 @@ class _ForgotVerifyScreenState extends ConsumerState<ForgotVerifyScreen> {
                           ),
                           const SizedBox(height: 28),
                           ForgotVerifyCard(
-                            contact: widget.contact,
                             error: _error,
                             secondsLeft: _secondsLeft,
                             onCodeChanged: (code) => setState(() {

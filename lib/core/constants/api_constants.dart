@@ -21,6 +21,7 @@ class ApiConstants {
   static const String logout = '/auth/logout';
   static const String refreshToken = '/auth/refresh-token';
   static const String forgotPassword = '/auth/forgot-password';
+  static const String verifyResetCode = '/auth/verify-reset-code';
   static const String resetPassword = '/auth/reset-password';
 
   // User endpoints (Bearer token required)

@@ -5,9 +5,10 @@ import '../entities/auth_user.dart';
 /// Abstract contract for auth operations. Returns [Result<T, Failure>].
 /// Implementations live in the data layer.
 abstract interface class AuthRepository {
-  /// FR-01: Register with name + phone + state + password.
+  /// FR-01: Register with name + email + phone + state + password.
   Future<Result<void>> register({
     required String name,
+    required String email,
     required String contact,
     required int stateId,
     required String password,
@@ -48,10 +49,10 @@ abstract interface class AuthRepository {
     required String newPassword,
   });
 
-  /// FR-05 step 1.5: Check the reset code is correct before letting the user
-  /// move on to the new-password screen. Uses the same /auth/verify endpoint
-  /// as account verification, but does not establish a session — the account
-  /// stays logged out until [resetPassword] actually succeeds.
+  /// FR-05 step 1.5: Check the reset code is correct via `/auth/verify-reset-code`
+  /// before letting the user move on to the new-password screen. Does not
+  /// establish a session — the account stays logged out until [resetPassword]
+  /// actually succeeds.
   Future<Result<void>> verifyResetCode({
     required String contact,
     required String code,

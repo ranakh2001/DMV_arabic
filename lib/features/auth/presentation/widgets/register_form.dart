@@ -20,6 +20,7 @@ class RegisterForm extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.nameCtrl,
+    required this.emailCtrl,
     required this.contactCtrl,
     required this.passwordCtrl,
     required this.confirmCtrl,
@@ -39,6 +40,7 @@ class RegisterForm extends StatelessWidget {
 
   final GlobalKey<FormState> formKey;
   final TextEditingController nameCtrl;
+  final TextEditingController emailCtrl;
   final TextEditingController contactCtrl;
   final TextEditingController passwordCtrl;
   final TextEditingController confirmCtrl;
@@ -90,6 +92,29 @@ class RegisterForm extends StatelessWidget {
               ),
             ),
             validator: Validators.name(context),
+          ),
+          const SizedBox(height: 20),
+          AuthFieldLabel(context.t('field.email')),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: emailCtrl,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              color: context.appTextPrimary,
+              fontSize: 15,
+            ),
+            decoration: authFieldDecoration(
+              context: context,
+              hint: context.t('field.email_hint'),
+              prefixIcon: Icon(
+                Icons.mail_outline_rounded,
+                color: context.appPrimary,
+                size: 20,
+              ),
+            ),
+            validator: Validators.email(context),
           ),
           const SizedBox(height: 20),
           PhoneField(controller: contactCtrl, label: context.t('field.phone')),

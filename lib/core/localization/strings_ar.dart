@@ -83,6 +83,7 @@ const Map<String, String> stringsAr = {
   'field.name': 'الاسم الكامل',
   'field.name_hint': 'ادخل اسمك بالكامل',
   'field.email': 'البريد الإلكتروني',
+  'field.email_hint': 'أدخل بريدك الإلكتروني',
   'field.phone': 'رقم الهاتف',
   'field.phone_hint': '+1 (555) 000-0000',
   'field.email_or_phone': 'البريد الإلكتروني أو رقم الهاتف',
@@ -193,7 +194,7 @@ const Map<String, String> stringsAr = {
   // --- Forgot verify step
   'auth.forgot_verify.badge': 'التحقق من الهوية',
   'auth.forgot_verify.title': 'أدخل رمز التحقق',
-  'auth.forgot_verify.subtitle': 'أرسلنا رمزاً مكوناً من 6 أرقام إلى',
+  'auth.forgot_verify.subtitle': 'تم إرسال رمز التحقق إلى بريدك الإلكتروني',
   'auth.forgot_verify.no_code': 'لم تستلم الرمز؟',
   'auth.forgot_verify.submit': 'تحقق من الرمز',
   'auth.forgot_verify.resend': 'إعادة إرسال الرمز',
@@ -448,8 +449,7 @@ const Map<String, String> stringsAr = {
   'payment.order_summary': 'ملخص الطلب',
   'payment.method_title': 'طريقة الدفع',
   'payment.method.google_pay': 'Google Pay',
-  // Apple Pay disabled — see payment_method.dart.
-  // 'payment.method.apple_pay': 'Apple Pay',
+  'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'بطاقة ائتمان / خصم',
   'payment.divider_or': 'أو',
   'payment.pay_now': 'ادفع {price}',

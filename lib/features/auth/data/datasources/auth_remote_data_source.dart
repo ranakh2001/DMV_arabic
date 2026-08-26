@@ -130,6 +130,13 @@ class AuthRemoteDataSource {
     _assertSuccess(response);
   }
 
+  /// FR-05 step 1.5: Verify the reset code before letting the user move on
+  /// to the new-password screen.
+  Future<void> verifyResetCode(VerifyRequest request) async {
+    final response = await _post(ApiConstants.verifyResetCode, request.toJson());
+    _assertSuccess(response);
+  }
+
   Future<void> resetPassword(ResetPasswordRequest request) async {
     final response = await _post(ApiConstants.resetPassword, request.toJson());
     _assertSuccess(response);
@@ -167,9 +174,15 @@ class AuthRemoteDataSource {
     final message = body is Map<String, dynamic>
         ? body['message'] as String?
         : null;
+    final errors = body is Map<String, dynamic>
+        ? body['errors'] as Map<String, dynamic>?
+        : null;
     return ServerException(
       messageAr: message ?? 'حدث خطأ. يرجى المحاولة مرة أخرى.',
       statusCode: e.response?.statusCode,
+      fieldErrors: errors?.map(
+        (field, messages) => MapEntry(field, (messages as List).cast<String>()),
+      ),
     );
   }
 }

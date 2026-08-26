@@ -170,6 +170,7 @@ class RegisterController extends Notifier<AuthFormState> {
 
   Future<void> register({
     required String name,
+    required String email,
     required String contact,
     required int stateId,
     required String password,
@@ -179,6 +180,7 @@ class RegisterController extends Notifier<AuthFormState> {
         .read(registerUsecaseProvider)
         .call(
           name: name,
+          email: email,
           contact: contact,
           stateId: stateId,
           password: password,

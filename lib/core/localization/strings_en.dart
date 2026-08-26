@@ -79,6 +79,7 @@ const Map<String, String> stringsEn = {
   'field.name': 'Full Name',
   'field.name_hint': 'Enter your full name',
   'field.email': 'Email',
+  'field.email_hint': 'Enter your email address',
   'field.phone': 'Phone Number',
   'field.phone_hint': '+1 (555) 000-0000',
   'field.email_or_phone': 'Email or Phone Number',
@@ -186,7 +187,7 @@ const Map<String, String> stringsEn = {
   // --- Forgot verify step
   'auth.forgot_verify.badge': 'Identity Verification',
   'auth.forgot_verify.title': 'Enter Verification Code',
-  'auth.forgot_verify.subtitle': 'We sent a 6-digit code to',
+  'auth.forgot_verify.subtitle': 'The verification code has been sent to your email',
   'auth.forgot_verify.no_code': "Didn't receive the code?",
   'auth.forgot_verify.submit': 'Verify Code',
   'auth.forgot_verify.resend': 'Resend Code',
@@ -447,8 +448,7 @@ const Map<String, String> stringsEn = {
   'payment.order_summary': 'Order Summary',
   'payment.method_title': 'Payment Method',
   'payment.method.google_pay': 'Google Pay',
-  // Apple Pay disabled — see payment_method.dart.
-  // 'payment.method.apple_pay': 'Apple Pay',
+  'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'Credit / Debit Card',
   'payment.divider_or': 'or',
   'payment.pay_now': 'Pay {price}',

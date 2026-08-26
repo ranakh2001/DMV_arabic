@@ -31,6 +31,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
   final _contactCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
@@ -52,6 +53,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _emailCtrl.dispose();
     _contactCtrl.dispose();
     _passwordCtrl.dispose();
     _confirmCtrl.dispose();
@@ -75,6 +77,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         .read(registerControllerProvider.notifier)
         .register(
           name: _nameCtrl.text.trim(),
+          email: _emailCtrl.text.trim(),
           contact: _contactCtrl.text.trim(),
           stateId: _selectedState!.id,
           password: _passwordCtrl.text,
@@ -167,6 +170,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           RegisterForm(
                             formKey: _formKey,
                             nameCtrl: _nameCtrl,
+                            emailCtrl: _emailCtrl,
                             contactCtrl: _contactCtrl,
                             passwordCtrl: _passwordCtrl,
                             confirmCtrl: _confirmCtrl,

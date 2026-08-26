@@ -19,19 +19,14 @@ class PaymentPlatformPayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Apple Pay disabled — button no longer renders on iOS. See stripe_config.dart.
-    // if (!Platform.isIOS && !Platform.isAndroid) return const SizedBox.shrink();
-    if (!Platform.isAndroid) return const SizedBox.shrink();
+    if (!Platform.isIOS && !Platform.isAndroid) return const SizedBox.shrink();
 
     return FutureBuilder<bool>(
-      // future: Platform.isAndroid
-      //     ? stripe.Stripe.instance.isPlatformPaySupported(
-      //         googlePay: const stripe.IsGooglePaySupportedParams(testEnv: true),
-      //       )
-      //     : stripe.Stripe.instance.isPlatformPaySupported(),
-      future: stripe.Stripe.instance.isPlatformPaySupported(
-        googlePay: const stripe.IsGooglePaySupportedParams(testEnv: true),
-      ),
+      future: Platform.isAndroid
+          ? stripe.Stripe.instance.isPlatformPaySupported(
+              googlePay: const stripe.IsGooglePaySupportedParams(testEnv: true),
+            )
+          : stripe.Stripe.instance.isPlatformPaySupported(),
       builder: (context, snapshot) {
         if (snapshot.data != true) return const SizedBox.shrink();
 

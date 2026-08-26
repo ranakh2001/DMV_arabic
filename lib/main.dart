@@ -11,8 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Stripe.publishableKey = StripeConfig.publishableKey;
-  // Apple Pay disabled — see stripe_config.dart.
-  // Stripe.merchantIdentifier = StripeConfig.appleMerchantIdentifier;
+  Stripe.merchantIdentifier = StripeConfig.appleMerchantIdentifier;
   await Stripe.instance.applySettings();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

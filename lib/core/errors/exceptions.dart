@@ -5,12 +5,18 @@ class ServerException implements Exception {
     this.messageEn,
     this.statusCode,
     this.errorCode,
+    this.fieldErrors,
   });
 
   final String messageAr;
   final String? messageEn;
   final int? statusCode;
   final String? errorCode;
+
+  /// Laravel-style per-field validation errors (`{"field": ["message", ...]}`)
+  /// from a 422 response, when present. Lets callers distinguish which field
+  /// failed instead of only having the flattened top-level [messageAr].
+  final Map<String, List<String>>? fieldErrors;
 
   @override
   String toString() => 'ServerException($statusCode: $messageAr)';
