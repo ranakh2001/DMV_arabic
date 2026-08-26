@@ -1,7 +1,7 @@
 name: dmv
 description: "DMV بالعربي — Arabic-first US driving license exam simulator."
 publish_to: 'none'
-version: 1.0.0+2
+version: 1.0.2+1
 
 environment:
   sdk: ^3.10.4
