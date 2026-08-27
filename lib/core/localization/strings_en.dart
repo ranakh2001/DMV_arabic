@@ -49,7 +49,7 @@ const Map<String, String> stringsEn = {
   'auth.register.terms_suffix': ' of DMV in Arabic.',
 
   'auth.verify.title': 'Verify Your Identity',
-  'auth.verify.subtitle': 'Enter the code sent to',
+  'auth.verify.subtitle': 'The verification code has been sent to your email',
   'auth.verify.submit': 'Verify',
   'auth.verify.resend': 'Resend Code',
   'auth.verify.resend_in': 'Resend in',

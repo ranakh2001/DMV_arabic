@@ -52,7 +52,7 @@ const Map<String, String> stringsAr = {
   'auth.register.terms_suffix': ' الخاصة بـ DMV بالعربي.',
 
   'auth.verify.title': 'تحقق من هويتك',
-  'auth.verify.subtitle': 'أدخل الرمز المرسل إلى',
+  'auth.verify.subtitle': 'تم إرسال رمز التحقق إلى بريدك الإلكتروني',
   'auth.verify.submit': 'تحقق',
   'auth.verify.resend': 'إعادة إرسال الرمز',
   'auth.verify.resend_in': 'إعادة الإرسال بعد',

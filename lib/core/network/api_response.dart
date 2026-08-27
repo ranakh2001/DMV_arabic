@@ -1,10 +1,16 @@
-/// Models the API envelope: { success, message, data }
+/// Models the API envelope: { success, message, data, errors }
 class ApiResponse<T> {
-  const ApiResponse({required this.success, this.data, this.message});
+  const ApiResponse({
+    required this.success,
+    this.data,
+    this.message,
+    this.errors,
+  });
 
   final bool success;
   final T? data;
   final String? message;
+  final Map<String, dynamic>? errors;
 
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
@@ -14,6 +20,7 @@ class ApiResponse<T> {
       success: json['success'] as bool? ?? false,
       data: json.containsKey('data') ? fromJsonT(json['data']) : null,
       message: json['message'] as String?,
+      errors: json['errors'] as Map<String, dynamic>?,
     );
   }
 

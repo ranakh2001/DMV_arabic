@@ -88,7 +88,9 @@ class HomeScreen extends ConsumerWidget {
                       child: QuickActionCard(
                         icon: Icons.bolt_rounded,
                         label: context.t('home.quick_test_card'),
-                        onTap: () => _showComingSoon(context),
+                        onTap: () => ref
+                            .read(homeTabProvider.notifier)
+                            .select(HomeTab.simulation),
                       ),
                     ),
                     SizedBox(width: context.sp(14)),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/glass.dart';
 import '../../../../core/widgets/skeleton_list_tile.dart';
 import '../../domain/entities/exam_summary.dart';
 import '../providers/simulation_exam_providers.dart';
@@ -35,7 +36,7 @@ class ExamListSection extends ConsumerWidget {
           children: [
             for (var i = 0; i < exams.length; i++) ...[
               _ExamTile(exam: exams[i], onTap: () => onSelected(exams[i])),
-              if (i != exams.length - 1) SizedBox(height: context.sp(10)),
+              if (i != exams.length - 1) SizedBox(height: context.sp(16)),
             ],
           ],
         );
@@ -90,85 +91,130 @@ class _ExamTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(context.sp(14)),
-        decoration: BoxDecoration(
-          color: context.appGlassTint,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: context.appGlassBorder),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: context.sp(42),
-              height: context.sp(42),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: context.appPrimary.withAlpha(30),
-              ),
-              child: Icon(
-                Icons.assignment_rounded,
+    return GlassContainer(
+      radius: 20,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.assignment_outlined,
                 color: context.appPrimary,
-                size: context.sp(22),
+                size: context.sp(20),
               ),
-            ),
-            SizedBox(width: context.sp(12)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    exam.titleAr,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'Almarai',
-                      fontSize: context.sp(14),
-                      fontWeight: FontWeight.w700,
-                      color: context.appTextPrimary,
-                    ),
+              SizedBox(width: context.sp(8)),
+              Expanded(
+                child: Text(
+                  exam.titleAr,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: context.sp(16),
+                    fontWeight: FontWeight.w700,
+                    color: context.appTextPrimary,
                   ),
-                  SizedBox(height: context.sp(4)),
-                  Text(
-                    context.ts('exam.picker.questions_count', {
-                      'count': '${exam.totalQuestions}',
-                    }),
-                    style: TextStyle(
-                      fontFamily: 'Almarai',
-                      fontSize: context.sp(12),
-                      color: context.appTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: context.sp(8)),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.sp(14),
-                vertical: context.sp(8),
-              ),
-              decoration: BoxDecoration(
-                color: context.appPrimary,
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: Text(
-                context.t('exam.picker.start'),
-                style: TextStyle(
-                  fontFamily: 'Almarai',
-                  fontSize: context.sp(12.5),
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          SizedBox(height: context.sp(16)),
+          _ExamDetailRow(
+            icon: Icons.help_outline_rounded,
+            label: context.t('simulation.question_count_label'),
+            value: context.ts('simulation.question_count_value', {
+              'count': '${exam.totalQuestions}',
+            }),
+            valueColor: context.appTextPrimary,
+          ),
+          SizedBox(height: context.sp(12)),
+          _ExamDetailRow(
+            icon: Icons.check_circle_outline_rounded,
+            label: context.t('simulation.min_pass_label'),
+            value: context.ts('simulation.min_pass_value', {
+              'count': '${exam.passingScore}',
+            }),
+            valueColor: context.appSuccess,
+          ),
+          SizedBox(height: context.sp(12)),
+          _ExamDetailRow(
+            icon: Icons.all_inclusive_rounded,
+            label: context.t('simulation.time_label'),
+            value: context.t('simulation.time_value'),
+            valueColor: context.appSecondary,
+          ),
+          SizedBox(height: context.sp(16)),
+          ElevatedButton.icon(
+            onPressed: onTap,
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: Text(context.t('exam.picker.start')),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _ExamDetailRow extends StatelessWidget {
+  const _ExamDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: context.sp(16), color: context.appTextSecondary),
+              SizedBox(width: context.sp(6)),
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: 'Almarai',
+                    fontSize: context.sp(14),
+                    color: context.appTextSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: context.sp(8)),
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.sp(12),
+            vertical: context.sp(6),
+          ),
+          decoration: BoxDecoration(
+            color: valueColor.withAlpha(25),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: valueColor.withAlpha(90)),
+          ),
+          child: Text(
+            value,
+            style: TextStyle(
+              fontFamily: 'Almarai',
+              fontSize: context.sp(13),
+              fontWeight: FontWeight.w700,
+              color: valueColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

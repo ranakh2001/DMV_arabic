@@ -111,6 +111,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (result.unverifiedContact != null) {
+        await _resendVerificationBestEffort(result.unverifiedContact!);
         return Result.success((
           session: null,
           unverifiedContact: result.unverifiedContact,
@@ -130,6 +131,20 @@ class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(_fromServer(e));
     } catch (_) {
       return Result.failure(const NetworkFailure());
+    }
+  }
+
+  /// Fires a fresh verification code the moment login reports the account
+  /// isn't verified yet, so a code is already on its way to [contact] by the
+  /// time the user lands on the verify screen. Best-effort: a failure here
+  /// must not block that redirect — the user can still tap "resend" there.
+  Future<void> _resendVerificationBestEffort(String contact) async {
+    try {
+      await _remote.resendVerificationCode(
+        ResendVerificationCodeRequest(phoneNumber: contact),
+      );
+    } catch (_) {
+      // Ignore: manual resend on VerifyScreen remains available.
     }
   }
 

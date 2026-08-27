@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/storage/storage_providers.dart';
@@ -11,12 +10,12 @@ import '../../../simulation_exam/presentation/providers/exam_attempt_controller.
 import '../../../simulation_exam/presentation/providers/simulation_exam_providers.dart';
 import '../../../simulation_exam/presentation/screens/exam_attempt_screen.dart';
 import '../../../simulation_exam/presentation/widgets/exam_history_section.dart';
+import '../../../simulation_exam/presentation/widgets/exam_list.dart';
 import '../../../subscription/presentation/providers/subscription_provider.dart';
 import '../../../subscription/presentation/screens/subscription_plans_screen.dart';
 import '../widgets/info_note_row.dart';
 import '../widgets/simulation_hero_card.dart';
 import '../widgets/tab_screen_header.dart';
-import '../widgets/test_details_card.dart';
 
 /// The "المحاكاة" (Simulation) tab: lets the user review the test's rules,
 /// start a live API-backed simulation run, and review past attempts.
@@ -26,15 +25,6 @@ class SimulationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stateId = ref.watch(prefsServiceProvider).selectedStateId;
-    final examsAsync = stateId == null
-        ? null
-        : ref.watch(simulationExamsProvider(stateId));
-    final exams = examsAsync?.valueOrNull;
-    final firstExam = (exams == null || exams.isEmpty) ? null : exams.first;
-    final questionCount =
-        firstExam?.totalQuestions ?? AppConstants.examQuestionCount;
-    final minPassCount =
-        firstExam?.passingScore ?? AppConstants.examMinPassCount;
 
     return SafeArea(
       bottom: false,
@@ -59,9 +49,10 @@ class SimulationScreen extends ConsumerWidget {
                 SizedBox(height: context.sp(20)),
                 const SimulationHeroCard(),
                 SizedBox(height: context.sp(16)),
-                TestDetailsCard(
-                  questionCount: questionCount,
-                  minPassCount: minPassCount,
+                OutlinedButton.icon(
+                  onPressed: () => startFreeTrial(context, ref),
+                  icon: const Icon(Icons.bolt_rounded),
+                  label: Text(context.t('simulation.free_trial_button')),
                 ),
                 SizedBox(height: context.sp(16)),
                 InfoNoteRow(
@@ -76,19 +67,10 @@ class SimulationScreen extends ConsumerWidget {
                 if (stateId == null)
                   _SelectStateNotice(text: context.t('exam.select_state_first'))
                 else
-                  ElevatedButton.icon(
-                    onPressed: firstExam == null
-                        ? null
-                        : () => _onExamSelected(context, ref, firstExam),
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: Text(context.t('simulation.start')),
+                  ExamListSection(
+                    stateId: stateId,
+                    onSelected: (exam) => _onExamSelected(context, ref, exam),
                   ),
-                SizedBox(height: context.sp(12)),
-                OutlinedButton.icon(
-                  onPressed: () => startFreeTrial(context, ref),
-                  icon: const Icon(Icons.bolt_rounded),
-                  label: Text(context.t('simulation.free_trial_button')),
-                ),
                 SizedBox(height: context.sp(24)),
                 Text(
                   context.t('exam.history_title'),

@@ -111,29 +111,14 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                RichText(
+                                Text(
+                                  context.t('auth.verify.subtitle'),
                                   textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    style: TextStyle(
-                                      fontFamily: 'Almarai',
-                                      fontSize: 13,
-                                      color: context.appTextSecondary,
-                                      height: 1.6,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            '${context.t('auth.verify.subtitle')} ',
-                                      ),
-                                      TextSpan(
-                                        text: widget.contact,
-                                        style: TextStyle(
-                                          color: context.appPrimary,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
+                                  style: TextStyle(
+                                    fontFamily: 'Almarai',
+                                    fontSize: 13,
+                                    color: context.appTextSecondary,
+                                    height: 1.6,
                                   ),
                                 ),
                                 const SizedBox(height: 28),

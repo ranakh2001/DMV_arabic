@@ -35,37 +35,61 @@ class AuthRemoteDataSource {
     );
   }
 
-  /// Returns [unverifiedContact] set to [request.phoneNumber] when the API
-  /// reports the account isn't verified yet (BR-02) — the API has no
-  /// dedicated error code for this, so it is detected from the message text.
+  /// Returns [unverifiedContact] set to the account's phone number when the
+  /// API reports the account isn't verified yet (BR-02), signaled by
+  /// `errors.requires_verification: true`. The backend sends that flag on a
+  /// non-2xx (403) response, so this makes its own request (rather than
+  /// going through [_post]) to inspect the raw error body of a
+  /// [DioException] before falling back to generic error mapping.
   Future<
     ({AuthUserModel user, AuthTokensModel tokens, String? unverifiedContact})
   >
   login(LoginRequest request) async {
-    final response = await _post(ApiConstants.login, request.toJson());
+    try {
+      final dioResponse = await _dio.post<Map<String, dynamic>>(
+        ApiConstants.login,
+        data: request.toJson(),
+      );
+      final json = dioResponse.data ?? {};
+      final response = ApiResponse<dynamic>.fromJson(json, (data) => data);
 
-    if (!response.success) {
-      if (_looksUnverified(response.message)) {
-        return (
-          user: AuthUserModel(id: '', name: ''),
-          tokens: AuthTokensModel(
-            accessToken: '',
-            refreshToken: '',
-            expiresIn: 0,
-          ),
-          unverifiedContact: request.phoneNumber,
+      if (!response.success) {
+        final unverified = _unverifiedContact(
+          response.errors,
+          request.phoneNumber,
         );
+        if (unverified != null) return _unverifiedLoginResult(unverified);
+        throw ServerException(messageAr: response.userMessage);
       }
-      throw ServerException(messageAr: response.userMessage);
-    }
 
-    final data = response.data as Map<String, dynamic>;
-    return (
-      user: AuthUserModel.fromJson(data['user'] as Map<String, dynamic>),
-      tokens: AuthTokensModel.fromJson(data),
-      unverifiedContact: null,
-    );
+      final data = response.data as Map<String, dynamic>;
+      return (
+        user: AuthUserModel.fromJson(data['user'] as Map<String, dynamic>),
+        tokens: AuthTokensModel.fromJson(data),
+        unverifiedContact: null,
+      );
+    } on DioException catch (e) {
+      final body = e.response?.data;
+      final errors = body is Map<String, dynamic>
+          ? body['errors'] as Map<String, dynamic>?
+          : null;
+      final unverified = _unverifiedContact(errors, request.phoneNumber);
+      if (unverified != null) return _unverifiedLoginResult(unverified);
+      throw _dioToServer(e);
+    }
   }
+
+  String? _unverifiedContact(Map<String, dynamic>? errors, String fallback) {
+    if (errors?['requires_verification'] != true) return null;
+    return errors?['phone_number'] as String? ?? fallback;
+  }
+
+  ({AuthUserModel user, AuthTokensModel tokens, String? unverifiedContact})
+  _unverifiedLoginResult(String contact) => (
+    user: AuthUserModel(id: '', name: ''),
+    tokens: AuthTokensModel(accessToken: '', refreshToken: '', expiresIn: 0),
+    unverifiedContact: contact,
+  );
 
   /// Exchanges [refreshToken] for a new token pair. Sent as the Bearer
   /// credential on a plain GET — the API takes no body for this endpoint.
@@ -133,21 +157,16 @@ class AuthRemoteDataSource {
   /// FR-05 step 1.5: Verify the reset code before letting the user move on
   /// to the new-password screen.
   Future<void> verifyResetCode(VerifyRequest request) async {
-    final response = await _post(ApiConstants.verifyResetCode, request.toJson());
+    final response = await _post(
+      ApiConstants.verifyResetCode,
+      request.toJson(),
+    );
     _assertSuccess(response);
   }
 
   Future<void> resetPassword(ResetPasswordRequest request) async {
     final response = await _post(ApiConstants.resetPassword, request.toJson());
     _assertSuccess(response);
-  }
-
-  bool _looksUnverified(String? message) {
-    if (message == null) return false;
-    final lower = message.toLowerCase();
-    return lower.contains('verify') ||
-        message.contains('تحقق') ||
-        message.contains('توثيق');
   }
 
   Future<ApiResponse<dynamic>> _post(
@@ -181,7 +200,12 @@ class AuthRemoteDataSource {
       messageAr: message ?? 'حدث خطأ. يرجى المحاولة مرة أخرى.',
       statusCode: e.response?.statusCode,
       fieldErrors: errors?.map(
-        (field, messages) => MapEntry(field, (messages as List).cast<String>()),
+        (field, value) => MapEntry(
+          field,
+          value is List
+              ? value.map((m) => m.toString()).toList()
+              : [value.toString()],
+        ),
       ),
     );
   }
