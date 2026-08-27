@@ -6,6 +6,8 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/glass.dart';
+import '../../../auth/presentation/providers/auth_controller_provider.dart';
+import '../../../profile/presentation/providers/profile_providers.dart';
 import '../providers/legal_providers.dart';
 import '../widgets/legal_async_content.dart';
 import '../widgets/legal_scaffold.dart';
@@ -141,22 +143,32 @@ class _ContactUsCard extends StatelessWidget {
   }
 }
 
-class _DeleteAccountSection extends StatelessWidget {
+class _DeleteAccountSection extends ConsumerWidget {
   const _DeleteAccountSection();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(deleteAccountControllerProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         OutlinedButton.icon(
-          onPressed: () => _confirmDelete(context),
+          onPressed: state.isSubmitting ? null : () => _confirmDelete(context, ref),
           style: OutlinedButton.styleFrom(
             foregroundColor: context.appError,
             side: BorderSide(color: context.appError.withAlpha(140)),
             padding: EdgeInsets.symmetric(vertical: context.sp(14)),
           ),
-          icon: const Icon(Icons.delete_outline_rounded),
+          icon: state.isSubmitting
+              ? SizedBox.square(
+                  dimension: context.sp(18),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.appError,
+                  ),
+                )
+              : const Icon(Icons.delete_outline_rounded),
           label: Text(context.t('legal.privacy.delete_account')),
         ),
         SizedBox(height: context.sp(8)),
@@ -174,7 +186,7 @@ class _DeleteAccountSection extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context) async {
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -199,11 +211,22 @@ class _DeleteAccountSection extends StatelessWidget {
         ],
       ),
     );
-    if (confirmed == true && context.mounted) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.t('home.coming_soon'))));
+    if (confirmed != true || !context.mounted) return;
+
+    final succeeded = await ref.read(deleteAccountControllerProvider.notifier).submit();
+    if (!context.mounted) return;
+
+    if (succeeded) {
+      // Server has already disabled/anonymized the account; clear the local
+      // session so the root navigator falls back to the welcome/login flow.
+      await ref.read(authControllerProvider.notifier).logout();
+      return;
     }
+
+    final error = ref.read(deleteAccountControllerProvider).error;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(error ?? context.t('error.unknown'))));
   }
 }

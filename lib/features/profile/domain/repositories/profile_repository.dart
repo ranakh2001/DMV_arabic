@@ -16,4 +16,6 @@ abstract interface class ProfileRepository {
     required String currentPassword,
     required String newPassword,
   });
+
+  Future<Result<void>> deleteAccount();
 }

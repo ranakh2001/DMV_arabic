@@ -71,6 +71,14 @@ class ProfileRemoteDataSource {
     );
   }
 
+  /// Soft-deletes the account server-side (`account_status` -> disabled,
+  /// email/phone/name anonymized). No request body required.
+  Future<void> deleteAccount() async {
+    await _request(
+      () => _dio.delete<Map<String, dynamic>>(ApiConstants.deleteAccount),
+    );
+  }
+
   Future<ApiResponse<dynamic>> _request(
     Future<Response<Map<String, dynamic>>> Function() call,
   ) async {

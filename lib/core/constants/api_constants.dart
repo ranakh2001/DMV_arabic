@@ -29,6 +29,7 @@ class ApiConstants {
   static const String profilePhoto = '/users/profile-photo';
   static const String changePassword = '/users/change-password';
   static const String fcmToken = '/users/fcm-token';
+  static const String deleteAccount = '/users/account';
 
   // Reference data (no auth required)
   static const String states = '/states';

@@ -12,6 +12,7 @@ import '../../data/repositories/profile_repository_impl.dart';
 import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../../domain/usecases/change_password_usecase.dart';
+import '../../domain/usecases/delete_account_usecase.dart';
 import '../../domain/usecases/get_profile_usecase.dart';
 import '../../domain/usecases/update_profile_usecase.dart';
 import '../../domain/usecases/upload_profile_photo_usecase.dart';
@@ -39,6 +40,10 @@ final uploadProfilePhotoUsecaseProvider = Provider(
 
 final changePasswordUsecaseProvider = Provider(
   (ref) => ChangePasswordUsecase(ref.watch(profileRepositoryProvider)),
+);
+
+final deleteAccountUsecaseProvider = Provider(
+  (ref) => DeleteAccountUsecase(ref.watch(profileRepositoryProvider)),
 );
 
 enum ProfileLoadStatus { initial, loading, loaded, failed }
@@ -217,4 +222,52 @@ class ChangePasswordController extends Notifier<ChangePasswordState> {
 final changePasswordControllerProvider =
     NotifierProvider<ChangePasswordController, ChangePasswordState>(
       ChangePasswordController.new,
+    );
+
+class DeleteAccountState {
+  const DeleteAccountState({this.status = FormStatus.idle, this.error});
+
+  final FormStatus status;
+  final String? error;
+
+  bool get isSubmitting => status == FormStatus.submitting;
+
+  DeleteAccountState copyWith({
+    FormStatus? status,
+    String? error,
+    bool clearError = false,
+  }) => DeleteAccountState(
+    status: status ?? this.status,
+    error: clearError ? null : (error ?? this.error),
+  );
+}
+
+class DeleteAccountController extends Notifier<DeleteAccountState> {
+  @override
+  DeleteAccountState build() => const DeleteAccountState();
+
+  /// Returns `true` on success. Callers are responsible for logging the
+  /// user out afterwards — the account is disabled server-side, but the
+  /// local session/tokens still need to be cleared.
+  Future<bool> submit() async {
+    state = state.copyWith(status: FormStatus.submitting, clearError: true);
+    final result = await ref.read(deleteAccountUsecaseProvider).call();
+    var succeeded = false;
+    result.fold(
+      onSuccess: (_) {
+        succeeded = true;
+        state = state.copyWith(status: FormStatus.success, clearError: true);
+      },
+      onFailure: (failure) => state = state.copyWith(
+        status: FormStatus.failure,
+        error: failure.messageAr,
+      ),
+    );
+    return succeeded;
+  }
+}
+
+final deleteAccountControllerProvider =
+    NotifierProvider<DeleteAccountController, DeleteAccountState>(
+      DeleteAccountController.new,
     );

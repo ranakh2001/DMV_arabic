@@ -70,6 +70,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
     }
   }
 
+  @override
+  Future<Result<void>> deleteAccount() async {
+    try {
+      await _remote.deleteAccount();
+      return const Result.success(null);
+    } on ServerException catch (e) {
+      return Result.failure(_fromServer(e));
+    } catch (_) {
+      return Result.failure(const NetworkFailure());
+    }
+  }
+
   ApiFailure _fromServer(ServerException e) => ApiFailure(
     messageAr: e.messageAr,
     messageEn: e.messageEn,
