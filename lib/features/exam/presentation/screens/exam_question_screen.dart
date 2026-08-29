@@ -124,8 +124,9 @@ class ExamQuestionScreen extends ConsumerWidget {
   Set<int> _answeredIndexes(ExamState exam) {
     final answered = <int>{};
     for (var i = 0; i < exam.questions.length; i++) {
-      if (exam.selectedAnswers.containsKey(exam.questions[i].id))
+      if (exam.selectedAnswers.containsKey(exam.questions[i].id)) {
         answered.add(i);
+      }
     }
     return answered;
   }

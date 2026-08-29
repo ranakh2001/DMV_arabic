@@ -133,6 +133,7 @@ const Map<String, String> stringsAr = {
   'home.start': 'ابدأ',
   'home.no_notifications': 'لا توجد إشعارات جديدة',
   'home.coming_soon': 'قريباً...',
+  'home.signs_test_card': 'اختبار الإشارات',
 
   // --- Bottom navigation
   'nav.home': 'الرئيسية',
@@ -278,6 +279,7 @@ const Map<String, String> stringsAr = {
   'practice.trial_ended_title': 'انتهت التجربة المجانية',
   'practice.trial_ended_message': 'لقد استخدمت {used} من {total} أسئلة مجانية',
   'practice.subscribe_now': 'اشترك الآن',
+  'practice.no_questions': 'لا يوجد أسئلة لعرضها',
 
   // --- Exam question screen
   'exam.question_progress': 'سؤال {current} من {total}',

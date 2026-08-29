@@ -6,7 +6,7 @@ import '../models/question_model.dart';
 
 /// Performs the raw HTTP calls for the (Bearer-auth) `/questions` endpoints.
 ///
-/// TODO: `GET /questions` has no dedicated free-trial endpoint — it returns
+
 /// every active question for the state (mixed general/signs categories),
 /// not a 10-question free-trial slice. The client walks through this pool
 /// itself, one question at a time, up to the quota reported by
@@ -28,8 +28,14 @@ class QuestionsRemoteDataSource {
           messageAr: json['message'] as String? ?? 'تعذر جلب الأسئلة.',
         );
       }
-      final page = json['data'] as Map<String, dynamic>? ?? {};
-      final list = page['data'] as List<dynamic>? ?? [];
+      // The API normally paginates (`data: {data: [...], ...}`), but some
+      // states with zero questions come back with `data` as a bare empty
+      // list instead of the pagination envelope — handle both shapes so
+      // an empty result can't crash into a misleading NetworkFailure.
+      final rawData = json['data'];
+      final list = rawData is Map<String, dynamic>
+          ? (rawData['data'] as List<dynamic>? ?? [])
+          : (rawData as List<dynamic>? ?? []);
       return list
           .map((e) => QuestionModel.fromJson(e as Map<String, dynamic>))
           .toList();

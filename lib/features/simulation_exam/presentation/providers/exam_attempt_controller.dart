@@ -198,8 +198,9 @@ class ExamAttemptController extends Notifier<ExamAttemptState> {
   Future<bool> _saveCurrentAnswer() async {
     final question = state.currentQuestion;
     final letter = question == null ? null : state.selectedAnswers[question.id];
-    if (question == null || letter == null || state.attemptId == null)
+    if (question == null || letter == null || state.attemptId == null) {
       return true;
+    }
     if (state.answerCorrectness.containsKey(question.id)) return true;
 
     state = state.copyWith(status: ExamAttemptStatus.savingAnswer);

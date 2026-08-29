@@ -302,9 +302,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     await prefs.setSelectedStateId(state.id);
     await prefs.setSelectedState(state.name(arabic: isArabic));
 
-    final succeeded = await ref.read(profileControllerProvider.notifier).update(
-      {'selected_state_id': state.id},
-    );
+    final succeeded = await ref
+        .read(profileControllerProvider.notifier)
+        .updateSelectedState(state.id);
     if (!mounted) return;
 
     if (succeeded) {

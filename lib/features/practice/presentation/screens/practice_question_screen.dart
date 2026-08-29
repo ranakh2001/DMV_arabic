@@ -84,6 +84,9 @@ class _PracticeQuestionScreenState
                     PracticeLoadStatus.failed => _ErrorView(
                       message: practice.error ?? 'تعذر تحميل الأسئلة.',
                     ),
+                    PracticeLoadStatus.empty => _ErrorView(
+                      message: context.t('practice.no_questions'),
+                    ),
                     PracticeLoadStatus.loaded => _QuestionView(
                       practice: practice,
                       freeTrialTotal: freeTrial.max,

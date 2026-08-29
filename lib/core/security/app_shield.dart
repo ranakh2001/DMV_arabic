@@ -33,7 +33,7 @@ class _AppShieldState extends State<AppShield> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Obscure while inactive or paused so the switcher snapshot is blank.
-    // TODO(security): On Android, also set FLAG_SECURE via a platform channel.
+
     setState(() {
       _obscured =
           state == AppLifecycleState.inactive ||

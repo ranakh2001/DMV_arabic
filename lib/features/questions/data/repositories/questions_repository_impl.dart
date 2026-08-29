@@ -27,7 +27,16 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
         ),
       );
     } catch (_) {
-      return Result.failure(const NetworkFailure());
+      // Anything other than a ServerException here is an unexpected
+      // response shape (e.g. an empty-result payload without the usual
+      // pagination envelope), not a connectivity problem — don't mislabel
+      // it as "no internet".
+      return Result.failure(
+        const ApiFailure(
+          messageAr: 'تعذر جلب الأسئلة. يرجى المحاولة مرة أخرى.',
+          messageEn: 'Failed to load questions. Please try again.',
+        ),
+      );
     }
   }
 

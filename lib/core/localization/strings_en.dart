@@ -128,6 +128,7 @@ const Map<String, String> stringsEn = {
   'home.start': 'Start',
   'home.no_notifications': 'No new notifications',
   'home.coming_soon': 'Coming soon...',
+  'home.signs_test_card': 'Signs Test',
 
   // --- Bottom navigation
   'nav.home': 'Home',
@@ -274,6 +275,7 @@ const Map<String, String> stringsEn = {
   'practice.trial_ended_message':
       'You have used {used} of {total} free questions',
   'practice.subscribe_now': 'Subscribe Now',
+  'practice.no_questions': 'No questions to display',
 
   // --- Exam question screen
   'exam.question_progress': 'Question {current} of {total}',

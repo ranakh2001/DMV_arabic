@@ -10,6 +10,10 @@ abstract interface class ProfileRepository {
   /// Updates only the fields present in [fields] (partial PUT body).
   Future<Result<UserProfile>> updateProfile(Map<String, dynamic> fields);
 
+  /// Changes the user's selected state via its own dedicated endpoint,
+  /// separate from [updateProfile].
+  Future<Result<UserProfile>> updateSelectedState(int stateId);
+
   Future<Result<UserProfile>> uploadProfilePhoto(File photo);
 
   Future<Result<void>> changePassword({

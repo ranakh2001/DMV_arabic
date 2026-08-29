@@ -27,6 +27,18 @@ class ProfileRemoteDataSource {
     return UserProfileModel.fromJson(response.data as Map<String, dynamic>);
   }
 
+  /// Changing the selected state has its own dedicated endpoint (not the
+  /// generic profile update one), so it's a separate request here too.
+  Future<UserProfileModel> updateSelectedState(int stateId) async {
+    final response = await _request(
+      () => _dio.put<Map<String, dynamic>>(
+        ApiConstants.selectedState,
+        data: {'state_id': stateId},
+      ),
+    );
+    return UserProfileModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
   /// Uploads a new profile photo. Unlike the other `/users/*` endpoints,
   /// this one nests the updated user under `data.user` (`data` itself only
   /// holds `profile_photo_url` + `user`), so it's unwrapped here rather

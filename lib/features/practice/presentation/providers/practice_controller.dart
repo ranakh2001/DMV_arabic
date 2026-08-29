@@ -7,7 +7,7 @@ import '../../../questions/domain/entities/question.dart';
 import '../../../questions/presentation/providers/questions_providers.dart';
 import 'free_trial_provider.dart';
 
-enum PracticeLoadStatus { initial, loading, loaded, failed }
+enum PracticeLoadStatus { initial, loading, loaded, failed, empty }
 
 /// One Practice-mode session: the fetched question pool for the user's
 /// state, and where in that pool the free trial currently is.
@@ -91,8 +91,8 @@ class PracticeController extends Notifier<PracticeState> {
     result.fold(
       onSuccess: (questions) => state = questions.isEmpty
           ? state.copyWith(
-              loadStatus: PracticeLoadStatus.failed,
-              error: 'لا توجد أسئلة متاحة لهذه الولاية حالياً.',
+              loadStatus: PracticeLoadStatus.empty,
+              clearError: true,
             )
           : PracticeState(
               loadStatus: PracticeLoadStatus.loaded,

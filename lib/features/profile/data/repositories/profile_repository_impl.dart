@@ -40,6 +40,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
+  Future<Result<UserProfile>> updateSelectedState(int stateId) async {
+    try {
+      final model = await _remote.updateSelectedState(stateId);
+      return Result.success(model.toEntity());
+    } on ServerException catch (e) {
+      return Result.failure(_fromServer(e));
+    } catch (_) {
+      return Result.failure(const NetworkFailure());
+    }
+  }
+
+  @override
   Future<Result<UserProfile>> uploadProfilePhoto(File photo) async {
     try {
       final model = await _remote.uploadProfilePhoto(photo);

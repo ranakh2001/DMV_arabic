@@ -103,6 +103,16 @@ class HomeScreen extends ConsumerWidget {
                             .select(HomeTab.stats),
                       ),
                     ),
+                    SizedBox(width: context.sp(14)),
+                    Expanded(
+                      child: QuickActionCard(
+                        icon: Icons.traffic_rounded,
+                        label: context.t('home.signs_test_card'),
+                        onTap: () => ref
+                            .read(homeTabProvider.notifier)
+                            .select(HomeTab.simulation),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: context.sp(24)),

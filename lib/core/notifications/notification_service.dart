@@ -22,7 +22,7 @@ abstract class NotificationService {
 /// instance state.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // TODO(push): Hand off to local storage / analytics once backend is ready.
+  
   debugPrint('========================================');
   debugPrint('[FCM][background] messageId: ${message.messageId}');
   debugPrint('[FCM][background] title: ${message.notification?.title}');

@@ -27,6 +27,7 @@ class ApiConstants {
   // User endpoints (Bearer token required)
   static const String profile = '/users/profile';
   static const String profilePhoto = '/users/profile-photo';
+  static const String selectedState = '/users/selected-state';
   static const String changePassword = '/users/change-password';
   static const String fcmToken = '/users/fcm-token';
   static const String deleteAccount = '/users/account';

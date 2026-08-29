@@ -15,6 +15,7 @@ import '../../domain/usecases/change_password_usecase.dart';
 import '../../domain/usecases/delete_account_usecase.dart';
 import '../../domain/usecases/get_profile_usecase.dart';
 import '../../domain/usecases/update_profile_usecase.dart';
+import '../../domain/usecases/update_selected_state_usecase.dart';
 import '../../domain/usecases/upload_profile_photo_usecase.dart';
 
 final profileRemoteDataSourceProvider = Provider<ProfileRemoteDataSource>(
@@ -32,6 +33,10 @@ final getProfileUsecaseProvider = Provider(
 
 final updateProfileUsecaseProvider = Provider(
   (ref) => UpdateProfileUsecase(ref.watch(profileRepositoryProvider)),
+);
+
+final updateSelectedStateUsecaseProvider = Provider(
+  (ref) => UpdateSelectedStateUsecase(ref.watch(profileRepositoryProvider)),
 );
 
 final uploadProfilePhotoUsecaseProvider = Provider(
@@ -128,6 +133,33 @@ class ProfileController extends Notifier<ProfileState> {
       clearUpdateError: true,
     );
     final result = await ref.read(updateProfileUsecaseProvider).call(fields);
+    var succeeded = false;
+    result.fold(
+      onSuccess: (profile) {
+        succeeded = true;
+        state = state.copyWith(
+          updateStatus: FormStatus.success,
+          profile: profile,
+        );
+      },
+      onFailure: (failure) => state = state.copyWith(
+        updateStatus: FormStatus.failure,
+        updateError: failure.messageAr,
+      ),
+    );
+    return succeeded;
+  }
+
+  /// Changes the selected state via its own dedicated endpoint (not
+  /// [update]) and merges the server's response back into local state.
+  Future<bool> updateSelectedState(int stateId) async {
+    state = state.copyWith(
+      updateStatus: FormStatus.submitting,
+      clearUpdateError: true,
+    );
+    final result = await ref
+        .read(updateSelectedStateUsecaseProvider)
+        .call(stateId);
     var succeeded = false;
     result.fold(
       onSuccess: (profile) {
