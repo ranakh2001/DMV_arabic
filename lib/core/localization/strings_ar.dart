@@ -361,11 +361,11 @@ const Map<String, String> stringsAr = {
   'legal.privacy.contact.title': 'للتواصل معنا',
   'legal.privacy.contact.body':
       'إذا كانت لديك أي استفسارات، يسعدنا تواصلك معنا عبر:',
-  'legal.privacy.delete_account': 'حذف حسابي',
-  'legal.privacy.delete_account.subtitle':
+  'profile.delete_account': 'حذف الحساب',
+  'profile.delete_account.subtitle':
       'سيتم حذف جميع بيانات حسابك ونتائجك نهائياً. لا يمكن التراجع عن هذا الإجراء.',
-  'legal.privacy.delete_account.confirm_title': 'حذف الحساب',
-  'legal.privacy.delete_account.confirm_message':
+  'profile.delete_account.confirm_title': 'حذف الحساب',
+  'profile.delete_account.confirm_message':
       'هل أنت متأكد من رغبتك في حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.',
 
   // --- Legal: شاشة شروط الاستخدام

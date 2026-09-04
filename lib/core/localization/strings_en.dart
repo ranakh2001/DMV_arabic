@@ -357,11 +357,11 @@ const Map<String, String> stringsEn = {
   'legal.privacy.contact.title': 'Contact Us',
   'legal.privacy.contact.body':
       'If you have any questions, we would love to hear from you at:',
-  'legal.privacy.delete_account': 'Delete My Account',
-  'legal.privacy.delete_account.subtitle':
+  'profile.delete_account': 'Delete Account',
+  'profile.delete_account.subtitle':
       'All your account data and results will be permanently deleted. This action cannot be undone.',
-  'legal.privacy.delete_account.confirm_title': 'Delete Account',
-  'legal.privacy.delete_account.confirm_message':
+  'profile.delete_account.confirm_title': 'Delete Account',
+  'profile.delete_account.confirm_message':
       'Are you sure you want to delete your account? This action cannot be undone.',
 
   // --- Legal: Terms of Use screen

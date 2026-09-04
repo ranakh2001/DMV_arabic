@@ -70,8 +70,7 @@ class RegisterTermsRow extends StatelessWidget {
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (_) =>
-                        const PrivacyPolicyScreen(showDeleteAccount: false),
+                    builder: (_) => const PrivacyPolicyScreen(),
                   ),
                 ),
                 child: Text(

@@ -22,6 +22,7 @@ import '../../../legal/presentation/screens/terms_of_use_screen.dart';
 import '../../../states/domain/entities/us_state.dart';
 import '../../../states/presentation/providers/states_providers.dart';
 import '../providers/profile_providers.dart';
+import '../widgets/delete_account_section.dart';
 import '../widgets/edit_field_dialog.dart';
 import '../widgets/language_toggle_row.dart';
 import 'change_password_screen.dart';
@@ -289,6 +290,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   icon: const Icon(Icons.logout_rounded),
                   label: Text(context.t('auth.logout')),
                 ),
+                SizedBox(height: context.sp(12)),
+                const DeleteAccountSection(),
               ],
             ),
           ),
