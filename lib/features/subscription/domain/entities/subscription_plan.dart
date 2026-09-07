@@ -8,6 +8,7 @@ class SubscriptionPlan {
     required this.periodSuffix,
     required this.price,
     required this.featureLabels,
+    required this.durationDays,
     this.isBestValue = false,
   });
 
@@ -16,6 +17,7 @@ class SubscriptionPlan {
   final String periodSuffix;
   final double price;
   final List<String> featureLabels;
+  final int durationDays;
 
   /// Highlights this plan as the recommended/best-value choice.
   final bool isBestValue;

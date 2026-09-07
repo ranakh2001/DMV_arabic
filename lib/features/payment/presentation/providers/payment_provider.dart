@@ -26,10 +26,7 @@ class PaymentController extends Notifier<PaymentState> {
 
   /// Confirms the PaymentIntent using whatever card details are currently
   /// entered in the mounted [CardFormField] — see [CustomCardForm].
-  Future<void> payWithCard({
-    required SubscriptionPlan plan,
-    required bool autoRenew,
-  }) async {
+  Future<void> payWithCard({required SubscriptionPlan plan}) async {
     final initiate = await _initiate(plan: plan);
     if (initiate == null) return;
 
@@ -48,15 +45,12 @@ class PaymentController extends Notifier<PaymentState> {
       return;
     }
 
-    await _finishAfterConfirm(plan: plan, autoRenew: autoRenew);
+    await _finishAfterConfirm(plan: plan);
   }
 
   /// Confirms the PaymentIntent through the native Apple Pay (iOS) or
   /// Google Pay (Android) sheet — see [PaymentPlatformPayButton].
-  Future<void> payWithPlatformPay({
-    required SubscriptionPlan plan,
-    required bool autoRenew,
-  }) async {
+  Future<void> payWithPlatformPay({required SubscriptionPlan plan}) async {
     final initiate = await _initiate(plan: plan);
     if (initiate == null) return;
 
@@ -93,7 +87,7 @@ class PaymentController extends Notifier<PaymentState> {
       return;
     }
 
-    await _finishAfterConfirm(plan: plan, autoRenew: autoRenew);
+    await _finishAfterConfirm(plan: plan);
   }
 
   Future<SubscriptionInitiate?> _initiate({
@@ -119,17 +113,12 @@ class PaymentController extends Notifier<PaymentState> {
     return initiate;
   }
 
-  Future<void> _finishAfterConfirm({
-    required SubscriptionPlan plan,
-    required bool autoRenew,
-  }) async {
+  Future<void> _finishAfterConfirm({required SubscriptionPlan plan}) async {
     // Stripe confirmed the charge — poll the backend for webhook-driven activation.
     state = const PaymentState(status: PaymentStatus.activating);
     final activated = await _pollUntilActive();
 
-    ref.read(subscriptionProvider.notifier)
-      ..activate(plan)
-      ..setAutoRenew(autoRenew);
+    ref.read(subscriptionProvider.notifier).activate(plan);
 
     state = PaymentState(
       status: PaymentStatus.success,

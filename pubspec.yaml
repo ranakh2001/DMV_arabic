@@ -1,7 +1,7 @@
 name: dmv
 description: "DMV بالعربي — Arabic-first US driving license exam simulator."
 publish_to: 'none'
-version: 1.0.3+1
+version: 1.0.4+1
 
 environment:
   sdk: ^3.10.4
@@ -24,6 +24,8 @@ dependencies:
   shimmer: ^3.0.0
   image_picker: ^1.1.2
   flutter_local_notifications: ^22.2.0
+  in_app_purchase: ^3.3.0
+  in_app_purchase_storekit: ^0.4.12
 
 dev_dependencies:
   flutter_test:

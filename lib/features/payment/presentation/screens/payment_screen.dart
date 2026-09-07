@@ -5,7 +5,6 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../subscription/domain/entities/subscription_plan.dart';
-import '../../../subscription/presentation/providers/subscription_provider.dart';
 import '../providers/payment_provider.dart';
 import '../widgets/custom_card_form.dart';
 import '../widgets/order_summary_card.dart';
@@ -38,10 +37,6 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final autoRenew = ref.watch(
-      subscriptionProvider.select((s) => s.autoRenew),
-    );
-
     ref.listen<PaymentState>(paymentControllerProvider, (previous, next) {
       if (next.isSuccess) {
         Navigator.of(context).pushReplacement(
@@ -96,10 +91,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                             ? () {}
                             : () => ref
                                   .read(paymentControllerProvider.notifier)
-                                  .payWithPlatformPay(
-                                    plan: widget.plan,
-                                    autoRenew: autoRenew,
-                                  ),
+                                  .payWithPlatformPay(plan: widget.plan),
                       ),
                       _OrDivider(label: context.t('payment.divider_or')),
                       SizedBox(height: context.sp(16)),
@@ -154,10 +146,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                 ? null
                                 : () => ref
                                       .read(paymentControllerProvider.notifier)
-                                      .payWithCard(
-                                        plan: widget.plan,
-                                        autoRenew: autoRenew,
-                                      ),
+                                      .payWithCard(plan: widget.plan),
                             child: paymentState.isBusy
                                 ? SizedBox.square(
                                     dimension: context.sp(22),

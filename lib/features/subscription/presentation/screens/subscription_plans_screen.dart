@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/payment/payment_platform_helper.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/skeleton_card.dart';
@@ -9,10 +10,10 @@ import '../../domain/entities/subscription_package.dart';
 import '../../domain/entities/subscription_plan.dart';
 import '../providers/subscription_packages_providers.dart';
 import '../providers/subscription_provider.dart';
-import '../widgets/auto_renew_switch_row.dart';
 import '../widgets/plan_card.dart';
 import '../widgets/secure_payment_badges_row.dart';
 import '../widgets/trial_usage_card.dart';
+import '../../../apple_iap/presentation/screens/apple_iap_checkout_screen.dart';
 import '../../../legal/presentation/screens/contact_us_screen.dart';
 import '../../../payment/presentation/screens/payment_screen.dart';
 
@@ -139,13 +140,7 @@ class _SubscriptionPlansScreenState
                                 SizedBox(height: context.sp(20)),
                               ],
                             ),
-                        AutoRenewSwitchRow(
-                          value: subscription.autoRenew,
-                          onChanged: (v) => ref
-                              .read(subscriptionProvider.notifier)
-                              .setAutoRenew(v),
-                        ),
-                        SizedBox(height: context.sp(28)),
+                        SizedBox(height: context.sp(8)),
                         const SecurePaymentBadgesRow(),
                         SizedBox(height: context.sp(24)),
                         Center(
@@ -219,6 +214,7 @@ class _SubscriptionPlansScreenState
                 : '/ ${p.durationDays} days',
             price: p.priceUsd,
             featureLabels: p.features,
+            durationDays: p.durationDays,
             isBestValue: p.pricePerDay == cheapestPerDay,
           ),
         )
@@ -226,9 +222,13 @@ class _SubscriptionPlansScreenState
   }
 
   void _selectPlan(BuildContext context, WidgetRef ref, SubscriptionPlan plan) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => PaymentScreen(plan: plan)));
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PaymentPlatformHelper.shouldUseAppleIap
+            ? AppleIapCheckoutScreen(plan: plan)
+            : PaymentScreen(plan: plan),
+      ),
+    );
   }
 
   void _close(BuildContext context, WidgetRef ref) {

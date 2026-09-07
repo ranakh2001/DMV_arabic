@@ -48,6 +48,12 @@ class ApiConstants {
   static const String subscriptionStatus = '/subscriptions/status';
   static const String subscriptionHistory = '/subscriptions/history';
 
+  // Apple In-App Purchase checkout flow, iOS only (Bearer token required)
+  static const String subscriptionAppleAccountToken =
+      '/subscriptions/apple-account-token';
+  static const String subscriptionAppleIap = '/subscriptions/apple-iap';
+  static const String subscriptionVerify = '/subscriptions/verify';
+
   // Simulation exams (Bearer token required)
   static const String simulationExams = '/simulation-exams';
   static String startSimulationExam(int examId) =>

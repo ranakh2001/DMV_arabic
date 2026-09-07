@@ -440,7 +440,6 @@ const Map<String, String> stringsEn = {
   'subscription.feature.save_50': 'Save 50% yearly',
   'subscription.feature.priority_support': '24/7 priority support',
   'subscription.feature.offline_mode': 'Offline mode available',
-  'subscription.auto_renew': 'Auto-renew',
   'subscription.secure_payment': 'Secure payment methods',
   'subscription.contact_question': 'Have questions?',
   'subscription.contact_us': 'Contact us',
@@ -461,4 +460,17 @@ const Map<String, String> stringsEn = {
   'payment.activating': 'Activating your subscription...',
   'payment.activation_pending':
       'Payment received — your subscription is being activated and you\'ll be notified shortly',
+
+  // --- Apple In-App Purchase
+  'iap.title': 'App Store Checkout',
+  'iap.method.apple_iap': 'In-App Purchase (Apple)',
+  'iap.buy_button': 'Subscribe via Apple',
+  'iap.secure_note': 'Your purchase is handled securely by the App Store',
+  'iap.error.unavailable': 'The App Store is currently unavailable. Please try again later.',
+  'iap.error.already_subscribed': 'You already have an active subscription.',
+  'iap.error.product_not_found':
+      'Couldn\'t find this package on the App Store. Please try again.',
+  'iap.error.verify_failed': 'Couldn\'t verify your purchase. Please try again.',
+  'iap.error.purchase_failed': 'The purchase failed. Please try again.',
+  'iap.error.account_token_failed': 'Couldn\'t start the purchase. Please try again.',
 };

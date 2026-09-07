@@ -76,27 +76,45 @@ class _PracticeQuestionScreenState
                   ? 560
                   : double.infinity,
             ),
-            child: stateId == null
-                ? _ErrorView(message: 'الرجاء اختيار الولاية أولاً.')
-                : switch (practice.loadStatus) {
-                    PracticeLoadStatus.initial ||
-                    PracticeLoadStatus.loading => const _QuestionSkeleton(),
-                    PracticeLoadStatus.failed => _ErrorView(
-                      message: practice.error ?? 'تعذر تحميل الأسئلة.',
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: Icon(
+                      Icons.arrow_back_rounded,
+                      color: context.appTextPrimary,
                     ),
-                    PracticeLoadStatus.empty => _ErrorView(
-                      message: context.t('practice.no_questions'),
-                    ),
-                    PracticeLoadStatus.loaded => _QuestionView(
-                      practice: practice,
-                      freeTrialTotal: freeTrial.max,
-                      stateName:
-                          ref.watch(prefsServiceProvider).selectedState ?? '',
-                      onSelect: controller.selectAnswer,
-                      onNext: () => _handleNext(context, controller),
-                      onPrevious: controller.previous,
-                    ),
-                  },
+                  ),
+                ),
+                Expanded(
+                  child: stateId == null
+                      ? _ErrorView(message: 'الرجاء اختيار الولاية أولاً.')
+                      : switch (practice.loadStatus) {
+                          PracticeLoadStatus.initial ||
+                          PracticeLoadStatus.loading =>
+                            const _QuestionSkeleton(),
+                          PracticeLoadStatus.failed => _ErrorView(
+                            message: practice.error ?? 'تعذر تحميل الأسئلة.',
+                          ),
+                          PracticeLoadStatus.empty => _ErrorView(
+                            message: context.t('practice.no_questions'),
+                          ),
+                          PracticeLoadStatus.loaded => _QuestionView(
+                            practice: practice,
+                            freeTrialTotal: freeTrial.max,
+                            stateName:
+                                ref.watch(prefsServiceProvider).selectedState ??
+                                '',
+                            onSelect: controller.selectAnswer,
+                            onNext: () => _handleNext(context, controller),
+                            onPrevious: controller.previous,
+                          ),
+                        },
+                ),
+              ],
+            ),
           ),
         ),
       ),

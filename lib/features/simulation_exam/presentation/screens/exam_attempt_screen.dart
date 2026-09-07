@@ -79,6 +79,22 @@ class ExamAttemptScreen extends ConsumerWidget {
                         context.sp(24),
                       ),
                       children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: () async {
+                              final shouldExit = await _confirmExit(context);
+                              if (shouldExit && context.mounted) {
+                                controller.reset();
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: context.appTextSecondary,
+                            ),
+                          ),
+                        ),
                         ExamTopBar(
                           current: attempt.currentIndex + 1,
                           total: attempt.questions.length,

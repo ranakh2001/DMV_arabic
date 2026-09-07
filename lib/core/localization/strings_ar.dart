@@ -441,7 +441,6 @@ const Map<String, String> stringsAr = {
   'subscription.feature.save_50': 'توفير ٥٠٪ سنويًا',
   'subscription.feature.priority_support': 'دعم فني متميز ٢٤/٧',
   'subscription.feature.offline_mode': 'وضع الأوفلاين متاح',
-  'subscription.auto_renew': 'تجديد تلقائي',
   'subscription.secure_payment': 'وسائل دفع آمنة',
   'subscription.contact_question': 'هل لديك أسئلة؟',
   'subscription.contact_us': 'تواصل معنا',
@@ -462,4 +461,18 @@ const Map<String, String> stringsAr = {
   'payment.activating': 'جاري تفعيل اشتراكك...',
   'payment.activation_pending':
       'تم استلام الدفع، جاري تفعيل اشتراكك وسيصلك إشعار قريباً',
+
+  // --- الشراء داخل التطبيق (Apple)
+  'iap.title': 'الدفع عبر App Store',
+  'iap.method.apple_iap': 'شراء داخل التطبيق (Apple)',
+  'iap.buy_button': 'اشترك عبر Apple',
+  'iap.secure_note': 'تتم عملية الشراء عبر متجر App Store بأمان',
+  'iap.error.unavailable': 'متجر التطبيقات غير متاح حالياً. يرجى المحاولة لاحقاً.',
+  'iap.error.already_subscribed': 'لديك اشتراك نشط بالفعل.',
+  'iap.error.product_not_found':
+      'تعذر العثور على هذه الباقة في متجر التطبيقات. يرجى المحاولة مرة أخرى.',
+  'iap.error.verify_failed': 'تعذر التحقق من عملية الشراء. يرجى المحاولة مرة أخرى.',
+  'iap.error.purchase_failed': 'تعذرت عملية الشراء. يرجى المحاولة مرة أخرى.',
+  'iap.error.account_token_failed':
+      'تعذر بدء عملية الشراء. يرجى المحاولة مرة أخرى.',
 };

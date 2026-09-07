@@ -13,8 +13,6 @@ class SubscriptionController extends Notifier<SubscriptionState> {
   @override
   SubscriptionState build() => const SubscriptionState();
 
-  void setAutoRenew(bool value) => state = state.copyWith(autoRenew: value);
-
   void activate(SubscriptionPlan plan) =>
       state = state.copyWith(isSubscribed: true, activePlan: plan);
 

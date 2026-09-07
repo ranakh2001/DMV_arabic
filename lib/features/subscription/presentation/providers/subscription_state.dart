@@ -14,7 +14,6 @@ class SubscriptionState {
   const SubscriptionState({
     this.isSubscribed = false,
     this.activePlan,
-    this.autoRenew = true,
     this.trialQuestionsUsed = 0,
     this.trialQuestionsTotal = 10,
     this.hydrationStatus = SubscriptionHydrationStatus.idle,
@@ -22,7 +21,6 @@ class SubscriptionState {
 
   final bool isSubscribed;
   final SubscriptionPlan? activePlan;
-  final bool autoRenew;
   final int trialQuestionsUsed;
   final int trialQuestionsTotal;
   final SubscriptionHydrationStatus hydrationStatus;
@@ -36,13 +34,11 @@ class SubscriptionState {
   SubscriptionState copyWith({
     bool? isSubscribed,
     SubscriptionPlan? activePlan,
-    bool? autoRenew,
     int? trialQuestionsUsed,
     SubscriptionHydrationStatus? hydrationStatus,
   }) => SubscriptionState(
     isSubscribed: isSubscribed ?? this.isSubscribed,
     activePlan: activePlan ?? this.activePlan,
-    autoRenew: autoRenew ?? this.autoRenew,
     trialQuestionsUsed: trialQuestionsUsed ?? this.trialQuestionsUsed,
     trialQuestionsTotal: trialQuestionsTotal,
     hydrationStatus: hydrationStatus ?? this.hydrationStatus,
