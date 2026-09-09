@@ -100,8 +100,11 @@ class SimulationScreen extends ConsumerWidget {
 
   void _onExamSelected(BuildContext context, WidgetRef ref, ExamSummary exam) {
     final subscription = ref.read(subscriptionProvider);
-    if (!subscription.isSubscribed &&
-        subscription.trialQuestionsRemaining == 0) {
+    if (!subscription.isSubscribed) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.t('subscription.expired_snackbar'))),
+      );
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => const SubscriptionPlansScreen(),

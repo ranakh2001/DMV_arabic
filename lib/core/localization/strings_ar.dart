@@ -444,6 +444,7 @@ const Map<String, String> stringsAr = {
   'subscription.secure_payment': 'وسائل دفع آمنة',
   'subscription.contact_question': 'هل لديك أسئلة؟',
   'subscription.contact_us': 'تواصل معنا',
+  'subscription.expired_snackbar': 'انتهى اشتراكك، يرجى تجديده للمتابعة',
 
   // --- الدفع
   'payment.title': 'الدفع',

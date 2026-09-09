@@ -443,6 +443,8 @@ const Map<String, String> stringsEn = {
   'subscription.secure_payment': 'Secure payment methods',
   'subscription.contact_question': 'Have questions?',
   'subscription.contact_us': 'Contact us',
+  'subscription.expired_snackbar':
+      'Your subscription has expired. Please renew it to continue.',
 
   // --- Payment / checkout
   'payment.title': 'Payment',
