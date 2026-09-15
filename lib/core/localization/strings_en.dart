@@ -475,4 +475,7 @@ const Map<String, String> stringsEn = {
   'iap.error.verify_failed': 'Couldn\'t verify your purchase. Please try again.',
   'iap.error.purchase_failed': 'The purchase failed. Please try again.',
   'iap.error.account_token_failed': 'Couldn\'t start the purchase. Please try again.',
+  'iap.error.purchase_in_progress': 'A purchase is already in progress.',
+  'iap.restore_button': 'Restore Purchases',
+  'payment.restore.none': 'No active subscription was found to restore.',
 };

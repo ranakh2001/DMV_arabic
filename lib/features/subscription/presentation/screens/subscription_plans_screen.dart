@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../app/di/payment_checkout_provider.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/payment/payment_platform_helper.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/skeleton_card.dart';
@@ -13,9 +13,7 @@ import '../providers/subscription_provider.dart';
 import '../widgets/plan_card.dart';
 import '../widgets/secure_payment_badges_row.dart';
 import '../widgets/trial_usage_card.dart';
-import '../../../apple_iap/presentation/screens/apple_iap_checkout_screen.dart';
 import '../../../legal/presentation/screens/contact_us_screen.dart';
-import '../../../payment/presentation/screens/payment_screen.dart';
 
 /// The subscription paywall ("خطط الاشتراك"). Shown by [AuthGate] right
 /// after login when the user has no active subscription, and reachable at
@@ -221,14 +219,14 @@ class _SubscriptionPlansScreenState
         .toList();
   }
 
+  /// The checkout screen is chosen by the composition root (Stripe on
+  /// Android, Apple In-App Purchase on iOS) — this screen never branches on
+  /// platform and never imports the Stripe-backed `PaymentScreen`.
   void _selectPlan(BuildContext context, WidgetRef ref, SubscriptionPlan plan) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => PaymentPlatformHelper.shouldUseAppleIap
-            ? AppleIapCheckoutScreen(plan: plan)
-            : PaymentScreen(plan: plan),
-      ),
-    );
+    final buildCheckout = ref.read(paymentCheckoutScreenBuilderProvider);
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => buildCheckout(plan)));
   }
 
   void _close(BuildContext context, WidgetRef ref) {

@@ -1,120 +1,103 @@
-import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import '../../../../core/payment/payment_platform_helper.dart';
+import '../../../../app/di/payment_service_provider.dart';
+import '../../../../core/localization/strings_ar.dart' show stringsAr;
 import '../../../subscription/domain/entities/subscription_plan.dart';
 import '../../../subscription/presentation/providers/subscription_provider.dart';
-import '../../domain/entities/subscription_initiate.dart';
+import '../../domain/services/payment_service.dart';
 import '../state/payment_state.dart';
 import 'payment_data_providers.dart';
 
 export '../state/payment_state.dart';
 
-/// Drives the Stripe checkout: creates a PaymentIntent on the backend, then
-/// confirms it directly against our own card form or the native platform
-/// pay sheet (Apple Pay / Google Pay) — no Stripe-branded `PaymentSheet` UI
-/// is shown — then polls `/subscriptions/status` until the backend confirms
-/// activation.
+/// Drives the subscription checkout against whichever [PaymentService] the
+/// composition root bound for this platform (Stripe on Android, Apple
+/// In-App Purchase on iOS) and then polls `/subscriptions/status` until the
+/// backend confirms activation.
+///
+/// The Stripe-specific work that used to live here (create PaymentIntent,
+/// `Stripe.instance.confirmPayment` / `confirmPlatformPayPaymentIntent`,
+/// `StripeException` mapping) moved verbatim into `StripePaymentService`;
+/// the state transitions observed by `PaymentScreen` are unchanged.
 class PaymentController extends Notifier<PaymentState> {
   static const _pollInterval = Duration(seconds: 1);
   static const _maxPollAttempts = 3;
-  static const _merchantCountryCode = 'US';
-  static const _currencyCode = 'USD';
 
   @override
   PaymentState build() => const PaymentState();
 
-  /// Confirms the PaymentIntent using whatever card details are currently
+  /// Android / Stripe: confirms using whatever card details are currently
   /// entered in the mounted [CardFormField] — see [CustomCardForm].
-  Future<void> payWithCard({required SubscriptionPlan plan}) async {
-    final initiate = await _initiate(plan: plan);
-    if (initiate == null) return;
+  Future<void> payWithCard({required SubscriptionPlan plan}) =>
+      _purchase(plan: plan, method: PurchaseMethod.card);
 
-    try {
-      await Stripe.instance.confirmPayment(
-        paymentIntentClientSecret: initiate.clientSecret,
-        data: const PaymentMethodParams.card(
-          paymentMethodData: PaymentMethodData(),
-        ),
+  /// Android / Stripe: confirms through the native Google Pay sheet — see
+  /// [PaymentPlatformPayButton].
+  Future<void> payWithPlatformPay({required SubscriptionPlan plan}) =>
+      _purchase(plan: plan, method: PurchaseMethod.platformPay);
+
+  /// iOS / Apple In-App Purchase: buys the App Store product mapped to
+  /// [plan] — see [AppleIapCheckoutScreen].
+  Future<void> purchaseViaStore({required SubscriptionPlan plan}) async {
+    if (ref.read(subscriptionProvider).isSubscribed) {
+      state = PaymentState(
+        status: PaymentStatus.failure,
+        errorMessage: stringsAr['iap.error.already_subscribed'],
       );
-    } on StripeException catch (e) {
-      _handleStripeException(e);
-      return;
-    } catch (_) {
-      _handleUnknownError();
       return;
     }
-
-    await _finishAfterConfirm(plan: plan);
+    await _purchase(plan: plan, method: PurchaseMethod.appStore);
   }
 
-  /// Confirms the PaymentIntent through the native Apple Pay (iOS) or
-  /// Google Pay (Android) sheet — see [PaymentPlatformPayButton].
-  Future<void> payWithPlatformPay({required SubscriptionPlan plan}) async {
-    final initiate = await _initiate(plan: plan);
-    if (initiate == null) return;
+  /// iOS: App Store "Restore Purchases". Re-hydrates the subscription from
+  /// the backend once the provider reports success.
+  Future<void> restorePurchases() async {
+    state = const PaymentState(status: PaymentStatus.processing);
 
-    try {
-      await Stripe.instance.confirmPlatformPayPaymentIntent(
-        clientSecret: initiate.clientSecret,
-        confirmParams: Platform.isIOS
-            ? PlatformPayConfirmParams.applePay(
-                applePay: ApplePayParams(
-                  merchantCountryCode: _merchantCountryCode,
-                  currencyCode: _currencyCode,
-                  cartItems: [
-                    ApplePayCartSummaryItem.immediate(
-                      label: plan.title,
-                      amount: plan.price.toStringAsFixed(2),
-                    ),
-                  ],
-                ),
-              )
-            : PlatformPayConfirmParams.googlePay(
-                googlePay: const GooglePayParams(
-                  merchantCountryCode: _merchantCountryCode,
-                  currencyCode: _currencyCode,
-                  testEnv: true,
-                  merchantName: 'DMV Exam App',
-                ),
-              ),
-      );
-    } on StripeException catch (e) {
-      _handleStripeException(e);
-      return;
-    } catch (_) {
-      _handleUnknownError();
-      return;
+    final outcome = await ref.read(paymentServiceProvider).restorePurchases();
+    switch (outcome) {
+      case PurchaseCanceled():
+        state = const PaymentState();
+      case PurchaseFailed(:final message):
+        state = PaymentState(
+          status: PaymentStatus.failure,
+          errorMessage: message,
+        );
+      case PurchaseSucceeded():
+        state = const PaymentState(status: PaymentStatus.activating);
+        await ref.read(subscriptionProvider.notifier).hydrate();
+        state = PaymentState(
+          status: PaymentStatus.success,
+          activationPending: !ref.read(subscriptionProvider).isSubscribed,
+        );
     }
-
-    await _finishAfterConfirm(plan: plan);
   }
 
-  Future<SubscriptionInitiate?> _initiate({
+  Future<void> _purchase({
     required SubscriptionPlan plan,
+    required PurchaseMethod method,
   }) async {
     state = const PaymentState(status: PaymentStatus.processing);
 
-    final initiateResult = await ref
-        .read(initiateSubscriptionUsecaseProvider)
-        .call(
-          packageId: plan.id,
-          platform: PaymentPlatformHelper.apiPlatformValue,
-        );
+    final outcome = await ref
+        .read(paymentServiceProvider)
+        .purchaseSubscription(plan, method: method);
 
-    final initiate = initiateResult.valueOrNull;
-    if (initiate == null) {
-      state = PaymentState(
-        status: PaymentStatus.failure,
-        errorMessage: initiateResult.failureOrNull!.messageAr,
-      );
-      return null;
+    switch (outcome) {
+      case PurchaseCanceled():
+        // User dismissed the checkout sheet — no charge happened, back to idle.
+        state = const PaymentState();
+      case PurchaseFailed(:final message):
+        state = PaymentState(
+          status: PaymentStatus.failure,
+          errorMessage: message,
+        );
+      case PurchaseSucceeded():
+        await _finishAfterConfirm(plan: plan);
     }
-    return initiate;
   }
 
   Future<void> _finishAfterConfirm({required SubscriptionPlan plan}) async {
-    // Stripe confirmed the charge — poll the backend for webhook-driven activation.
+    // Provider confirmed the charge — poll the backend for activation.
     state = const PaymentState(status: PaymentStatus.activating);
     final activated = await _pollUntilActive();
 
@@ -123,25 +106,6 @@ class PaymentController extends Notifier<PaymentState> {
     state = PaymentState(
       status: PaymentStatus.success,
       activationPending: !activated,
-    );
-  }
-
-  void _handleStripeException(StripeException e) {
-    if (e.error.code == FailureCode.Canceled) {
-      // User dismissed the platform pay sheet — no charge happened, back to idle.
-      state = const PaymentState();
-    } else {
-      state = PaymentState(
-        status: PaymentStatus.failure,
-        errorMessage: e.error.localizedMessage ?? e.error.message,
-      );
-    }
-  }
-
-  void _handleUnknownError() {
-    state = const PaymentState(
-      status: PaymentStatus.failure,
-      errorMessage: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
     );
   }
 

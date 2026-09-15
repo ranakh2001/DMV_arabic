@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../payment/presentation/providers/payment_provider.dart';
 import '../../../payment/presentation/screens/payment_success_screen.dart';
 import '../../../payment/presentation/widgets/order_summary_card.dart';
 import '../../../subscription/domain/entities/subscription_plan.dart';
-import '../providers/apple_iap_provider.dart';
 
 /// Checkout step for a chosen [SubscriptionPlan] on iOS — Apple In-App
-/// Purchase in place of Stripe/Apple Pay. Mirrors `PaymentScreen`'s layout,
-/// with a single "Buy via Apple" action instead of card entry / platform pay.
+/// Purchase in place of Stripe. Mirrors `PaymentScreen`'s layout with a
+/// single "Subscribe via Apple" action plus the App Store-mandated
+/// "Restore Purchases" link. Drives the shared [PaymentController], which
+/// resolves to `InAppPurchasePaymentService` on this platform.
 class AppleIapCheckoutScreen extends ConsumerWidget {
   const AppleIapCheckoutScreen({super.key, required this.plan});
 
@@ -18,7 +20,7 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AppleIapState>(appleIapControllerProvider, (previous, next) {
+    ref.listen<PaymentState>(paymentControllerProvider, (previous, next) {
       if (next.isSuccess) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute<void>(
@@ -33,11 +35,11 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
             content: Text(next.errorMessage ?? context.t('error.unknown')),
           ),
         );
-        ref.read(appleIapControllerProvider.notifier).dismissError();
+        ref.read(paymentControllerProvider.notifier).dismissError();
       }
     });
 
-    final iapState = ref.watch(appleIapControllerProvider);
+    final paymentState = ref.watch(paymentControllerProvider);
 
     return Scaffold(
       backgroundColor: context.appBackground,
@@ -71,13 +73,13 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
                         width: double.infinity,
                         height: context.sp(52),
                         child: ElevatedButton.icon(
-                          onPressed: iapState.isBusy
+                          onPressed: paymentState.isBusy
                               ? null
                               : () => ref
-                                    .read(appleIapControllerProvider.notifier)
-                                    .buy(plan),
+                                    .read(paymentControllerProvider.notifier)
+                                    .purchaseViaStore(plan: plan),
                           icon: const Icon(Icons.apple),
-                          label: iapState.isBusy
+                          label: paymentState.isBusy
                               ? SizedBox.square(
                                   dimension: context.sp(22),
                                   child: const CircularProgressIndicator(
@@ -108,7 +110,7 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      if (iapState.status == AppleIapStatus.activating) ...[
+                      if (paymentState.isActivating) ...[
                         SizedBox(height: context.sp(12)),
                         Text(
                           context.t('payment.activating'),
@@ -120,6 +122,26 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
                           ),
                         ),
                       ],
+                      SizedBox(height: context.sp(20)),
+                      Center(
+                        child: TextButton(
+                          onPressed: paymentState.isBusy
+                              ? null
+                              : () => ref
+                                    .read(paymentControllerProvider.notifier)
+                                    .restorePurchases(),
+                          child: Text(
+                            context.t('iap.restore_button'),
+                            style: TextStyle(
+                              fontFamily: 'Almarai',
+                              fontSize: context.sp(13),
+                              fontWeight: FontWeight.w700,
+                              color: context.appPrimary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -476,4 +476,7 @@ const Map<String, String> stringsAr = {
   'iap.error.purchase_failed': 'تعذرت عملية الشراء. يرجى المحاولة مرة أخرى.',
   'iap.error.account_token_failed':
       'تعذر بدء عملية الشراء. يرجى المحاولة مرة أخرى.',
+  'iap.error.purchase_in_progress': 'هناك عملية شراء قيد التنفيذ بالفعل.',
+  'iap.restore_button': 'استعادة المشتريات',
+  'payment.restore.none': 'لم يتم العثور على اشتراك نشط لاستعادته.',
 };

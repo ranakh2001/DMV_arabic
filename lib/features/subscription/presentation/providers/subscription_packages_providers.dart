@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../app/di/payment_service_provider.dart';
 import '../../../../core/network/dio_providers.dart';
 import '../../data/datasources/subscription_remote_data_source.dart';
 import '../../data/repositories/subscription_repository_impl.dart';
@@ -22,11 +23,14 @@ final getSubscriptionPackagesUsecaseProvider = Provider(
       GetSubscriptionPackagesUsecase(ref.watch(subscriptionRepositoryProvider)),
 );
 
-/// Backed by `GET /subscription-packages`. Watched by [SubscriptionPlansScreen].
+/// Backed by `GET /subscription-packages`, via the platform's
+/// [PaymentService.getAvailablePlans] — on Android that is the plain
+/// repository call as before; on iOS the catalogue is narrowed to packages
+/// whose App Store product exists. Watched by [SubscriptionPlansScreen].
 final subscriptionPackagesProvider = FutureProvider<List<SubscriptionPackage>>((
   ref,
 ) async {
-  final result = await ref.watch(getSubscriptionPackagesUsecaseProvider).call();
+  final result = await ref.watch(paymentServiceProvider).getAvailablePlans();
   return result.fold(
     onSuccess: (packages) => packages,
     onFailure: (failure) => throw failure,
