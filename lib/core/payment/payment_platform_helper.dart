@@ -2,16 +2,16 @@ import 'dart:io';
 
 /// Central place for platform-driven payment decisions, so a future change
 /// (e.g. what value iOS should send) only needs to happen in one spot.
+///
+/// This used to also expose `shouldUseAppleIap`, `isApplePayAvailable` and
+/// `isGooglePayAvailable` for callers to branch on directly. That
+/// responsibility has moved to `paymentServiceProvider`
+/// (`lib/app/di/payment_service_provider.dart`), the single composition-root
+/// decision between Stripe and Apple In-App Purchase — those getters are
+/// deleted rather than left unused, so there is exactly one place left in
+/// the codebase that decides platform-based payment routing.
 class PaymentPlatformHelper {
   PaymentPlatformHelper._();
-
-  static bool get isApplePayAvailable => Platform.isIOS;
-
-  static bool get isGooglePayAvailable => Platform.isAndroid;
-
-  /// iOS must check out through Apple In-App Purchase (StoreKit) instead of
-  /// Stripe/Apple Pay — App Store policy for digital subscription content.
-  static bool get shouldUseAppleIap => Platform.isIOS;
 
   /// Value sent as `platform` to `POST /subscriptions/initiate`.
   static String get apiPlatformValue {

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -28,6 +29,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   final _cardController = CardFormEditController();
   bool _cardComplete = false;
   bool _cardExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    assert(
+      !Platform.isIOS,
+      'Stripe payment widget must never be constructed on iOS — use the '
+      'Apple IAP flow instead.',
+    );
+  }
 
   @override
   void dispose() {

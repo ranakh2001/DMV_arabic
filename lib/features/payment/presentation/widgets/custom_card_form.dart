@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
@@ -32,6 +33,11 @@ class CustomCardForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(
+      !Platform.isIOS,
+      'Stripe payment widget must never be constructed on iOS — use the '
+      'Apple IAP flow instead.',
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return CardFormField(

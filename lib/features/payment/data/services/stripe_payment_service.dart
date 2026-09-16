@@ -28,7 +28,14 @@ class StripePaymentService implements PaymentService {
   }) : _paymentRepository = paymentRepository,
        _subscriptionRepository = subscriptionRepository {
     if (Platform.isIOS) {
-      throw StateError('StripePaymentService must never be created on iOS.');
+      // Deliberately an unconditional throw, not `assert` — this must fail
+      // in every build mode (including release), not just debug, since a
+      // Stripe payment path reaching iOS is an App Store Guideline 3.1.1
+      // violation, not merely a bug to catch in QA.
+      throw StateError(
+        'Stripe payment widget must never be constructed on iOS — use the '
+        'Apple IAP flow instead.',
+      );
     }
   }
 
