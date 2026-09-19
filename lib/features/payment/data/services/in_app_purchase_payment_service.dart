@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/strings_ar.dart' show stringsAr;
+import '../../../../core/localization/strings_en.dart' show stringsEn;
 import '../../../../core/payment/apple_iap_product_catalog.dart';
 import '../../../../core/utils/result.dart';
 import '../../../apple_iap/domain/repositories/apple_iap_repository.dart';
@@ -45,9 +47,10 @@ class InAppPurchasePaymentService implements PaymentService {
        _restoreGracePeriod = restoreGracePeriod {
     _streamSubscription = _store.purchaseStream.listen(
       _enqueuePurchaseUpdates,
-      onError: (Object _) {
+      onError: (Object error) {
         // StoreKit stream errors are not tied to a specific purchase; the
         // in-flight one (if any) will surface its own error/cancel event.
+        debugPrint('[IAP] purchaseStream error: $error');
       },
     );
   }
@@ -74,9 +77,11 @@ class InAppPurchasePaymentService implements PaymentService {
   PaymentProviderKind get provider => PaymentProviderKind.appleInAppPurchase;
 
   /// Backend catalogue narrowed to packages whose mapped App Store product
-  /// is actually purchasable. If StoreKit is unreachable or reports *no*
-  /// products at all, the unfiltered catalogue is returned so the paywall
-  /// isn't blank — the buy step then surfaces a precise error.
+  /// exists, each carrying the App Store's own title and localized price.
+  ///
+  /// If the store is unreachable or none of our products are found, this is a
+  /// failure with a user-facing message — never the backend's USD prices,
+  /// which could differ from what StoreKit would charge.
   @override
   Future<Result<List<SubscriptionPackage>>> getAvailablePlans() async {
     final result = await _subscriptionRepository.getSubscriptionPackages();
@@ -84,29 +89,61 @@ class InAppPurchasePaymentService implements PaymentService {
     if (packages == null) return result;
 
     try {
-      if (!await _store.isAvailable()) return result;
+      if (!await _store.isAvailable()) {
+        debugPrint('[IAP] getAvailablePlans: App Store is not available');
+        return _storeFailure('iap.error.unavailable');
+      }
       final response = await _store.queryProductDetails(
         AppleIapProductCatalog.productIds,
       );
-      if (response.error != null || response.productDetails.isEmpty) {
-        return result;
+      if (response.notFoundIDs.isNotEmpty) {
+        debugPrint(
+          '[IAP] getAvailablePlans: products not found in App Store Connect: '
+          '${response.notFoundIDs}',
+        );
       }
-      final available = response.productDetails.map((p) => p.id).toSet();
-      return Result.success(
-        packages
-            .where(
-              (p) => available.contains(
-                AppleIapProductCatalog.productIdForDurationDays(
-                  p.durationDays,
-                ),
-              ),
-            )
-            .toList(),
-      );
-    } catch (_) {
-      return result;
+      if (response.error != null) {
+        debugPrint(
+          '[IAP] getAvailablePlans: queryProductDetails error '
+          '${response.error!.code}: ${response.error!.message}',
+        );
+        return _storeFailure('iap.error.product_not_found');
+      }
+
+      final details = {for (final p in response.productDetails) p.id: p};
+      final available = <SubscriptionPackage>[];
+      for (final package in packages) {
+        final productId = AppleIapProductCatalog.productIdForDurationDays(
+          package.durationDays,
+        );
+        if (productId == null) {
+          debugPrint(
+            '[IAP] getAvailablePlans: package ${package.id} has '
+            '${package.durationDays} days, which maps to no App Store product; '
+            'not offered on iOS',
+          );
+          continue;
+        }
+        final product = details[productId];
+        if (product == null) continue;
+        available.add(
+          package.withStoreDetails(title: product.title, price: product.price),
+        );
+      }
+      if (available.isEmpty) {
+        debugPrint('[IAP] getAvailablePlans: no purchasable packages');
+        return _storeFailure('iap.error.product_not_found');
+      }
+      return Result.success(available);
+    } catch (e, st) {
+      debugPrint('[IAP] getAvailablePlans failed: $e\n$st');
+      return _storeFailure('iap.error.unavailable');
     }
   }
+
+  Result<List<SubscriptionPackage>> _storeFailure(String key) => Result.failure(
+    UnavailableFailure(messageAr: stringsAr[key]!, messageEn: stringsEn[key]),
+  );
 
   @override
   Future<PurchaseOutcome> purchaseSubscription(
@@ -114,6 +151,7 @@ class InAppPurchasePaymentService implements PaymentService {
     required PurchaseMethod method,
   }) async {
     if (method != PurchaseMethod.appStore) {
+      debugPrint('[IAP] purchase refused: unsupported method $method on iOS');
       return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
     }
     if (_pending != null) {
@@ -122,25 +160,42 @@ class InAppPurchasePaymentService implements PaymentService {
       );
     }
     if (!await _store.isAvailable()) {
+      debugPrint('[IAP] purchase: App Store is not available');
       return PurchaseFailed(message: stringsAr['iap.error.unavailable']);
     }
 
     final productId = AppleIapProductCatalog.productIdForDurationDays(
       plan.durationDays,
     );
+    if (productId == null) {
+      debugPrint(
+        '[IAP] purchase: plan ${plan.id} has ${plan.durationDays} days, '
+        'which maps to no App Store product',
+      );
+      return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
+    }
     final ProductDetailsResponse response;
     try {
       response = await _store.queryProductDetails({productId});
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[IAP] purchase: queryProductDetails threw: $e\n$st');
       return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
     }
     if (response.error != null || response.productDetails.isEmpty) {
+      debugPrint(
+        '[IAP] purchase: product $productId unavailable. '
+        'notFoundIDs=${response.notFoundIDs} '
+        'error=${response.error?.code}: ${response.error?.message}',
+      );
       return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
     }
 
     final tokenResult = await _iapRepository.getAccountToken();
     final token = tokenResult.valueOrNull;
     if (token == null) {
+      debugPrint(
+        '[IAP] purchase: account token failed: ${tokenResult.failureOrNull}',
+      );
       return PurchaseFailed(
         message:
             tokenResult.failureOrNull?.messageAr ??
@@ -160,15 +215,18 @@ class InAppPurchasePaymentService implements PaymentService {
         ),
       );
       if (!launched) {
+        debugPrint('[IAP] purchase: buyNonConsumable returned false');
         _pending = null;
         return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
       }
     } on PlatformException catch (e) {
+      debugPrint('[IAP] purchase: PlatformException ${e.code}: ${e.message}');
       _pending = null;
       return PurchaseFailed(
         message: e.message ?? stringsAr['iap.error.purchase_failed'],
       );
-    } catch (_) {
+    } catch (e, st) {
+      debugPrint('[IAP] purchase: buyNonConsumable threw: $e\n$st');
       _pending = null;
       return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
     }
@@ -185,12 +243,14 @@ class InAppPurchasePaymentService implements PaymentService {
   @override
   Future<PurchaseOutcome> restorePurchases() async {
     if (!await _store.isAvailable()) {
+      debugPrint('[IAP] restore: App Store is not available');
       return PurchaseFailed(message: stringsAr['iap.error.unavailable']);
     }
     try {
       await _store.restorePurchases();
-    } catch (_) {
+    } catch (e, st) {
       // Fall through — the backend check below still answers the question.
+      debugPrint('[IAP] restore: restorePurchases threw: $e\n$st');
     }
     await Future<void>.delayed(_restoreGracePeriod);
     await Future.wait(_unattendedWork.toList());
@@ -248,6 +308,11 @@ class InAppPurchasePaymentService implements PaymentService {
         await _finish(purchase);
         _settle(pending, const PurchaseCanceled());
       case PurchaseStatus.error:
+        debugPrint(
+          '[IAP] purchase error for ${purchase.productID}: '
+          '${purchase.error?.code}: ${purchase.error?.message} '
+          '(${purchase.error?.details})',
+        );
         await _finish(purchase);
         _settle(
           pending,
@@ -301,6 +366,9 @@ class InAppPurchasePaymentService implements PaymentService {
   Future<PurchaseOutcome> _verifyAndRecord(PurchaseDetails purchase) async {
     final transactionId = purchase.purchaseID;
     if (transactionId == null || transactionId.isEmpty) {
+      debugPrint(
+        '[IAP] ${purchase.productID}: transaction has no purchaseID',
+      );
       await _finish(purchase);
       return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
     }
@@ -311,6 +379,9 @@ class InAppPurchasePaymentService implements PaymentService {
       receiptData: purchase.verificationData.serverVerificationData,
     );
     if (verifyResult.isFailure) {
+      debugPrint(
+        '[IAP] verify failed for $transactionId: ${verifyResult.failureOrNull}',
+      );
       await _finishIfRejected(purchase, verifyResult.failureOrNull);
       return PurchaseFailed(
         message:
@@ -324,6 +395,9 @@ class InAppPurchasePaymentService implements PaymentService {
       productId: purchase.productID,
     );
     if (submitResult.isFailure) {
+      debugPrint(
+        '[IAP] recording failed for $transactionId: ${submitResult.failureOrNull}',
+      );
       await _finishIfRejected(purchase, submitResult.failureOrNull);
       return PurchaseFailed(
         message:
@@ -350,8 +424,9 @@ class InAppPurchasePaymentService implements PaymentService {
     if (!purchase.pendingCompletePurchase) return;
     try {
       await _store.completePurchase(purchase);
-    } catch (_) {
+    } catch (e, st) {
       // Nothing actionable; StoreKit will redeliver an unfinished transaction.
+      debugPrint('[IAP] completePurchase threw: $e\n$st');
     }
   }
 }

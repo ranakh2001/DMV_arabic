@@ -170,6 +170,41 @@ void main() {
       await future;
     });
 
+    test('a 180 day plan buys com.dmv.us.sixmonths; an unmapped duration is '
+        'refused without touching StoreKit', () async {
+      final refused = await service.purchaseSubscription(
+        const SubscriptionPlan(
+          id: 3,
+          title: 'Quarterly',
+          periodSuffix: '/ 90 days',
+          price: 24.99,
+          featureLabels: [],
+          durationDays: 90,
+        ),
+        method: PurchaseMethod.appStore,
+      );
+      expect(refused, isA<PurchaseFailed>());
+      verifyNever(() => store.queryProductDetails(any()));
+
+      unawaited(
+        service.purchaseSubscription(
+          const SubscriptionPlan(
+            id: 2,
+            title: '6 months',
+            periodSuffix: '/ 180 days',
+            price: 39.99,
+            featureLabels: [],
+            durationDays: 180,
+          ),
+          method: PurchaseMethod.appStore,
+        ),
+      );
+      await untilCalled(
+        () => store.buyNonConsumable(purchaseParam: any(named: 'purchaseParam')),
+      );
+      verify(() => store.queryProductDetails({sixMonthsId})).called(1);
+    });
+
     test('purchased → verifies, records, completes, PurchaseSucceeded', () async {
       final future = await startPurchase();
       final details = purchase(PurchaseStatus.purchased);
@@ -523,8 +558,71 @@ void main() {
       ).called(1);
     });
 
-    test('returns the full catalogue when StoreKit reports no products at '
-        'all (paywall is never blank)', () async {
+    test('carries the App Store title and localized price, not the backend '
+        'USD price', () async {
+      when(() => store.queryProductDetails(any())).thenAnswer(
+        (_) async => ProductDetailsResponse(
+          productDetails: [
+            ProductDetails(
+              id: monthlyId,
+              title: 'Monthly subscription',
+              description: '',
+              price: '€8,99',
+              rawPrice: 8.99,
+              currencyCode: 'EUR',
+            ),
+            ProductDetails(
+              id: sixMonthsId,
+              title: '6-month subscription',
+              description: '',
+              price: '€39,99',
+              rawPrice: 39.99,
+              currencyCode: 'EUR',
+            ),
+          ],
+          notFoundIDs: const [],
+        ),
+      );
+
+      final result = (await service.getAvailablePlans()).valueOrNull!;
+
+      expect(result.map((p) => p.storeTitle), [
+        'Monthly subscription',
+        '6-month subscription',
+      ]);
+      expect(result.map((p) => p.storePrice), ['€8,99', '€39,99']);
+    });
+
+    test('only 30 and 180 day packages are sold; a 90 day package is never '
+        'mapped to the 6-month product', () async {
+      when(() => subscriptionRepo.getSubscriptionPackages()).thenAnswer(
+        (_) async => const Result.success([
+          SubscriptionPackage(
+            id: 1,
+            nameEn: 'Monthly',
+            nameAr: 'شهري',
+            durationDays: 30,
+            priceUsd: 9.99,
+            features: [],
+          ),
+          SubscriptionPackage(
+            id: 3,
+            nameEn: 'Quarterly',
+            nameAr: 'ربع سنوي',
+            durationDays: 90,
+            priceUsd: 24.99,
+            features: [],
+          ),
+        ]),
+      );
+
+      final result = await service.getAvailablePlans();
+
+      expect(result.valueOrNull!.map((p) => p.id), [1]);
+    });
+
+    test('fails with a user-facing message when StoreKit reports no products '
+        'at all', () async {
       when(() => store.queryProductDetails(any())).thenAnswer(
         (_) async => ProductDetailsResponse(
           productDetails: const [],
@@ -533,14 +631,19 @@ void main() {
       );
 
       final result = await service.getAvailablePlans();
-      expect(result.valueOrNull!.length, 2);
+
+      expect(result.isFailure, isTrue);
+      expect(result.failureOrNull!.messageAr, isNotEmpty);
     });
 
-    test('returns the full catalogue when the store is unavailable', () async {
+    test('fails with a user-facing message when the store is unavailable, '
+        'without querying products', () async {
       when(() => store.isAvailable()).thenAnswer((_) async => false);
 
       final result = await service.getAvailablePlans();
-      expect(result.valueOrNull!.length, 2);
+
+      expect(result.isFailure, isTrue);
+      expect(result.failureOrNull!.messageAr, isNotEmpty);
       verifyNever(() => store.queryProductDetails(any()));
     });
 

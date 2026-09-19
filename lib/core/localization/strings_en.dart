@@ -348,9 +348,6 @@ const Map<String, String> stringsEn = {
   'legal.privacy.s3.title': 'Privacy & Data Protection',
   'legal.privacy.s3.body':
       'We collect only the minimum personal data needed (such as your email and selected state) to provide a personalized experience and track your test progress. We protect your data using industry-standard encryption, and we never sell or rent your personal information to third parties for commercial purposes. Your data is used solely to improve app performance and resolve technical issues.',
-  'legal.privacy.s4.title': 'Subscriptions & Payments Policy',
-  'legal.privacy.s4.body':
-      'All financial transactions are processed through official app store platforms (App Store / Google Play) and are subject to their policies and terms. Due to the nature of digital content, which becomes immediately accessible upon subscription, we do not offer refunds once a subscription is activated and the full educational content becomes accessible, unless required otherwise by your state\'s consumer protection laws.',
   'legal.privacy.s5.title': 'Acceptance of Terms',
   'legal.privacy.s5.body':
       'By using the DMV in Arabic app, you acknowledge that you have read and understood these terms and agree to abide by them. If you do not agree with any part of them, please stop using the app. We reserve the right to update these terms at any time, and you will be notified of any material changes.',
@@ -440,7 +437,6 @@ const Map<String, String> stringsEn = {
   'subscription.feature.save_50': 'Save 50% yearly',
   'subscription.feature.priority_support': '24/7 priority support',
   'subscription.feature.offline_mode': 'Offline mode available',
-  'subscription.secure_payment': 'Secure payment methods',
   'subscription.contact_question': 'Have questions?',
   'subscription.contact_us': 'Contact us',
   'subscription.expired_snackbar':
@@ -450,8 +446,6 @@ const Map<String, String> stringsEn = {
   'payment.title': 'Payment',
   'payment.order_summary': 'Order Summary',
   'payment.method_title': 'Payment Method',
-  'payment.method.google_pay': 'Google Pay',
-  'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'Credit / Debit Card',
   'payment.divider_or': 'or',
   'payment.pay_now': 'Pay {price}',

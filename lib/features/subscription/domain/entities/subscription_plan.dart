@@ -9,6 +9,7 @@ class SubscriptionPlan {
     required this.price,
     required this.featureLabels,
     required this.durationDays,
+    this.storePrice,
     this.isBestValue = false,
   });
 
@@ -18,6 +19,13 @@ class SubscriptionPlan {
   final double price;
   final List<String> featureLabels;
   final int durationDays;
+
+  /// iOS only: the App Store's localized price string. Null on Android.
+  final String? storePrice;
+
+  /// What to show as the price: the App Store's string when there is one,
+  /// otherwise the backend USD price.
+  String get displayPrice => storePrice ?? '\$${price.toStringAsFixed(2)}';
 
   /// Highlights this plan as the recommended/best-value choice.
   final bool isBestValue;

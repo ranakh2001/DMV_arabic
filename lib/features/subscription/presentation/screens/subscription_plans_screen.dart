@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/di/payment_checkout_provider.dart';
+import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/responsive/responsive_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -11,7 +12,6 @@ import '../../domain/entities/subscription_plan.dart';
 import '../providers/subscription_packages_providers.dart';
 import '../providers/subscription_provider.dart';
 import '../widgets/plan_card.dart';
-import '../widgets/secure_payment_badges_row.dart';
 import '../widgets/trial_usage_card.dart';
 import '../../../legal/presentation/screens/contact_us_screen.dart';
 
@@ -109,7 +109,7 @@ class _SubscriptionPlansScreenState
                                 )) ...[
                                   PlanCard(
                                     title: plan.title,
-                                    price: '\$${plan.price.toStringAsFixed(2)}',
+                                    price: plan.displayPrice,
                                     periodSuffix: plan.periodSuffix,
                                     featureLabels: plan.featureLabels,
                                     buttonLabel: context.t(
@@ -131,6 +131,9 @@ class _SubscriptionPlansScreenState
                               ],
                               error: (error, _) => [
                                 _PackagesLoadError(
+                                  message: error is Failure
+                                      ? error.message(arabic: context.isRtl)
+                                      : null,
                                   onRetry: () => ref.invalidate(
                                     subscriptionPackagesProvider,
                                   ),
@@ -138,9 +141,7 @@ class _SubscriptionPlansScreenState
                                 SizedBox(height: context.sp(20)),
                               ],
                             ),
-                        SizedBox(height: context.sp(8)),
-                        const SecurePaymentBadgesRow(),
-                        SizedBox(height: context.sp(24)),
+                        SizedBox(height: context.sp(32)),
                         Center(
                           child: GestureDetector(
                             onTap: () => _showContact(context),
@@ -206,11 +207,12 @@ class _SubscriptionPlansScreenState
         .map(
           (p) => SubscriptionPlan(
             id: p.id,
-            title: p.name(arabic: isAr),
+            title: p.storeTitle ?? p.name(arabic: isAr),
             periodSuffix: isAr
                 ? '/ ${p.durationDays} يوم'
                 : '/ ${p.durationDays} days',
             price: p.priceUsd,
+            storePrice: p.storePrice,
             featureLabels: p.features,
             durationDays: p.durationDays,
             isBestValue: p.pricePerDay == cheapestPerDay,
@@ -296,9 +298,10 @@ class _Header extends StatelessWidget {
 }
 
 class _PackagesLoadError extends StatelessWidget {
-  const _PackagesLoadError({required this.onRetry});
+  const _PackagesLoadError({required this.onRetry, this.message});
 
   final VoidCallback onRetry;
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -307,9 +310,10 @@ class _PackagesLoadError extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            context.isRtl
-                ? 'تعذر جلب باقات الاشتراك.'
-                : 'Failed to load subscription packages.',
+            message ??
+                (context.isRtl
+                    ? 'تعذر جلب باقات الاشتراك.'
+                    : 'Failed to load subscription packages.'),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Almarai',

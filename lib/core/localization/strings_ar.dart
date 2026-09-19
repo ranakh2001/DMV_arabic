@@ -352,9 +352,6 @@ const Map<String, String> stringsAr = {
   'legal.privacy.s3.title': 'سياسة الخصوصية وحماية البيانات',
   'legal.privacy.s3.body':
       'نجمع الحد الأدنى فقط من بياناتك الشخصية (مثل البريد الإلكتروني ونوع الولاية) لتقديم تجربة مخصصة ومتابعة تقدمك في الاختبارات. نلتزم بحماية بياناتك باستخدام تقنيات تشفير معتمدة، ونؤكد أننا لا نبيع أو نؤجر معلوماتك الشخصية لأي طرف ثالث لأغراض تجارية. تُستخدم بياناتك فقط لتحسين أداء التطبيق وحل المشكلات الفنية.',
-  'legal.privacy.s4.title': 'سياسة الاشتراكات والمدفوعات',
-  'legal.privacy.s4.body':
-      'تتم جميع العمليات المالية عبر متاجر التطبيقات الرسمية (App Store / Google Play) وتخضع لسياساتها وشروطها. نظراً لطبيعة المحتوى الرقمي المتاح فوراً بعد الاشتراك، لا نوفر سياسة استرداد للأموال بمجرد تفعيل الاشتراك والوصول إلى المحتوى التعليمي الكامل، ما لم ينص قانون حماية المستهلك في ولايتك على خلاف ذلك.',
   'legal.privacy.s5.title': 'قبول الشروط',
   'legal.privacy.s5.body':
       'باستخدامك تطبيق DMV بالعربي، فإنك تقر بأنك قرأت وفهمت هذه الشروط وتوافق على الالتزام بها. إذا كنت لا توافق على أي جزء منها، يرجى التوقف عن استخدام التطبيق. نحتفظ بالحق في تحديث هذه الشروط في أي وقت، وسيتم إخطارك بأي تغييرات جوهرية.',
@@ -441,7 +438,6 @@ const Map<String, String> stringsAr = {
   'subscription.feature.save_50': 'توفير ٥٠٪ سنويًا',
   'subscription.feature.priority_support': 'دعم فني متميز ٢٤/٧',
   'subscription.feature.offline_mode': 'وضع الأوفلاين متاح',
-  'subscription.secure_payment': 'وسائل دفع آمنة',
   'subscription.contact_question': 'هل لديك أسئلة؟',
   'subscription.contact_us': 'تواصل معنا',
   'subscription.expired_snackbar': 'انتهى اشتراكك، يرجى تجديده للمتابعة',
@@ -450,8 +446,6 @@ const Map<String, String> stringsAr = {
   'payment.title': 'الدفع',
   'payment.order_summary': 'ملخص الطلب',
   'payment.method_title': 'طريقة الدفع',
-  'payment.method.google_pay': 'Google Pay',
-  'payment.method.apple_pay': 'Apple Pay',
   'payment.method.card': 'بطاقة ائتمان / خصم',
   'payment.divider_or': 'أو',
   'payment.pay_now': 'ادفع {price}',

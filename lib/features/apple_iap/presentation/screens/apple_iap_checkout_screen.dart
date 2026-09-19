@@ -66,7 +66,7 @@ class AppleIapCheckoutScreen extends ConsumerWidget {
                       OrderSummaryCard(
                         planTitle: plan.title,
                         periodSuffix: plan.periodSuffix,
-                        price: '\$${plan.price.toStringAsFixed(2)}',
+                        price: plan.displayPrice,
                       ),
                       SizedBox(height: context.sp(24)),
                       SizedBox(
