@@ -5,6 +5,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/localization/strings_ar.dart' show stringsAr;
 import '../../../../core/localization/strings_en.dart' show stringsEn;
+import '../../../../core/payment/apple_iap_diagnostics.dart';
 import '../../../../core/payment/apple_iap_product_catalog.dart';
 import '../../../../core/utils/result.dart';
 import '../../../apple_iap/domain/repositories/apple_iap_repository.dart';
@@ -21,8 +22,13 @@ import '../../domain/services/payment_service.dart';
 ///
 /// Lifecycle of one purchase:
 ///  1. `isAvailable()` → `queryProductDetails({productId})`.
-///  2. Fetch an opaque account token from the backend; it is attached as
-///     `applicationUserName` so the transaction can be tied to this user.
+///  2. Best-effort: fetch an opaque account token from the backend and, if
+///     it's a well-formed UUID, attach it as `applicationUserName` so the
+///     transaction can be pre-linked to this user. A failure or malformed
+///     token here does **not** block the purchase — `/subscriptions/verify`
+///     already authenticates the caller and can attribute the purchase
+///     without it — it only means Apple's payment sheet must always be
+///     reachable from a signed-in user regardless of this call's outcome.
 ///  3. `buyNonConsumable(...)` — the answer arrives asynchronously on
 ///     [InAppPurchase.purchaseStream]; a [Completer] bridges it back into the
 ///     `Future<PurchaseOutcome>` returned by [purchaseSubscription].
@@ -90,24 +96,23 @@ class InAppPurchasePaymentService implements PaymentService {
 
     try {
       if (!await _store.isAvailable()) {
-        debugPrint('[IAP] getAvailablePlans: App Store is not available');
-        return _storeFailure('iap.error.unavailable');
+        return _storeFailure('store_unavailable', 'iap.error.unavailable');
       }
       final response = await _store.queryProductDetails(
         AppleIapProductCatalog.productIds,
       );
       if (response.notFoundIDs.isNotEmpty) {
-        debugPrint(
-          '[IAP] getAvailablePlans: products not found in App Store Connect: '
-          '${response.notFoundIDs}',
+        logIapStage(
+          'products_not_found_in_connect',
+          error: response.notFoundIDs,
         );
       }
       if (response.error != null) {
-        debugPrint(
-          '[IAP] getAvailablePlans: queryProductDetails error '
-          '${response.error!.code}: ${response.error!.message}',
+        return _storeFailure(
+          'query_product_details_error',
+          'iap.error.product_not_found',
+          error: '${response.error!.code}: ${response.error!.message}',
         );
-        return _storeFailure('iap.error.product_not_found');
       }
 
       final details = {for (final p in response.productDetails) p.id: p};
@@ -117,10 +122,9 @@ class InAppPurchasePaymentService implements PaymentService {
           package.durationDays,
         );
         if (productId == null) {
-          debugPrint(
-            '[IAP] getAvailablePlans: package ${package.id} has '
-            '${package.durationDays} days, which maps to no App Store product; '
-            'not offered on iOS',
+          logIapStage(
+            'package_duration_unmapped',
+            error: '${package.id}: ${package.durationDays} days',
           );
           continue;
         }
@@ -131,18 +135,27 @@ class InAppPurchasePaymentService implements PaymentService {
         );
       }
       if (available.isEmpty) {
-        debugPrint('[IAP] getAvailablePlans: no purchasable packages');
-        return _storeFailure('iap.error.product_not_found');
+        return _storeFailure(
+          'no_purchasable_packages',
+          'iap.error.product_not_found',
+        );
       }
       return Result.success(available);
     } catch (e, st) {
       debugPrint('[IAP] getAvailablePlans failed: $e\n$st');
-      return _storeFailure('iap.error.unavailable');
+      return _storeFailure('get_available_plans_exception', 'iap.error.unavailable', error: e);
     }
   }
 
-  Result<List<SubscriptionPackage>> _storeFailure(String key) => Result.failure(
-    UnavailableFailure(messageAr: stringsAr[key]!, messageEn: stringsEn[key]),
+  Result<List<SubscriptionPackage>> _storeFailure(
+    String stage,
+    String key, {
+    Object? error,
+  }) => Result.failure(
+    UnavailableFailure(
+      messageAr: iapUserMessage(stage, stringsAr[key]!, error: error),
+      messageEn: stringsEn[key],
+    ),
   );
 
   @override
@@ -151,8 +164,13 @@ class InAppPurchasePaymentService implements PaymentService {
     required PurchaseMethod method,
   }) async {
     if (method != PurchaseMethod.appStore) {
-      debugPrint('[IAP] purchase refused: unsupported method $method on iOS');
-      return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'unsupported_method',
+          stringsAr['iap.error.purchase_failed']!,
+          error: method,
+        ),
+      );
     }
     if (_pending != null) {
       return PurchaseFailed(
@@ -160,47 +178,69 @@ class InAppPurchasePaymentService implements PaymentService {
       );
     }
     if (!await _store.isAvailable()) {
-      debugPrint('[IAP] purchase: App Store is not available');
-      return PurchaseFailed(message: stringsAr['iap.error.unavailable']);
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'store_unavailable',
+          stringsAr['iap.error.unavailable']!,
+        ),
+      );
     }
 
     final productId = AppleIapProductCatalog.productIdForDurationDays(
       plan.durationDays,
     );
     if (productId == null) {
-      debugPrint(
-        '[IAP] purchase: plan ${plan.id} has ${plan.durationDays} days, '
-        'which maps to no App Store product',
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'plan_duration_unmapped',
+          stringsAr['iap.error.product_not_found']!,
+          error: '${plan.id}: ${plan.durationDays} days',
+        ),
       );
-      return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
     }
     final ProductDetailsResponse response;
     try {
       response = await _store.queryProductDetails({productId});
     } catch (e, st) {
       debugPrint('[IAP] purchase: queryProductDetails threw: $e\n$st');
-      return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'query_product_details_exception',
+          stringsAr['iap.error.product_not_found']!,
+          error: e,
+        ),
+      );
     }
     if (response.error != null || response.productDetails.isEmpty) {
-      debugPrint(
-        '[IAP] purchase: product $productId unavailable. '
-        'notFoundIDs=${response.notFoundIDs} '
-        'error=${response.error?.code}: ${response.error?.message}',
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'product_not_found',
+          stringsAr['iap.error.product_not_found']!,
+          error:
+              'notFoundIDs=${response.notFoundIDs} '
+              'error=${response.error?.code}: ${response.error?.message}',
+        ),
       );
-      return PurchaseFailed(message: stringsAr['iap.error.product_not_found']);
     }
 
+    // The account token only lets the backend pre-link this transaction to
+    // the signed-in user as a convenience for `/subscriptions/verify` (which
+    // already authenticates the caller and can attribute the purchase
+    // without it). So a failure here must not block the purchase — only
+    // StoreKit failing to open the sheet should. A malformed token (not the
+    // UUID the backend hands out) is likewise dropped rather than sent to
+    // StoreKit as `applicationUserName`.
     final tokenResult = await _iapRepository.getAccountToken();
-    final token = tokenResult.valueOrNull;
-    if (token == null) {
-      debugPrint(
-        '[IAP] purchase: account token failed: ${tokenResult.failureOrNull}',
-      );
-      return PurchaseFailed(
-        message:
-            tokenResult.failureOrNull?.messageAr ??
-            stringsAr['iap.error.account_token_failed'],
-      );
+    String? applicationUserName;
+    if (tokenResult.isFailure) {
+      logIapStage('account_token_failed', error: tokenResult.failureOrNull);
+    } else {
+      final token = tokenResult.valueOrNull;
+      if (token != null && _looksLikeUuid(token)) {
+        applicationUserName = token;
+      } else if (token != null) {
+        logIapStage('account_token_invalid_format', error: token);
+      }
     }
 
     final pending = _PendingPurchase(productId: productId);
@@ -211,28 +251,49 @@ class InAppPurchasePaymentService implements PaymentService {
       final launched = await _store.buyNonConsumable(
         purchaseParam: PurchaseParam(
           productDetails: response.productDetails.first,
-          applicationUserName: token,
+          applicationUserName: applicationUserName,
         ),
       );
       if (!launched) {
-        debugPrint('[IAP] purchase: buyNonConsumable returned false');
         _pending = null;
-        return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
+        return PurchaseFailed(
+          message: iapUserMessage(
+            'buy_launch_returned_false',
+            stringsAr['iap.error.purchase_failed']!,
+          ),
+        );
       }
     } on PlatformException catch (e) {
-      debugPrint('[IAP] purchase: PlatformException ${e.code}: ${e.message}');
       _pending = null;
-      return PurchaseFailed(
-        message: e.message ?? stringsAr['iap.error.purchase_failed'],
+      final fallback = iapUserMessage(
+        'buy_launch_platform_exception',
+        stringsAr['iap.error.purchase_failed']!,
+        error: '${e.code}: ${e.message}',
       );
+      return PurchaseFailed(message: e.message ?? fallback);
     } catch (e, st) {
       debugPrint('[IAP] purchase: buyNonConsumable threw: $e\n$st');
       _pending = null;
-      return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'buy_launch_exception',
+          stringsAr['iap.error.purchase_failed']!,
+          error: e,
+        ),
+      );
     }
 
     return pending.completer.future;
   }
+
+  /// Whether [value] looks like the UUID the backend hands out as the
+  /// account token (`Str::uuid()`), so an unexpected response shape never
+  /// reaches StoreKit as `applicationUserName`.
+  static final RegExp _uuidPattern = RegExp(
+    r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+  );
+
+  bool _looksLikeUuid(String value) => _uuidPattern.hasMatch(value);
 
   /// StoreKit's `restoreCompletedTransactions` only replays non-consumables
   /// and auto-renewables; our Non-Renewing Subscriptions are tied to the
@@ -243,8 +304,12 @@ class InAppPurchasePaymentService implements PaymentService {
   @override
   Future<PurchaseOutcome> restorePurchases() async {
     if (!await _store.isAvailable()) {
-      debugPrint('[IAP] restore: App Store is not available');
-      return PurchaseFailed(message: stringsAr['iap.error.unavailable']);
+      return PurchaseFailed(
+        message: iapUserMessage(
+          'restore_store_unavailable',
+          stringsAr['iap.error.unavailable']!,
+        ),
+      );
     }
     try {
       await _store.restorePurchases();
@@ -308,19 +373,17 @@ class InAppPurchasePaymentService implements PaymentService {
         await _finish(purchase);
         _settle(pending, const PurchaseCanceled());
       case PurchaseStatus.error:
-        debugPrint(
-          '[IAP] purchase error for ${purchase.productID}: '
-          '${purchase.error?.code}: ${purchase.error?.message} '
-          '(${purchase.error?.details})',
+        final fallback = iapUserMessage(
+          'storekit_purchase_error',
+          stringsAr['iap.error.purchase_failed']!,
+          error:
+              '${purchase.error?.code}: ${purchase.error?.message} '
+              '(${purchase.error?.details})',
         );
         await _finish(purchase);
         _settle(
           pending,
-          PurchaseFailed(
-            message:
-                purchase.error?.message ??
-                stringsAr['iap.error.purchase_failed'],
-          ),
+          PurchaseFailed(message: purchase.error?.message ?? fallback),
         );
       case PurchaseStatus.purchased:
       case PurchaseStatus.restored:
@@ -366,9 +429,7 @@ class InAppPurchasePaymentService implements PaymentService {
   Future<PurchaseOutcome> _verifyAndRecord(PurchaseDetails purchase) async {
     final transactionId = purchase.purchaseID;
     if (transactionId == null || transactionId.isEmpty) {
-      debugPrint(
-        '[IAP] ${purchase.productID}: transaction has no purchaseID',
-      );
+      logIapStage('missing_transaction_id', error: purchase.productID);
       await _finish(purchase);
       return PurchaseFailed(message: stringsAr['iap.error.purchase_failed']);
     }
@@ -379,14 +440,14 @@ class InAppPurchasePaymentService implements PaymentService {
       receiptData: purchase.verificationData.serverVerificationData,
     );
     if (verifyResult.isFailure) {
-      debugPrint(
-        '[IAP] verify failed for $transactionId: ${verifyResult.failureOrNull}',
+      final fallback = iapUserMessage(
+        'verify_failed',
+        stringsAr['iap.error.verify_failed']!,
+        error: '$transactionId: ${verifyResult.failureOrNull}',
       );
       await _finishIfRejected(purchase, verifyResult.failureOrNull);
       return PurchaseFailed(
-        message:
-            verifyResult.failureOrNull?.messageAr ??
-            stringsAr['iap.error.verify_failed'],
+        message: verifyResult.failureOrNull?.messageAr ?? fallback,
       );
     }
 
@@ -395,14 +456,14 @@ class InAppPurchasePaymentService implements PaymentService {
       productId: purchase.productID,
     );
     if (submitResult.isFailure) {
-      debugPrint(
-        '[IAP] recording failed for $transactionId: ${submitResult.failureOrNull}',
+      final fallback = iapUserMessage(
+        'record_failed',
+        stringsAr['iap.error.purchase_failed']!,
+        error: '$transactionId: ${submitResult.failureOrNull}',
       );
       await _finishIfRejected(purchase, submitResult.failureOrNull);
       return PurchaseFailed(
-        message:
-            submitResult.failureOrNull?.messageAr ??
-            stringsAr['iap.error.purchase_failed'],
+        message: submitResult.failureOrNull?.messageAr ?? fallback,
       );
     }
 

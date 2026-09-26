@@ -106,9 +106,10 @@ void main() {
     when(() => store.completePurchase(any())).thenAnswer((_) async {});
     when(() => store.restorePurchases()).thenAnswer((_) async {});
 
-    when(
-      () => iapRepo.getAccountToken(),
-    ).thenAnswer((_) async => const Result.success('account-token'));
+    when(() => iapRepo.getAccountToken()).thenAnswer(
+      (_) async =>
+          const Result.success('550e8400-e29b-41d4-a716-446655440000'),
+    );
     when(
       () => iapRepo.verifyPurchase(
         transactionId: any(named: 'transactionId'),
@@ -163,7 +164,10 @@ void main() {
               ).captured.single
               as PurchaseParam;
       expect(param.productDetails.id, monthlyId);
-      expect(param.applicationUserName, 'account-token');
+      expect(
+        param.applicationUserName,
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
       verify(() => store.queryProductDetails({monthlyId})).called(1);
 
       purchases.add([purchase(PurchaseStatus.purchased)]);
@@ -353,23 +357,44 @@ void main() {
       );
     });
 
-    test('account-token failure → PurchaseFailed with backend message, '
-        'nothing bought', () async {
+    test('account-token failure does not block the purchase — StoreKit is '
+        'still asked to buy, without an applicationUserName', () async {
       when(() => iapRepo.getAccountToken()).thenAnswer(
         (_) async => const Result.failure(ApiFailure(messageAr: 'no token')),
       );
 
-      final outcome = await service.purchaseSubscription(
-        monthlyPlan,
-        method: PurchaseMethod.appStore,
-      );
+      final future = await startPurchase();
+      final param =
+          verify(
+                () => store.buyNonConsumable(
+                  purchaseParam: captureAny(named: 'purchaseParam'),
+                ),
+              ).captured.single
+              as PurchaseParam;
+      expect(param.applicationUserName, isNull);
 
-      expect((outcome as PurchaseFailed).message, 'no token');
-      verifyNever(
-        () => store.buyNonConsumable(
-          purchaseParam: any(named: 'purchaseParam'),
-        ),
-      );
+      purchases.add([purchase(PurchaseStatus.purchased)]);
+      expect(await future, isA<PurchaseSucceeded>());
+    });
+
+    test('a malformed account token is dropped rather than passed to '
+        'StoreKit', () async {
+      when(
+        () => iapRepo.getAccountToken(),
+      ).thenAnswer((_) async => const Result.success('not-a-uuid'));
+
+      final future = await startPurchase();
+      final param =
+          verify(
+                () => store.buyNonConsumable(
+                  purchaseParam: captureAny(named: 'purchaseParam'),
+                ),
+              ).captured.single
+              as PurchaseParam;
+      expect(param.applicationUserName, isNull);
+
+      purchases.add([purchase(PurchaseStatus.purchased)]);
+      await future;
     });
 
     test('buy call refused by StoreKit → PurchaseFailed and no pending '
