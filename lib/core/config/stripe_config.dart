@@ -5,7 +5,7 @@ class StripeConfig {
   StripeConfig._();
 
   static const String publishableKey =
-      'pk_test_51Ty2ZB2N8bP03jv5k2OoRS11akM14SUNeMRjlw7FVG9PCAwYdQUpULjNS3ZuMTO9maSRRP6R5swasywmFmxNITRt007bGnuaJw';
+      'pk_live_51Ty2ZB2N8bP03jv5QlCEqIpjhI1kxhL7rkME9oXmk5V5xZfI6NzjSz4fJVLdH3MP5bjVZDI79wYGNYjaubkUMcxD00j4G1LqE0';
 
   /// Apple Pay merchant identifier registered in the Apple Developer
   /// account, required by `Stripe.instance.applySettings()` on iOS.
